@@ -69,6 +69,7 @@ docs/
 
 # Local baseline archives, outputs, and database dumps
 output/
+/backend.zip
 
 # Browser screenshots and captured command streams used only for local QA
 output/playwright*/
