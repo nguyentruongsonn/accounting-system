@@ -1,0 +1,757 @@
+:root {
+  /* ==========================================================================
+     Modern Enterprise / FinTech Visual Design Tokens
+     Strictly Preserves all --ui-* and --misa-* aliases for 100% compatibility
+     ========================================================================== */
+
+  /* ==========================================================================
+     Design System — Source of Truth
+     ========================================================================== */
+  --color-accent: var(--ui-primary);
+  --color-accent-hover: var(--ui-primary-hover);
+  --color-background: #ffffff;
+  --color-text: #666a72;
+  --color-border: #e5e7eb;
+
+  --spacing-xs: 2px;
+  --spacing-sm: 10px;
+  --spacing-md: 20px;
+  --spacing-lg: 36px;
+  --spacing-xl: 52px;
+
+  --radius-button: 22px;
+  --radius-card: 8px;
+
+  --shadow-none: none;
+
+  /* Surface & Background */
+  --ui-surface: #FFFFFF;
+  --ui-surface-subtle: #FAFBFC;
+  --ui-surface-muted: #F3F4F6;
+  --ui-surface-hover: #F9FAFB;
+  --ui-surface-active: #F3F4F6;
+  --ui-surface-header: #FFFFFF;
+  
+  /* Borders */
+  --ui-border: #E5E7EB;
+  --ui-border-subtle: #F3F4F6;
+  --ui-border-strong: #9CA3AF;
+  --ui-border-focus: var(--ui-primary);
+
+  /* Typography Colors */
+  --ui-text: #1C1E21;
+  --ui-text-label: #4B5563;
+  --ui-text-muted: #666A72;
+  --ui-text-disabled: #9CA3AF;
+
+  /* Primary Brand (Accent Blue) */
+  --ui-primary: #0064E0;
+  --ui-primary-hover: #0057C2;
+  --ui-primary-active: #004BB5;
+  --ui-primary-subtle: #EBF5FF;
+  --ui-primary-border: #BFDBFE;
+
+  /* Shared control and surface aliases. Components consume these semantic
+     names so the brand palette stays centralized in the tokens above. */
+  --ui-button-primary-background: var(--ui-primary);
+  --ui-button-primary-background-hover: var(--ui-primary-hover);
+  --ui-button-primary-background-active: var(--ui-primary-active);
+  --ui-button-primary-border: var(--ui-primary);
+  --ui-button-primary-text: #FFFFFF;
+  --ui-button-secondary-background: var(--ui-surface);
+  --ui-button-secondary-background-hover: var(--ui-surface-hover);
+  --ui-button-secondary-border: var(--ui-border);
+  --ui-button-secondary-border-hover: var(--ui-primary);
+  --ui-button-secondary-text: var(--ui-text-label);
+  --ui-button-danger-background: var(--ui-danger);
+  --ui-button-danger-background-hover: var(--ui-danger-hover);
+  --ui-button-danger-border: var(--ui-danger);
+  --ui-button-danger-text: #FFFFFF;
+  --ui-button-disabled-background: var(--ui-surface-muted);
+  --ui-button-disabled-border: var(--ui-border);
+  --ui-button-disabled-text: var(--ui-text-disabled);
+  --ui-table-surface-background: var(--ui-surface);
+  --ui-table-header-background: var(--ui-surface-muted);
+  --ui-table-summary-background: var(--ui-surface-subtle);
+  --ui-modal-background: var(--ui-surface);
+  --ui-modal-footer-background: var(--ui-surface-subtle);
+
+  /* Semantic Status Colors */
+  --ui-success: #10B981;
+  --ui-success-hover: #059669;
+  --ui-success-subtle: #ECFDF5;
+  --ui-success-border: #A7F3D0;
+
+  --ui-warning: #F59E0B;
+  --ui-warning-hover: #D97706;
+  --ui-warning-subtle: #FFFBEB;
+  --ui-warning-border: #FDE68A;
+
+  --ui-danger: #EF4444;
+  --ui-danger-hover: #DC2626;
+  --ui-danger-subtle: #FEF2F2;
+  --ui-danger-border: #FECACA;
+
+  --ui-info: var(--ui-primary);
+  --ui-info-hover: var(--ui-primary-hover);
+  --ui-info-subtle: #EBF5FF;
+  --ui-info-border: #BFDBFE;
+
+  /* Focus & Shadows (Zero Decorative Shadows) */
+  --ui-focus-ring: 0 0 0 3px rgba(0, 100, 224, 0.2);
+  --ui-shadow-xs: none;
+  --ui-shadow-sm: none;
+  --ui-shadow-md: none;
+  --ui-shadow-lg: none;
+  --ui-shadow-xl: none;
+
+  /* Layout & Metrics */
+  --ui-control-height: 36px;
+  --ui-control-height-compact: 32px;
+  --ui-control-height-lg: 44px;
+  --ui-radius-control: 8px;
+  --ui-radius-compact: 6px;
+  --ui-radius-lg: 12px;
+  --ui-radius-xl: 16px;
+  --ui-radius-pill: 22px;
+  --ui-table-row-height: 38px;
+  --ui-sidebar-width: 232px;
+  --ui-sidebar-collapsed-width: 72px;
+  --ui-header-height: 56px;
+  --ui-content-max-width: 1680px;
+  --ui-content-padding: var(--spacing-sm);
+  --ui-space-1: 4px;
+  --ui-space-2: 8px;
+  --ui-space-3: 12px;
+  --ui-space-4: 16px;
+  --ui-space-5: 20px;
+  --ui-space-6: 24px;
+  --ui-space-8: 32px;
+  --ui-font-family: 'Optimistic', Helvetica, Arial, sans-serif;
+  --ui-heading-font-family: Helvetica, Arial, sans-serif;
+
+  /* ==========================================================================
+     MISA Compatibility Aliases (Preserve full visual contract)
+     ========================================================================== */
+  --misa-primary: var(--ui-primary);
+  --misa-primary-hover: var(--ui-primary-hover);
+  --misa-primary-active: var(--ui-primary-active);
+  --misa-primary-light: var(--ui-primary-subtle);
+  --misa-accent: var(--ui-info);
+  --misa-accent-hover: var(--ui-info-hover);
+  --misa-accent-light: var(--ui-info-subtle);
+  --misa-success: var(--ui-success);
+  --misa-success-hover: var(--ui-success-hover);
+  --misa-success-light: var(--ui-success-subtle);
+  --misa-danger: var(--ui-danger);
+  --misa-danger-hover: var(--ui-danger-hover);
+  --misa-danger-light: var(--ui-danger-subtle);
+  --misa-warning: var(--ui-warning);
+  --misa-warning-hover: var(--ui-warning-hover);
+  --misa-warning-light: var(--ui-warning-subtle);
+  --misa-bg-body: var(--ui-surface-subtle);
+  --misa-bg-card: var(--ui-surface);
+  --misa-bg-hover: var(--ui-surface-hover);
+  --misa-bg-header: var(--ui-surface-header);
+  --misa-bg-table-header: var(--ui-surface-muted);
+  --misa-bg-table-summary: #F8FAFC;
+  --misa-border: var(--ui-border);
+  --misa-border-light: var(--ui-border-subtle);
+  --misa-border-dark: var(--ui-border-strong);
+  --misa-text-heading: var(--ui-text);
+  --misa-text-body: var(--ui-text);
+  --misa-text-label: var(--ui-text-label);
+  --misa-text-muted: var(--ui-text-muted);
+  --misa-text-disabled: var(--ui-text-disabled);
+  --misa-font-family: var(--ui-font-family);
+  --misa-input-height: var(--ui-control-height);
+  --misa-border-radius-xs: 4px;
+  --misa-border-radius-sm: var(--ui-radius-compact);
+  --misa-border-radius: var(--ui-radius-control);
+  --misa-border-radius-lg: var(--ui-radius-lg);
+  --misa-border-radius-xl: var(--ui-radius-xl);
+  --misa-shadow-xs: var(--ui-shadow-xs);
+  --misa-shadow-sm: var(--ui-shadow-sm);
+  --misa-shadow-card: var(--ui-shadow-md);
+  --misa-shadow-float: var(--ui-shadow-xl);
+
+  /* Modern Sidebar Styling */
+  --misa-sidebar-bg: #0F172A; /* Deep Professional Slate Navy */
+  --misa-sidebar-text: #F8FAFC;
+  --misa-sidebar-text-muted: #94A3B8;
+  --misa-sidebar-border: #1E293B;
+  --misa-sidebar-hover: rgba(255, 255, 255, 0.08);
+  --misa-sidebar-active: var(--ui-primary);
+
+  /* Spacing Scale */
+  --ui-space-1: 4px;
+  --ui-space-2: 8px;
+  --ui-space-3: 12px;
+  --ui-space-4: 16px;
+  --ui-space-5: 20px;
+  --ui-space-6: 24px;
+  --ui-space-8: 32px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   UNIFIED ERP WORKSPACE & SURFACE STANDARDIZATION (ALL MODULES)
+   ========================================================================== */
+
+/* 1. Legacy Page Structure */
+/* Feature-specific legacy headers remain hidden; shared semantic headers
+   must stay visible for the PageHeader contract. */
+.cash-page-header,
+.misa-page-header {
+  display: none !important;
+}
+
+.ui-page-shell,
+.misa-page-container,
+.misa-workspace-container,
+.misa-workspace-shell {
+  gap: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* 2. Unified Workspace Tab Navigation & Segmented Bar */
+.misa-workspace-tab-nav {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 38px !important;
+  margin: 0 0 10px 0 !important;
+  padding: 3px !important;
+  background: #E2E8F0 !important;
+  border-radius: 8px !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.misa-workspace-tab-list {
+  display: flex !important;
+  align-items: center !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  gap: 2px !important;
+  overflow-x: auto !important;
+}
+
+.misa-workspace-tab-item {
+  height: 32px !important;
+  padding: 0 12px !important;
+  border: none !important;
+  border-radius: 6px !important;
+  background: transparent !important;
+  color: #666A72 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  transition: all 0.15s ease !important;
+}
+
+.misa-workspace-tab-item:hover {
+  color: #1C1E21 !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+.misa-workspace-tab-item.active {
+  background: #FFFFFF !important;
+  color: var(--ui-primary) !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+  border: 1px solid #E5E7EB !important;
+}
+
+.misa-workspace-tab-extra {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-left: 8px !important;
+}
+
+/* 2.1 Ant Design Tabs Segmented Style Matching Workspace Tabs */
+.ui-workspace-tabs-root .ant-tabs-nav,
+.ant-tabs-card > .ant-tabs-nav {
+  margin-bottom: 10px !important;
+  background: #F3F4F6 !important;
+  border-radius: 8px !important;
+  padding: 3px !important;
+  border: 1px solid #E5E7EB !important;
+}
+
+.ui-workspace-tabs-root .ant-tabs-tab,
+.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab {
+  border-radius: 6px !important;
+  padding: 5px 12px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #666A72 !important;
+  border: none !important;
+  background: transparent !important;
+  transition: all 0.15s ease !important;
+}
+
+.ui-workspace-tabs-root .ant-tabs-tab-active,
+.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+  background: #FFFFFF !important;
+  box-shadow: none !important;
+  border: 1px solid #E5E7EB !important;
+}
+
+.ui-workspace-tabs-root .ant-tabs-tab-active .ant-tabs-tab-btn,
+.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--ui-primary) !important;
+  font-weight: 600 !important;
+}
+
+.ui-workspace-tabs-root .ant-tabs-ink-bar,
+.ant-tabs-card > .ant-tabs-nav .ant-tabs-ink-bar {
+  display: none !important;
+}
+
+/* 3. Unified Workspace Body & Tab Panels */
+.misa-tab-panel-container,
+.ui-workspace-body,
+.misa-workspace-body {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.misa-tab-pane {
+  display: block !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.misa-tab-pane-hidden {
+  display: none !important;
+}
+
+/* 4. Standardized Page Toolbars Across All Modules */
+.ui-page-toolbar,
+.misa-toolbar,
+.misa-list-toolbar,
+.misa-toolbar-header,
+.cash-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  min-height: 42px !important;
+  margin: 0 0 10px 0 !important;
+  padding: 6px 10px !important;
+  background: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+.ui-page-toolbar:empty,
+.ui-page-toolbar-slot:empty,
+.ui-page-toolbar--hidden,
+.ui-page-toolbar-slot:has(.ui-page-toolbar--hidden),
+.ui-page-toolbar-slot:has(.ui-page-toolbar:empty) {
+  display: none !important;
+}
+
+.ui-page-toolbar__filters,
+.ui-page-toolbar__leading,
+.misa-toolbar-left {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+
+.ui-page-toolbar__actions,
+.misa-toolbar-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-left: auto !important;
+}
+
+/* 5. Standardized Table Containers & Data Surface */
+.ui-table-surface,
+.misa-table-wrapper,
+.misa-table-card,
+.misa-grid-wrapper {
+  background: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  margin-bottom: 10px !important;
+}
+
+/* Neutralize nested table cards inside DataTableSurface to eliminate double borders & extra spacing */
+.ui-table-surface :where(.misa-table-card, .misa-table-card-flex, .misa-table-card-auto, .misa-table-wrapper, .misa-grid-wrapper) {
+  border: none !important;
+  margin: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+.ant-table-wrapper {
+  background: #FFFFFF !important;
+  border-radius: 8px !important;
+}
+
+.ant-table {
+  background: #FFFFFF !important;
+  font-size: 13px !important;
+}
+
+.ant-table-thead > tr > th {
+  background: #F9FAFB !important;
+  color: #4B5563 !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  padding: 8px 10px !important;
+  border-bottom: 1px solid #E5E7EB !important;
+  text-transform: none !important;
+}
+
+.ant-table-tbody > tr > td {
+  padding: 8px 10px !important;
+  border-bottom: 1px solid #F3F4F6 !important;
+  color: #1C1E21 !important;
+  font-size: 13px !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: #F9FAFB !important;
+}
+
+.ant-table-tbody > tr.ant-table-row-selected > td {
+  background: #EBF5FF !important;
+}
+
+/* 6. Standardized Stat Cards & Summary Grid */
+.misa-stat-grid-3 {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+.misa-stat-card {
+  background: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  box-shadow: none !important;
+}
+
+.misa-stat-label {
+  font-size: 12px !important;
+  color: #666A72 !important;
+  font-weight: 500 !important;
+  margin-bottom: 2px !important;
+}
+
+.misa-stat-value {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  color: #1C1E21 !important;
+  font-feature-settings: 'tnum' 1 !important;
+}
+
+/* 7. Form Master Cards */
+.misa-master-card {
+  background: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 8px !important;
+  padding: 14px !important;
+  box-shadow: none !important;
+  margin-bottom: 10px !important;
+}
+
+.misa-total-card {
+  background: #F9FAFB !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  text-align: right !important;
+}
+
+.misa-total-card-label {
+  font-size: 12px !important;
+  color: #666A72 !important;
+  font-weight: 500 !important;
+}
+
+/* 8. Unified Workspace Frame & Canvas Layout */
+.ui-workspace,
+.ui-workspace-frame,
+.cash-workspace-surface,
+.misa-workspace-container {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.misa-ca-process-container {
+  display: grid !important;
+  grid-template-columns: 1fr 260px !important;
+  gap: 12px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  min-height: auto !important;
+  box-sizing: border-box !important;
+}
+
+.misa-ca-process-main {
+  background: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 8px !important;
+  padding: 16px !important;
+  box-shadow: none !important;
+  min-height: 420px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+.misa-ca-canvas {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px !important;
+  margin: auto 0 !important;
+  padding: 12px 0 !important;
+  overflow-x: auto !important;
+}
+
+.misa-ca-canvas-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 20px !important;
+  position: relative !important;
+}
+
+.misa-ca-node {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 145px !important;
+  min-height: 74px !important;
+  padding: 8px 10px !important;
+  background: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  position: relative !important;
+  box-shadow: none !important;
+  transition: border-color 150ms ease, color 150ms ease !important;
+}
+
+.misa-ca-node:hover {
+  border-color: var(--ui-primary) !important;
+  color: var(--ui-primary) !important;
+}
+
+.misa-ca-node-badge {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  color: #666A72 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  margin-bottom: 2px !important;
+}
+
+.misa-ca-node-label {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #1C1E21 !important;
+  text-align: center !important;
+  line-height: 1.25 !important;
+}
+
+.misa-ca-bottom-bar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding-top: 12px !important;
+  border-top: 1px solid #F3F4F6 !important;
+  flex-wrap: wrap !important;
+}
+
+.misa-ca-category-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 5px 10px !important;
+  background: #FAFBFC !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 6px !important;
+  color: #4B5563 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.misa-ca-category-btn:hover:not(:disabled) {
+  background: #EBF5FF !important;
+  border-color: #BFDBFE !important;
+  color: var(--ui-primary) !important;
+}
+
+.misa-ca-sidebar {
+  width: 260px !important;
+}
+
+.misa-ca-report-card {
+  background: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 8px !important;
+  padding: 14px 16px !important;
+  box-shadow: none !important;
+  height: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.misa-ca-report-title {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #1C1E21 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 12px !important;
+}
+
+.misa-ca-report-list {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 0 12px 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.misa-ca-report-item {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  font-size: 12px !important;
+  color: #4B5563 !important;
+  cursor: pointer !important;
+  line-height: 1.4 !important;
+  transition: color 0.15s ease !important;
+}
+
+.misa-ca-report-item:hover {
+  color: var(--ui-primary) !important;
+}
+
+.misa-ca-all-reports-link {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--ui-primary) !important;
+  cursor: pointer !important;
+  display: inline-block !important;
+}
+
+/* ==========================================================================
+   Design System Utility Classes
+   ========================================================================== */
+.ds-btn-primary {
+  box-sizing: border-box;
+  display: inline-block;
+  min-width: 120px;
+  min-height: 44px;
+  background-color: #666a72;
+  color: #ffffff;
+  border: 1px solid transparent;
+  border-radius: 22px;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: Helvetica, Arial, sans-serif;
+  text-decoration: none;
+  box-shadow: none;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.ds-btn-primary:hover:not(:disabled) {
+  background-color: #4b5563;
+  color: #ffffff;
+}
+
+.ds-btn-primary:active:not(:disabled) {
+  background-color: #374151;
+}
+
+.ds-btn-secondary {
+  box-sizing: border-box;
+  display: inline-block;
+  min-width: 120px;
+  min-height: 44px;
+  background-color: #ffffff;
+  color: var(--ui-primary);
+  border: 1px solid var(--ui-primary);
+  border-radius: 22px;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: Optimistic, Helvetica, Arial, sans-serif;
+  text-decoration: none;
+  box-shadow: none;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.ds-btn-secondary:hover:not(:disabled) {
+  background-color: #f0f7ff;
+  color: #0057c2;
+  border-color: #0057c2;
+}
+
+.ds-link {
+  color: #666a72;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: Helvetica, Arial, sans-serif;
+  text-decoration: underline;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+
+.ds-link:hover {
+  color: var(--ui-primary);
+}
+
+.ds-card {
+  background-color: #ffffff;
+  color: #666a72;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: none;
+}

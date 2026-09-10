@@ -1,0 +1,91 @@
+.coa-workbench {
+    --coa-primary: var(--ui-primary, #0064e0);
+    --coa-border: var(--shell-border, rgba(60, 60, 67, 0.14));
+    --coa-muted: var(--shell-muted, #6e6e73);
+    --coa-text: var(--shell-text, #1d1d1f);
+    color: var(--coa-text);
+    gap: 0 !important;
+}
+
+.coa-workbench__header {
+    width: 100%;
+}
+
+/* PageToolbar renders filters and actions as separate regions. Keep the
+   filter region fluid and reserve the trailing actions for the far edge. */
+.coa-workbench__header .ui-page-toolbar__leading { display: flex !important; flex: 1 1 100%; width: 100%; }
+
+.coa-workbench__header .ui-page-toolbar__filters { flex: 1 1 480px; }
+.coa-workbench__header .ui-page-toolbar__actions { flex: 0 0 auto; margin-left: auto; }
+.coa-workbench__toolbar { display: flex; align-items: center; width: 100%; min-width: 0; }
+.coa-workbench__title-actions { display: inline-flex; align-items: center; flex: 0 0 auto; gap: 8px; }
+.coa-workbench__add-group { display: inline-flex; align-items: stretch; margin-left: auto; }
+.coa-workbench .ant-btn-primary.coa-workbench__add-button { background: var(--coa-primary) !important; border-color: var(--coa-primary) !important; border-top-right-radius: 0; border-bottom-right-radius: 0; box-shadow: none; }
+.coa-workbench .ant-btn-primary.coa-workbench__add-button:hover, .coa-workbench .ant-btn-primary.coa-workbench__add-button:focus { filter: brightness(0.92); }
+.coa-workbench .ant-btn-primary.coa-workbench__add-menu-button { width: 32px; min-width: 32px; margin-left: 1px; padding-inline: 0; background: var(--coa-primary) !important; border-color: var(--coa-primary) !important; border-top-left-radius: 0; border-bottom-left-radius: 0; box-shadow: none; }
+.coa-workbench .ant-btn-primary.coa-workbench__add-menu-button:hover, .coa-workbench .ant-btn-primary.coa-workbench__add-menu-button:focus { filter: brightness(0.92); }
+
+.coa-workbench__toolbar { flex-wrap: wrap; gap: 10px; }
+.coa-workbench__toolbar > .ant-btn, .coa-workbench__toolbar .ant-input-affix-wrapper { min-height: 34px; }
+.coa-workbench__search { flex: 1 1 320px; width: auto; max-width: 460px; }
+.coa-workbench__toolbar-spacer { flex: 1 1 20px; }
+.coa-workbench__inactive-filter { display: inline-flex; align-items: center; gap: 8px; color: var(--coa-muted); font-size: 12px; white-space: nowrap; }
+.coa-workbench__alert { margin-bottom: 10px; }
+
+.coa-workbench__table-surface .ant-table { color: var(--coa-text); font-size: 13px; }
+.coa-workbench__table-surface .ant-table-thead > tr > th { height: 42px; padding: 9px 12px; color: var(--misa-text-label, #344054); font-size: 12px; font-weight: 700; background: var(--misa-bg-table-header, #f1f3f6); border-color: var(--coa-border); }
+.coa-workbench__table-surface .ant-table-tbody > tr > td { height: 42px; padding: 7px 12px; border-color: rgba(60, 60, 67, 0.10); }
+.coa-workbench__table-surface .ant-table-tbody > tr:hover > td, .coa-workbench__table-surface .ant-table-cell-row-hover { background: var(--misa-bg-hover, #edf6ff) !important; }
+.coa-workbench__account-link { padding: 0; color: var(--coa-primary); font: inherit; font-weight: 600; background: transparent; border: 0; cursor: pointer; }
+.coa-workbench__account-link:hover { text-decoration: underline; }
+.coa-workbench__parent-name { font-weight: 600; }
+.coa-workbench__code-cell { display: inline-flex; align-items: center; gap: 4px; min-width: 100%; }
+.coa-workbench__name-cell { display: inline-flex; align-items: center; min-width: 100%; }
+.coa-workbench__tree-toggle { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin: 0; padding: 0; color: #667085; background: transparent; border: 0; border-radius: 4px; cursor: pointer; }
+.coa-workbench__tree-toggle:hover { color: var(--coa-primary); background: var(--misa-bg-hover, #edf6ff); }
+.coa-workbench__tree-spacer { display: inline-block; width: 20px; height: 20px; }
+.coa-workbench__empty { color: #98a2b3; }
+.coa-workbench__status { margin: 0; font-size: 11px; border-radius: 999px; }
+.coa-workbench__function-actions { display: inline-flex; align-items: center; justify-content: flex-end; }
+.coa-workbench__function-button, .coa-workbench__function-arrow { padding: 0 4px; font-weight: 600; }
+.coa-workbench__function-arrow { min-width: 22px; }
+.coa-workbench__function-button .anticon, .coa-workbench__function-arrow .anticon { font-size: 11px; }
+.coa-workbench__table-surface .ant-pagination { margin: 12px 14px; }
+
+.coa-account-modal__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr); gap: 16px; }
+.coa-account-modal__switch .ant-form-item-control-input-content { display: flex; align-items: center; gap: 8px; }
+.coa-account-modal__switch-label { display: inline-flex; align-items: center; gap: 8px; }
+.coa-transfer-modal__hint { margin: 0 0 18px; color: #475467; line-height: 1.55; }
+
+@media (max-width: 900px) {
+    /* The shared responsive toolbar stacks its regions.  Do not keep the
+       desktop 480px flex basis here: that basis makes the filters region
+       consume an empty vertical block and pushes the table/actions below the
+       viewport at narrow widths or browser zoom. */
+    .coa-workbench__header .ui-page-toolbar__filters { flex: 0 0 auto; }
+    .coa-workbench__inactive-filter span { display: none; }
+    .coa-workbench__toolbar-spacer { display: none; }
+    .coa-workbench__search { flex-basis: 280px; }
+}
+
+@media (min-width: 769px) {
+    /* Keep the right-aligned add split button inside the shared toolbar even
+       when the admin shell is narrowed by the sidebar or browser zoom.  A
+       fixed no-wrap row lets the split button escape the viewport at 125%+
+       zoom, so allow a second line and let its auto margin keep it right. */
+    .coa-workbench__toolbar { flex-wrap: wrap; }
+    .coa-workbench__search { flex: 1 1 180px; min-width: 160px; max-width: 360px; }
+    .coa-workbench__toolbar-spacer { min-width: 4px; }
+}
+
+@media (max-width: 768px) {
+    .coa-workbench__title-actions { flex-wrap: wrap; justify-content: flex-end; }
+    .coa-workbench__toolbar { align-items: stretch; }
+    .coa-workbench__search { flex-basis: 100%; max-width: none; }
+    .coa-workbench__inactive-filter { margin-left: auto; }
+}
+
+@media (max-width: 640px) {
+    .coa-workbench__toolbar > .ant-btn { flex: 1 1 auto; }
+    .coa-account-modal__grid { grid-template-columns: 1fr; gap: 0; }
+}

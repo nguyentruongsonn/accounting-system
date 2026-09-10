@@ -1,0 +1,489 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - develop
+      - 'codex/internal-core-candidate-*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend / PHP 8.2
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          extensions: mbstring, pdo_sqlite, sqlite3, pdo_mysql, dom, fileinfo, gd, zip
+          tools: composer:v2
+
+      - name: Resolve Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer downloads
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-php-8.2-composer-${{ hashFiles('backend/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-8.2-composer-
+
+      - name: Validate Composer manifest and lock
+        run: composer validate --no-check-publish
+
+      - name: Install locked PHP dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress --optimize-autoloader
+
+      - name: Prepare evidence directory
+        run: mkdir -p storage/test-results
+
+      - name: PHP syntax check
+        shell: bash
+        run: |
+          set -o pipefail
+          find app bootstrap config database routes tests -type f -name '*.php' -print0 \
+            | xargs -0 -n1 -P4 php -l \
+            | tee storage/test-results/php-syntax.log
+
+      # Existing Pint debt is reported but does not hide the authoritative
+      # syntax, audit and PHPUnit gates. Promote this to blocking after baseline cleanup.
+      - name: Pint style baseline (non-blocking debt report)
+        id: pint
+        continue-on-error: true
+        run: vendor/bin/pint --test --format=json > storage/test-results/pint.json
+
+      - name: Report Pint debt
+        if: steps.pint.outcome == 'failure'
+        run: echo "::warning::Pint baseline has existing style debt; see backend-evidence artifact."
+
+      - name: Composer security audit
+        shell: bash
+        run: |
+          set -o pipefail
+          composer audit --locked --no-interaction | tee storage/test-results/composer-audit.log
+
+      - name: PHPUnit
+        shell: bash
+        run: |
+          set -o pipefail
+          php artisan test --log-junit storage/test-results/junit.xml \
+            | tee storage/test-results/phpunit.log
+
+      - name: Upload backend evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-evidence-${{ github.run_id }}
+          path: |
+            backend/storage/test-results
+            backend/storage/logs
+          if-no-files-found: ignore
+          retention-days: 14
+
+  frontend:
+    name: Frontend / Node 24
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install locked Node dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Prepare evidence directory
+        run: mkdir -p ci-artifacts
+
+      - name: Static security baseline
+        run: node ../scripts/security/check-security-baseline.mjs
+
+      - name: Owner evidence transport tests
+        run: node --test ../scripts/materialize-owner-package.test.mjs
+
+      - name: Lint application source
+        id: frontend-lint
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run lint 2>&1 | tee ci-artifacts/lint.log
+
+      - name: npm security audit
+        id: frontend-audit
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          npm audit --audit-level=high 2>&1 | tee ci-artifacts/npm-audit.log
+
+      - name: Frontend component tests
+        shell: bash
+        run: |
+          set -o pipefail
+          # The Ant Design/jsdom suite is deterministic sequentially. Parallel
+          # workers have produced environment-only timeouts, so the release
+          # gate uses the verified sequential mode.
+          npm test -- --maxWorkers=1 2>&1 | tee ci-artifacts/test.log
+
+      - name: Production build
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee ci-artifacts/build.log
+
+      - name: Upload frontend evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-evidence-${{ github.run_id }}
+          path: |
+            frontend/ci-artifacts
+            frontend/dist
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Enforce frontend gates
+        if: always()
+        shell: bash
+        run: |
+          if [[ "${{ steps.frontend-lint.outcome }}" != "success" ]]; then
+            echo "Frontend lint failed; see frontend evidence artifact."
+            exit 1
+          fi
+          if [[ "${{ steps.frontend-audit.outcome }}" != "success" ]]; then
+            echo "npm audit failed at the configured high severity threshold."
+            exit 1
+          fi
+
+  mysql-migration-smoke:
+    name: Database / MySQL 8.4 migration smoke
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: accounting_ci
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    env:
+      APP_ENV: testing
+      APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+      APP_DEBUG: 'false'
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: accounting_ci
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
+      ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_POLICY: 'true'
+      ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_POLICY: 'true'
+      ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_APPROVAL: 'true'
+      ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_DIMENSIONS: 'true'
+      ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_ACCOUNT_MAPPINGS: 'true'
+      ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_APPROVAL: 'true'
+      ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_DIMENSIONS: 'true'
+      ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_ACCOUNT_MAPPINGS: 'true'
+      ACCOUNTING_ENFORCE_CASH_BANK_POSTING_POLICY: 'true'
+      ACCOUNTING_ENFORCE_CASH_BANK_POSTING_APPROVAL: 'true'
+      ACCOUNTING_ENFORCE_CASH_BANK_POSTING_ACCOUNT_MAPPINGS: 'true'
+      ACCOUNTING_ENFORCE_VOUCHER_REFERENCE_ACCOUNT_MAPPINGS: 'true'
+      ACCOUNTING_ENFORCE_INVENTORY_POSTING_ACCOUNT_MAPPINGS: 'true'
+      ACCOUNTING_ENFORCE_INVENTORY_STOCK_AVAILABILITY: 'true'
+      ACCOUNTING_ENFORCE_FIXED_ASSET_POSTING_ACCOUNT_MAPPINGS: 'true'
+      ACCOUNTING_ENFORCE_RETURN_DISCOUNT_POSTING_ACCOUNT_MAPPINGS: 'true'
+      ACCOUNTING_ENFORCE_COSTING_INTEGER_ALLOCATION_EVIDENCE: 'true'
+      ACCOUNTING_ENFORCE_PERIOD_CLOSE_SIGNOFF: 'true'
+      ACCOUNTING_ENFORCE_PERIOD_CLOSE_ACCOUNT_MAPPINGS: 'true'
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          extensions: mbstring, pdo_mysql, dom, fileinfo, gd, zip
+          tools: composer:v2
+
+      - name: Resolve Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer downloads
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-php-8.2-composer-${{ hashFiles('backend/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-8.2-composer-
+
+      - name: Install locked PHP dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress --optimize-autoloader
+
+      - name: Run clean-schema migration smoke
+        shell: bash
+        run: |
+          mkdir -p storage/test-results
+          set -o pipefail
+          php -r '
+            $dsn = sprintf("mysql:host=%s;port=%s;dbname=%s", getenv("DB_HOST"), getenv("DB_PORT"), getenv("DB_DATABASE"));
+            $pdo = new PDO($dsn, getenv("DB_USERNAME"), getenv("DB_PASSWORD"), [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+            echo $pdo->query("SELECT VERSION()")->fetchColumn(), PHP_EOL;
+          ' | tee storage/test-results/mysql-server-version.log
+          grep -Eq '^8\.4\.' storage/test-results/mysql-server-version.log
+          php artisan config:clear
+          php artisan migrate:fresh --force --no-interaction \
+            | tee storage/test-results/mysql-migrate.log
+          php artisan migrate:status \
+            | tee storage/test-results/mysql-migrate-status.log
+
+      - name: Run MySQL accounting-control behavior smoke
+        shell: bash
+        run: |
+          set -o pipefail
+          vendor/bin/phpunit --configuration=phpunit.mysql-control-smoke.xml \
+            --log-junit storage/test-results/mysql-accounting-controls.junit.xml \
+            | tee storage/test-results/mysql-accounting-controls.log
+
+      # This is evidence metadata, not a release approval. It binds the two
+      # three disposable-MySQL artifacts to the exact source revision for the
+      # read-only release preflight checker. It is deliberately generated even
+      # after a failed smoke so diagnosis has the same provenance data.
+      - name: Create commit-bound MySQL smoke evidence manifest
+        if: always()
+        shell: bash
+        run: |
+          set -u
+          cd storage/test-results
+          hash_or_empty() {
+            if [[ -f "$1" ]]; then
+              sha256sum "$1" | awk '{print $1}'
+            fi
+          }
+          junit_hash="$(hash_or_empty mysql-accounting-controls.junit.xml)"
+          migration_hash="$(hash_or_empty mysql-migrate-status.log)"
+          mysql_version_hash="$(hash_or_empty mysql-server-version.log)"
+          cat > release-evidence.json <<EOF
+          {
+            "schema_version": 1,
+            "release_commit": "${GITHUB_SHA}",
+            "ci_run_id": "${GITHUB_RUN_ID}",
+            "artifacts": {
+              "mysql_control_smoke_junit": {
+                "path": "mysql-accounting-controls.junit.xml",
+                "sha256": "${junit_hash}"
+              },
+              "mysql_migration_status": {
+                "path": "mysql-migrate-status.log",
+                "sha256": "${migration_hash}"
+              },
+              "mysql_server_version": {
+                "path": "mysql-server-version.log",
+                "sha256": "${mysql_version_hash}"
+              }
+            }
+          }
+          EOF
+
+      - name: Upload MySQL control-smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mysql-migration-failure-${{ github.run_id }}
+          path: |
+            backend/storage/test-results
+            backend/storage/logs
+          if-no-files-found: ignore
+          retention-days: 14
+
+  release-preflight:
+    name: Release / immutable evidence preflight
+    if: always()
+    needs:
+      - backend
+      - frontend
+      - mysql-migration-smoke
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_OWNER_ARTIFACT_MANIFEST: ${{ vars.RELEASE_OWNER_ARTIFACT_MANIFEST }}
+    steps:
+      - name: Checkout exact workflow revision
+        uses: actions/checkout@v4
+
+      - name: Restore signed owner evidence outside checkout
+        env:
+          RELEASE_OWNER_ARTIFACT_PACKAGE: ${{ secrets.INTERNAL_CORE_OWNER_PACKAGE_JSON }}
+        run: node scripts/materialize-owner-package.mjs
+
+      - name: Download MySQL evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: mysql-migration-failure-${{ github.run_id }}
+          # Keep downloaded evidence outside the checkout. The release
+          # preflight intentionally fails on any untracked worktree files;
+          # placing artifacts under the repository would make every otherwise
+          # green release run fail its own clean-worktree gate.
+          path: ${{ runner.temp }}/accounting-release-evidence-${{ github.run_id }}/mysql
+        continue-on-error: true
+
+      - name: Download backend evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-evidence-${{ github.run_id }}
+          path: ${{ runner.temp }}/accounting-release-evidence-${{ github.run_id }}/backend
+        continue-on-error: true
+
+      - name: Download frontend evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-evidence-${{ github.run_id }}
+          path: ${{ runner.temp }}/accounting-release-evidence-${{ github.run_id }}/frontend
+        continue-on-error: true
+
+      - name: Run read-only release preflight
+        shell: pwsh
+        env:
+          RELEASE_COMMIT_SHA: ${{ github.sha }}
+          RELEASE_CI_RUN_ID: ${{ github.run_id }}
+          RELEASE_EVIDENCE_ROOT: ${{ runner.temp }}/accounting-release-evidence-${{ github.run_id }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $requiredJobs = @{
+            backend = '${{ needs.backend.result }}'
+            frontend = '${{ needs.frontend.result }}'
+            mysql = '${{ needs.mysql-migration-smoke.result }}'
+          }
+          $failedJobs = $requiredJobs.GetEnumerator() | Where-Object { $_.Value -ne 'success' }
+          if ($failedJobs) {
+            $summary = ($failedJobs | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join ', '
+            throw "Release preflight cannot pass because required CI jobs are not green: $summary"
+          }
+
+          # Technical CI evidence is not sufficient for release readiness. The
+          # internal-core owner-artifact inventory is a separate fail-closed
+          # gate; an optional external manifest may be supplied through
+          # RELEASE_OWNER_ARTIFACT_MANIFEST. Omitting it deliberately leaves
+          # the internal UAT and DBA rehearsal rows open.
+          $inventoryScript = Join-Path $env:GITHUB_WORKSPACE 'scripts/release-candidate-inventory.ps1'
+          $inventoryArgs = @('-NoLogo', '-NoProfile', '-File', $inventoryScript, '-ReleaseProfile', 'internal-core')
+          if (-not [string]::IsNullOrWhiteSpace($env:RELEASE_OWNER_ARTIFACT_MANIFEST)) {
+            $inventoryArgs += @('-OwnerArtifactManifest', $env:RELEASE_OWNER_ARTIFACT_MANIFEST)
+          }
+          $inventoryOutput = (& pwsh @inventoryArgs 2>&1 | Out-String)
+          if ($LASTEXITCODE -ne 0) {
+            throw "Release-candidate inventory invocation failed: $inventoryOutput"
+          }
+          try {
+            $inventory = $inventoryOutput | ConvertFrom-Json -ErrorAction Stop
+          } catch {
+            throw "Release-candidate inventory did not emit valid JSON: $($_.Exception.Message)"
+          }
+          if ($inventory.owner_artifacts_gate_passed -ne $true) {
+            $ownerFailures = @($inventory.owner_artifact_validation_failures) -join '; '
+            throw "Release preflight blocked: owner_artifacts_gate_passed=false. $ownerFailures"
+          }
+
+          function Find-Evidence([string]$Root, [string]$Name) {
+            $matches = @(Get-ChildItem -LiteralPath $Root -Recurse -File -Filter $Name -ErrorAction SilentlyContinue)
+            if ($matches.Count -eq 0) { return '' }
+            if ($matches.Count -gt 1) {
+              $paths = ($matches | ForEach-Object { $_.FullName }) -join ', '
+              throw "Ambiguous release evidence: expected one $Name below $Root, found $($matches.Count): $paths"
+            }
+            return $matches[0].FullName
+          }
+
+          $evidenceRoot = $env:RELEASE_EVIDENCE_ROOT
+          $manifest = Find-Evidence (Join-Path $evidenceRoot 'mysql') 'release-evidence.json'
+          $junit = Find-Evidence (Join-Path $evidenceRoot 'mysql') 'mysql-accounting-controls.junit.xml'
+          $migration = Find-Evidence (Join-Path $evidenceRoot 'mysql') 'mysql-migrate-status.log'
+          $mysqlVersion = Find-Evidence (Join-Path $evidenceRoot 'mysql') 'mysql-server-version.log'
+          $backendJUnit = Find-Evidence (Join-Path $evidenceRoot 'backend') 'junit.xml'
+          $backendConsoleLog = Find-Evidence (Join-Path $evidenceRoot 'backend') 'phpunit.log'
+          $frontendBuild = Find-Evidence (Join-Path $evidenceRoot 'frontend') 'build.log'
+
+          # The MySQL job cannot see the backend/frontend artifacts while it
+          # creates its manifest. Extend a local copy here so the downloaded
+          # backend/frontend artifacts are hash-bound to the same workflow run
+          # before preflight consumes them; the originals remain immutable for
+          # diagnosis.
+          if ($manifest -and ($frontendBuild -or $backendJUnit -or $backendConsoleLog)) {
+            $combinedManifest = Join-Path (Split-Path -Parent $manifest) 'release-evidence-with-ci-artifacts.json'
+            $manifestObject = Get-Content -Raw -LiteralPath $manifest | ConvertFrom-Json
+            if ($backendJUnit) {
+              $backendEvidence = [pscustomobject]@{
+                path = 'junit.xml'
+                sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $backendJUnit).Hash.ToLowerInvariant()
+              }
+              $manifestObject.artifacts | Add-Member -MemberType NoteProperty -Name backend_full_suite_junit -Value $backendEvidence -Force
+            }
+            if ($backendConsoleLog) {
+              $backendConsoleEvidence = [pscustomobject]@{
+                path = 'phpunit.log'
+                sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $backendConsoleLog).Hash.ToLowerInvariant()
+              }
+              $manifestObject.artifacts | Add-Member -MemberType NoteProperty -Name backend_full_suite_console_log -Value $backendConsoleEvidence -Force
+            }
+            if ($frontendBuild) {
+              $frontendEvidence = [pscustomobject]@{
+                path = 'build.log'
+                sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $frontendBuild).Hash.ToLowerInvariant()
+              }
+              $manifestObject.artifacts | Add-Member -MemberType NoteProperty -Name frontend_build -Value $frontendEvidence -Force
+            }
+            $manifestObject | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $combinedManifest -Encoding utf8
+            $manifest = $combinedManifest
+          }
+
+          & pwsh -NoLogo -NoProfile -File scripts/release-preflight.ps1 `
+            -ReleaseCommit $env:RELEASE_COMMIT_SHA `
+            -EvidenceManifest $manifest `
+            -MySqlSmokeJUnit $junit `
+            -MigrationStatusEvidence $migration `
+            -MySqlServerVersionEvidence $mysqlVersion `
+            -BackendTestJUnit $backendJUnit `
+            -BackendTestLog $backendConsoleLog `
+            -RequireBackendTest `
+            -FrontendBuildEvidence $frontendBuild `
+            -RequireFrontendBuild

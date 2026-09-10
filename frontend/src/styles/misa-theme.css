@@ -1,0 +1,7737 @@
+/* ==========================================================================
+   APPLE HIG UNIFIED DESIGN SYSTEM & MODERN ERP CSS FRAMEWORK
+   ========================================================================== */
+
+/* @import './tokens.css'; — imported via index.css */
+
+/* Base resets & typography */
+body {
+  font-family: var(--misa-font-family);
+  color: var(--misa-text-body);
+  background-color: var(--misa-bg-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  letter-spacing: -0.012em;
+}
+
+/* ==========================================================================
+   APPLE FORM FIELDS, INPUTS & SELECTS (STANDARDIZED TO 34PX)
+   ========================================================================== */
+
+.misa-field-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--misa-text-label);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+.misa-field-label.required::after,
+.misa-field-label .required {
+  content: "*";
+  color: var(--misa-danger);
+  font-weight: 600;
+}
+
+.misa-input,
+.ant-input,
+.ant-input-number,
+.ant-picker,
+.ant-select,
+.ant-select-single,
+.ant-select-outlined,
+.ant-select-sm,
+.ant-select-outlined.ant-select-sm,
+.ant-select-single.ant-select-sm,
+.ant-select-single .ant-select-selector,
+.ant-select-outlined .ant-select-selector,
+.ant-select-single.ant-select-sm .ant-select-selector {
+  height: 34px !important;
+  min-height: 34px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  box-sizing: border-box !important;
+}
+
+.misa-input,
+.ant-input,
+.ant-input-number,
+.ant-picker {
+  border: 1px solid #d9d9d9 !important;
+  color: #1f2937 !important;
+  background-color: #ffffff !important;
+  padding: 0 11px !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
+}
+
+/* Textareas keep their own intrinsic height inside the shared field shell.
+ * The generic 34px input reset must not create a second clipped frame. */
+.ant-input-affix-wrapper.ant-input-textarea-affix-wrapper {
+  height: auto !important;
+  max-height: none !important;
+}
+
+.ant-input-textarea-affix-wrapper > textarea.ant-input {
+  height: auto !important;
+  min-height: 72px !important;
+  max-height: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  resize: vertical;
+}
+
+/* Ant Design v6+ renders border directly ON .ant-select-outlined element */
+.ant-select-outlined,
+.ant-select-outlined.ant-select-sm {
+  --ant-select-border-color: #d9d9d9 !important;
+  border: 1px solid #d9d9d9 !important;
+  background-color: #ffffff !important;
+  transition: all 0.2s ease !important;
+}
+
+.ant-select-outlined:not(.ant-select-disabled):hover {
+  --ant-select-border-color: #4096ff !important;
+  border-color: #4096ff !important;
+}
+
+.ant-select-outlined.ant-select-focused,
+.ant-select-outlined.ant-select-open {
+  --ant-select-border-color: #1677ff !important;
+  border-color: #1677ff !important;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+}
+
+.ant-select-selector,
+.ant-select-outlined .ant-select-selector {
+  border: none !important;
+  background-color: transparent !important;
+  padding: 0 11px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.ant-select-single .ant-select-selection-wrap {
+  flex: 1 !important;
+  position: relative !important;
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+}
+
+.ant-select-single .ant-select-selection-item {
+  line-height: 32px !important;
+  height: 32px !important;
+  font-size: 13px !important;
+  color: #1f2937 !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  align-items: center !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.ant-select-single .ant-select-selection-placeholder {
+  line-height: 32px !important;
+  height: 32px !important;
+  font-size: 13px !important;
+  color: #9ca3af !important;
+  display: flex !important;
+  align-items: center !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.misa-input:hover,
+.ant-input:hover,
+.ant-input-number:hover,
+.ant-picker:hover,
+.ant-input-affix-wrapper:hover {
+  border-color: #4096ff !important;
+}
+
+.misa-input:focus,
+.misa-input:focus-within,
+.ant-input:focus,
+.ant-input-number:focus,
+.ant-picker-focused,
+.ant-input-affix-wrapper-focused,
+.ant-input-affix-wrapper:focus {
+  border-color: #1677ff !important;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+  outline: none !important;
+}
+
+.ant-input-affix-wrapper,
+.ant-input-search .ant-input-affix-wrapper {
+  border: 1px solid #d9d9d9 !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  padding: 0 11px !important;
+  height: 34px !important;
+}
+
+.ant-input-affix-wrapper input.ant-input {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  height: 100% !important;
+  font-size: 13px !important;
+  color: #1f2937 !important;
+}
+
+.misa-input-group {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background: #ffffff;
+  overflow: hidden;
+  height: 34px;
+  min-height: 34px;
+  transition: all 0.2s ease;
+}
+
+.misa-input-group:hover {
+  border-color: #4096ff;
+}
+
+.misa-input-group:focus-within {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1);
+}
+
+.misa-input-group .ant-select,
+.misa-input-group .ant-select-single,
+.misa-input-group .ant-select.misa-input {
+  flex: 1;
+  width: 100%;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* Ant Design v6+: hide border via CSS variable inside input-group */
+.misa-input-group .ant-select-outlined {
+  --ant-select-border-color: transparent !important;
+  --ant-select-background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+
+.misa-input-group .ant-select .ant-select-selector,
+.misa-input-group .ant-select-outlined .ant-select-selector,
+.misa-input-group .ant-select-single .ant-select-selector,
+.misa-input-group .ant-select-selector,
+.misa-input-group .ant-select-borderless .ant-select-selector,
+.misa-input-group .ant-select-variant-borderless .ant-select-selector,
+.misa-input-group .ant-input,
+.misa-input-group input.ant-input,
+.misa-input-group input {
+  border: 0 !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  height: 100% !important;
+  min-height: 100% !important;
+}
+
+.misa-plus-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 100%;
+  border: none;
+  border-left: 1px solid #d9d9d9;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.misa-plus-btn:hover {
+  background: #f1f5f9;
+  color: #1677ff;
+}
+
+/* ==========================================================================
+   MISA MASTER CARD & TABS
+   ========================================================================== */
+
+.misa-master-card {
+  background: #ffffff;
+  border: 0.8px solid #ced1d6;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.misa-master-tabs {
+  display: flex;
+  background: #dfe7e8;
+  border-bottom: 0.8px solid #ced1d6;
+  padding: 0 4px;
+}
+
+.misa-master-tab-btn {
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: #545454;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.misa-master-tab-btn:hover {
+  color: var(--misa-text-heading);
+}
+
+.misa-master-tab-btn.active {
+  color: var(--misa-primary);
+  border-bottom-color: var(--misa-primary);
+  background: #ffffff;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+/* ==========================================================================
+   APPLE SEGMENTED CONTROL TAB BAR (macOS / iPadOS Style)
+   ========================================================================== */
+
+.misa-workspace-container {
+  padding: 16px;
+  height: calc(100vh - 56px);
+  box-sizing: border-box;
+}
+
+.misa-workspace-card {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: var(--misa-shadow-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.misa-workspace-tab-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 10px 16px;
+  height: 52px;
+  min-height: 52px;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.misa-workspace-tab-list {
+  display: inline-flex;
+  align-items: center;
+  background: #ebebee;
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.misa-workspace-tab-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--misa-text-label);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: -0.01em;
+}
+
+.misa-workspace-tab-item:hover {
+  color: var(--misa-text-heading);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.misa-workspace-tab-item.active {
+  color: var(--misa-text-heading);
+  font-weight: 600;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 3px 8px rgba(0, 0, 0, 0.04);
+}
+
+.misa-workspace-tab-extra {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.misa-btn-tool-circle-green {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--misa-primary-light);
+  color: var(--misa-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.misa-btn-tool-circle-green:hover {
+  background: rgba(22, 119, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.misa-btn-tool-transparent {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--misa-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.misa-btn-tool-transparent:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--misa-text-heading);
+}
+
+.misa-tab-panel-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 52px);
+  min-height: 0;
+  overflow: auto;
+  background: #ffffff;
+}
+
+
+/* ==========================================================================
+   MISA TOTAL BOX
+   ========================================================================== */
+
+.misa-total-box {
+  background: #ffffff;
+  text-align: right;
+  padding: 8px 0;
+}
+
+.misa-total-box .total-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #10141b;
+  margin-bottom: 2px;
+}
+
+.misa-total-box .total-amount {
+  font-size: 24px;
+  font-weight: 700;
+  color: #10141b;
+  line-height: 36px;
+}
+
+/* ==========================================================================
+   MISA DETAIL GRID & TABLE
+   ========================================================================== */
+
+.misa-grid-container {
+  background: #ffffff;
+  border: 0.8px solid #ced1d6;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.misa-grid-tabs {
+  display: flex;
+  background: var(--misa-bg-body);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 0 4px;
+}
+
+.misa-grid-tab-btn {
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  color: var(--misa-text-label);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.misa-grid-tab-btn:hover {
+  color: var(--misa-text-heading);
+}
+
+.misa-grid-tab-btn.active {
+  color: var(--misa-primary);
+  border-bottom-color: var(--misa-primary);
+  background: #ffffff;
+}
+
+.misa-grid-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.misa-grid-table th {
+  background-color: var(--misa-bg-body);
+  color: var(--misa-text-label);
+  font-weight: 600;
+  padding: 8px 10px;
+  border-right: 1px solid rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  text-align: left;
+  white-space: nowrap;
+  font-size: 12px;
+  letter-spacing: -0.01em;
+}
+
+.misa-grid-table td {
+  padding: 4px 8px;
+  border-right: 1px solid rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  color: var(--misa-text-heading);
+  font-size: 13px;
+  height: 32px;
+}
+
+.misa-grid-table tr:hover td {
+  background-color: var(--misa-bg-hover);
+}
+
+.misa-grid-table tr.selected td {
+  background-color: var(--misa-accent-light);
+}
+
+.misa-grid-table .summary-row td {
+  background-color: var(--misa-bg-table-summary);
+  font-weight: 600;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--misa-text-heading);
+  padding: 6px 8px;
+}
+
+/* ==========================================================================
+   DETAIL GRID & VOUCHER TABLE - STANDARDIZED UNIFIED CELLS (APPLE ERP)
+   ========================================================================== */
+
+.misa-voucher-table-wrapper,
+.misa-table-card,
+.misa-table-card-auto {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+}
+
+.misa-voucher-table,
+.misa-grid-table {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  background: #ffffff !important;
+  table-layout: auto !important;
+}
+
+.misa-voucher-table thead,
+.misa-grid-table thead {
+  background: #f8fafc !important;
+}
+
+.misa-voucher-table th,
+.misa-grid-table th {
+  background: #f8fafc !important;
+  color: #1e293b !important;
+  font-weight: 600 !important;
+  font-size: 12.5px !important;
+  padding: 8px 10px !important;
+  border-bottom: 1.5px solid #cbd5e1 !important;
+  border-right: 1px solid #e2e8f0 !important;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.misa-voucher-table td,
+.misa-grid-table td {
+  padding: 4px 6px !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-right: 1px solid #f1f5f9 !important;
+  vertical-align: middle !important;
+  background: #ffffff;
+}
+
+.misa-voucher-table tr:hover td,
+.misa-grid-table tr:hover td {
+  background-color: #f8fafc !important;
+}
+
+/* ALL INPUTS INSIDE TABLE MUST STRETCH 100% TO CELL WIDTH */
+.misa-voucher-table td .ant-form-item,
+.misa-grid-table td .ant-form-item {
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.misa-voucher-table td input,
+.misa-voucher-table td .misa-table-input,
+.misa-voucher-table td .ant-input,
+.misa-voucher-table td .ant-select,
+.misa-voucher-table td .ant-select-single,
+.misa-voucher-table td .ant-input-number,
+.misa-grid-table td input,
+.misa-grid-table td .misa-table-input,
+.misa-grid-table td .ant-input,
+.misa-grid-table td .ant-select,
+.misa-grid-table td .ant-select-single,
+.misa-grid-table td .ant-input-number {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Standard outlined style for table text input */
+.misa-voucher-table td .misa-table-input,
+.misa-voucher-table td input.misa-table-input,
+.misa-grid-table td .misa-table-input,
+.misa-grid-table td input.misa-table-input,
+.misa-table-input {
+  background: #ffffff !important;
+  border: 1px solid #d9d9d9 !important;
+  border-radius: 6px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  line-height: 30px !important;
+  padding: 0 10px !important;
+  font-size: 13px !important;
+  color: #1f2937 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: all 0.15s ease !important;
+}
+
+/* Standard outlined style for table select */
+.misa-voucher-table td .ant-select,
+.misa-voucher-table td .ant-select-single,
+.misa-voucher-table td .misa-account-select,
+.misa-grid-table td .ant-select,
+.misa-grid-table td .ant-select-single,
+.misa-grid-table td .misa-account-select {
+  width: 100% !important;
+  height: 32px !important;
+}
+
+/* In Ant Design v6+: override border via CSS variable on .ant-select-outlined in table cells */
+.misa-voucher-table td .ant-select-outlined,
+.misa-grid-table td .ant-select-outlined {
+  --ant-select-border-color: #d9d9d9 !important;
+  height: 32px !important;
+  width: 100% !important;
+}
+
+/* Legacy: also set selector border for older Ant versions */
+.misa-voucher-table td .ant-select .ant-select-selector,
+.misa-voucher-table td .ant-select-single .ant-select-selector,
+.misa-voucher-table td .misa-account-select .ant-select-selector,
+.misa-voucher-table td .ant-select-outlined .ant-select-selector,
+.misa-voucher-table td .ant-select-borderless .ant-select-selector,
+.misa-grid-table td .ant-select .ant-select-selector,
+.misa-grid-table td .ant-select-single .ant-select-selector,
+.misa-grid-table td .misa-account-select .ant-select-selector,
+.misa-grid-table td .ant-select-outlined .ant-select-selector,
+.misa-grid-table td .ant-select-borderless .ant-select-selector {
+  height: 32px !important;
+  min-height: 32px !important;
+  border-radius: 6px !important;
+  border: 1px solid #d9d9d9 !important;
+  background-color: #ffffff !important;
+  font-size: 13px !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+  padding: 0 8px !important;
+  transition: all 0.15s ease !important;
+}
+
+.misa-voucher-table td .ant-select .ant-select-selection-wrap,
+.misa-grid-table td .ant-select .ant-select-selection-wrap {
+  flex: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+  min-width: 0 !important;
+}
+
+.misa-voucher-table td .ant-select .ant-select-selection-item,
+.misa-grid-table td .ant-select .ant-select-selection-item {
+  line-height: 30px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #1f2937 !important;
+  display: block !important;
+  position: relative !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.misa-voucher-table td .ant-select .ant-select-selection-placeholder,
+.misa-grid-table td .ant-select .ant-select-selection-placeholder {
+  line-height: 30px !important;
+  font-size: 13px !important;
+  color: #9ca3af !important;
+  display: block !important;
+  position: relative !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Standard outlined style for table input number */
+.misa-voucher-table td .ant-input-number,
+.misa-grid-table td .ant-input-number {
+  width: 100% !important;
+  background: #ffffff !important;
+  border: 1.2px solid #8c9ba5 !important;
+  border-radius: 6px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+  transition: all 0.15s ease !important;
+}
+
+.misa-voucher-table td .ant-input-number-input-wrap,
+.misa-grid-table td .ant-input-number-input-wrap {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.misa-voucher-table td .ant-input-number input,
+.misa-voucher-table td .ant-input-number-input,
+.misa-grid-table td .ant-input-number input,
+.misa-grid-table td .ant-input-number-input {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  height: 30px !important;
+  line-height: 30px !important;
+  padding: 0 10px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  background: transparent !important;
+  text-align: right !important;
+  width: 100% !important;
+}
+
+/* HOVER & FOCUS STATES FOR ALL TABLE INPUTS */
+.misa-voucher-table td .misa-table-input:hover,
+.misa-voucher-table td input.misa-table-input:hover,
+.misa-voucher-table td .ant-select:hover .ant-select-selector,
+.misa-voucher-table td .ant-input-number:hover,
+.misa-grid-table td .misa-table-input:hover,
+.misa-grid-table td input.misa-table-input:hover,
+.misa-grid-table td .ant-select:hover .ant-select-selector,
+.misa-grid-table td .ant-input-number:hover {
+  border-color: #4096ff !important;
+}
+
+.misa-voucher-table td .misa-table-input:focus,
+.misa-voucher-table td input.misa-table-input:focus,
+.misa-voucher-table td .ant-select-focused .ant-select-selector,
+.misa-voucher-table td .ant-select-open .ant-select-selector,
+.misa-voucher-table td .ant-input-number-focused,
+.misa-grid-table td .misa-table-input:focus,
+.misa-grid-table td input.misa-table-input:focus,
+.misa-grid-table td .ant-select-focused .ant-select-selector,
+.misa-grid-table td .ant-select-open .ant-select-selector,
+.misa-grid-table td .ant-input-number-focused {
+  border-color: #1677ff !important;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+  outline: none !important;
+  background: #ffffff !important;
+}
+
+/* Unified Action Footer & Summary Bar below Table */
+.misa-grid-action-footer {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 8px 12px !important;
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  border-top: none !important;
+  border-radius: 0 0 6px 6px !important;
+}
+
+.misa-table-summary-bar {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 8px 16px !important;
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  border-top: none !important;
+  border-radius: 0 0 6px 6px !important;
+  font-size: 13px !important;
+  color: #1e293b !important;
+}
+
+.misa-summary-items {
+  display: flex !important;
+  align-items: center !important;
+  gap: 20px !important;
+}
+
+.misa-summary-item {
+  font-size: 13px !important;
+  color: #334155 !important;
+}
+
+.misa-summary-item strong {
+  font-size: 14px !important;
+  color: #0f172a !important;
+}
+
+.misa-summary-item.highlight strong {
+  color: #1677ff !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+
+.misa-row-del-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 4px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: #ef4444 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.misa-row-del-btn:hover {
+  background: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+}
+
+/* ==========================================================================
+   MULTI-COLUMN DROPDOWN PANELS (MISA AMIS STANDARDS)
+   ========================================================================== */
+
+.misa-multicolumn-supplier-popup {
+  min-width: 950px !important;
+  max-width: 1050px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 6px !important;
+  border: 0.8px solid #ced1d6 !important;
+  padding: 0 !important;
+}
+
+.misa-multicolumn-item-popup {
+  min-width: 680px !important;
+  max-width: 750px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 6px !important;
+  border: 0.8px solid #ced1d6 !important;
+  padding: 0 !important;
+}
+
+.misa-multicolumn-account-popup {
+  min-width: 380px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 6px !important;
+  border: 0.8px solid #ced1d6 !important;
+  padding: 0 !important;
+}
+
+.misa-grid-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #dfe7e8;
+  border-bottom: 0.8px solid #ced1d6;
+  font-size: 12px;
+  font-weight: 700;
+  color: #10141b;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.misa-grid-dropdown-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  background: #ebedf0;
+  border-top: 0.8px solid #ced1d6;
+  font-size: 12px;
+}
+
+/* ==========================================================================
+   MISA TOOLBARS & BUTTONS
+   ========================================================================== */
+
+.misa-btn-tool {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 0 12px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  color: #1e293b !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.misa-btn-tool:hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+  color: #1677ff !important;
+}
+
+.misa-btn-primary,
+.misa-btn-save-green,
+.misa-btn-footer-primary,
+.misa-btn-modal-save-add,
+.misa-btn-tool-primary,
+.misa-btn-primary-add {
+  background: #1677ff !important;
+  border: 1px solid #1677ff !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  height: 32px !important;
+  padding: 0 16px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  opacity: 1 !important;
+  filter: none !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.misa-btn-primary:hover,
+.misa-btn-save-green:hover,
+.misa-btn-footer-primary:hover,
+.misa-btn-modal-save-add:hover,
+.misa-btn-tool-primary:hover,
+.misa-btn-primary-add:hover {
+  background: #4096ff !important;
+  border-color: #4096ff !important;
+  color: #ffffff !important;
+}
+
+.misa-btn-primary:active,
+.misa-btn-save-green:active,
+.misa-btn-footer-primary:active {
+  background: #0958d9 !important;
+  border-color: #0958d9 !important;
+}
+
+.misa-btn-secondary,
+.misa-btn-footer-secondary,
+.misa-btn-modal-cancel,
+.misa-btn-modal-save,
+.misa-btn-cancel,
+.misa-btn-tool-secondary,
+.misa-btn-footer-save {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #1e293b !important;
+  height: 32px !important;
+  padding: 0 16px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.misa-btn-secondary:hover,
+.misa-btn-footer-secondary:hover,
+.misa-btn-modal-cancel:hover,
+.misa-btn-modal-save:hover,
+.misa-btn-cancel:hover,
+.misa-btn-tool-secondary:hover,
+.misa-btn-footer-save:hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+/* Ant Design Table & Modal Global Overrides for Apple Style */
+.ant-modal-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+  padding: 14px 20px !important;
+  margin-bottom: 0 !important;
+}
+
+.ant-modal-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
+  padding: 12px 20px !important;
+  margin-top: 0 !important;
+  background: #ffffff !important;
+}
+
+.ant-table-thead > tr > th,
+.ant-table-header th {
+  background-color: #f8fafc !important;
+  color: #52525b !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07) !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.04) !important;
+  padding: 8px 10px !important;
+  letter-spacing: -0.01em;
+}
+
+/* Eliminate ghost spacing from Ant Design internal measure row */
+tr.ant-table-measure-row,
+.ant-table-measure-row {
+  visibility: hidden !important;
+  height: 0 !important;
+  line-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+tr.ant-table-measure-row td,
+.ant-table-measure-row td {
+  padding: 0 !important;
+  height: 0 !important;
+  line-height: 0 !important;
+  border: none !important;
+  font-size: 0 !important;
+}
+
+.ant-table-tbody > tr > td {
+  font-size: 13px !important;
+  color: #18181b !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.03) !important;
+  padding: 6px 10px !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background-color: #f8fafc !important;
+}
+
+.ant-table-tbody > tr.ant-table-row-selected > td {
+  background-color: #f1f5f9 !important;
+}
+
+.ant-table-summary {
+  background: var(--misa-bg-table-summary) !important;
+}
+
+.misa-table-summary-row td {
+  background: var(--misa-bg-table-summary) !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ==========================================================================
+   MISA VOUCHER MODAL & MASTER CARD LAYOUT
+   ========================================================================== */
+
+/* ==========================================================================
+   MISA VOUCHER FULLSCREEN MODAL SYSTEM (Zero Inline CSS)
+   ========================================================================== */
+
+.misa-voucher-modal,
+.ant-modal.misa-voucher-modal {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  top: 0 !important;
+  padding-bottom: 0 !important;
+  margin: 0 !important;
+  height: 100vh !important;
+}
+
+.misa-voucher-modal .ant-modal-content {
+  padding: 0 !important;
+  border-radius: 0 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+}
+
+.misa-voucher-modal .ant-modal-header {
+  padding: 10px 16px !important;
+  margin: 0 !important;
+  background: var(--misa-bg-table-header, #dfe7e8) !important;
+  border-bottom: 1px solid var(--misa-border, #ced1d6) !important;
+  border-radius: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.misa-voucher-modal .ant-modal-body {
+  padding: 0 !important;
+  background: var(--misa-bg-body, #eaedf2) !important;
+  flex: 1 1 auto !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: calc(100vh - 50px) !important;
+  min-height: 0 !important;
+}
+
+.misa-voucher-modal .ant-modal-footer {
+  display: none !important;
+}
+
+.misa-voucher-form-container {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.misa-voucher-scroll-body {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 12px 16px !important;
+  min-height: 0 !important;
+  background: var(--misa-bg-body, #eaedf2);
+}
+
+.misa-voucher-custom-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.misa-voucher-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.misa-voucher-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.misa-voucher-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--misa-text-heading, #10141b);
+}
+
+.misa-voucher-reload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--misa-text-muted, #64748b);
+  transition: all 0.15s ease;
+}
+
+.misa-voucher-reload-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--misa-primary, #1677ff);
+}
+
+.misa-voucher-reload-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.misa-voucher-header-icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--misa-text-muted, #64748b);
+  cursor: pointer;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.misa-voucher-header-icon-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--misa-text-heading, #10141b);
+}
+
+/* Master Card and Detail Card Standard Gap */
+.misa-master-card {
+  background: var(--misa-bg-card, #ffffff);
+  border: 1px solid var(--misa-border, #ced1d6);
+  border-radius: var(--misa-border-radius, 4px);
+  margin-bottom: 12px;
+}
+
+.misa-detail-card-section {
+  background: var(--misa-bg-card, #ffffff);
+  border: 1px solid var(--misa-border, #ced1d6);
+  border-radius: var(--misa-border-radius, 4px);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  height: auto;
+}
+
+.misa-grid-tab-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--misa-border-light, #e2e8f0);
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+}
+
+.misa-grid-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.misa-grid-tab-btn {
+  background: transparent;
+  border: none;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: var(--misa-text-muted, #64748b);
+}
+
+.misa-grid-tab-btn.active {
+  border-bottom: 2px solid var(--misa-primary, #1677ff);
+  color: var(--misa-primary, #1677ff);
+}
+
+.misa-table-container {
+  border: 1px solid var(--misa-border, #ced1d6);
+  border-radius: var(--misa-border-radius, 4px);
+  overflow: hidden;
+}
+
+.misa-voucher-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.misa-voucher-table thead tr {
+  background: var(--misa-bg-table-header, #dfe7e8);
+  border-bottom: 1px solid var(--misa-border, #ced1d6);
+  color: var(--misa-text-heading, #10141b);
+  height: 32px;
+}
+
+.misa-voucher-table th {
+  padding: 4px 8px;
+  font-weight: 600;
+  border-right: 1px solid var(--misa-border, #ced1d6);
+}
+
+.misa-voucher-table th:last-child {
+  border-right: none;
+}
+
+.misa-voucher-table tbody tr {
+  border-bottom: 1px solid var(--misa-border-light, #e2e8f0);
+  height: 30px;
+}
+
+.misa-voucher-table tbody tr:hover {
+  background: var(--misa-bg-hover, #f8fafc);
+}
+
+.misa-voucher-table td {
+  padding: 2px 4px;
+  border-right: 1px solid var(--misa-border-light, #e2e8f0);
+}
+
+.misa-voucher-table td:last-child {
+  border-right: none;
+}
+
+.misa-voucher-table tfoot tr {
+  background: var(--misa-bg-table-summary, #dfe7e8);
+  font-weight: 600;
+  height: 30px;
+  border-top: 1px solid var(--misa-border, #ced1d6);
+}
+
+.misa-voucher-table tfoot td {
+  padding: 4px 10px;
+  border-right: 1px solid var(--misa-border, #ced1d6);
+}
+
+.misa-voucher-table tfoot td:last-child {
+  border-right: none;
+}
+
+.misa-col-seq {
+  width: 36px;
+  text-align: center;
+  color: var(--misa-text-muted, #64748b);
+  font-weight: 600;
+}
+
+.misa-col-account {
+  width: 90px;
+  min-width: 90px;
+}
+
+.misa-col-amount {
+  width: 140px;
+  min-width: 140px;
+  text-align: right;
+}
+
+.misa-col-operation {
+  width: 180px;
+  min-width: 180px;
+}
+
+.misa-col-contact-code {
+  width: 140px;
+  min-width: 140px;
+}
+
+.misa-col-action {
+  width: 36px;
+  text-align: center;
+}
+
+.misa-btn-row-delete {
+  background: transparent;
+  border: none;
+  color: var(--misa-danger, #e61d1d);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.misa-grid-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.misa-grid-action-left {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.misa-grid-action-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--misa-text-muted, #64748b);
+}
+
+.misa-pagination-pages {
+  display: flex;
+  gap: 4px;
+}
+
+.misa-pagination-nav-btn {
+  width: 24px !important;
+  height: 24px !important;
+  padding: 0 !important;
+  font-size: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.misa-attachment-container {
+  margin-top: 12px;
+  max-width: 420px;
+}
+
+.misa-attachment-label {
+  font-size: 12px;
+  color: var(--misa-text-body, #475569);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.misa-attachment-limit {
+  font-weight: 400;
+  color: #94a3b8;
+}
+
+.misa-attachment-dropzone {
+  border: 1px dashed var(--misa-border, #cbd5e1);
+  border-radius: var(--misa-border-radius, 4px);
+  padding: 12px;
+  text-align: center;
+  color: var(--misa-text-muted, #64748b);
+  font-size: 12px;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.misa-attachment-dropzone:hover {
+  border-color: var(--misa-primary, #1677ff);
+  background: #f0f7ff;
+}
+
+.misa-attachment-icon {
+  font-size: 18px;
+  color: var(--misa-primary, #1677ff);
+  display: block;
+  margin: 0 auto 4px;
+}
+
+.misa-attachment-link {
+  color: var(--misa-blue, #1b73e8);
+  font-weight: 500;
+}
+
+.misa-voucher-fixed-footer {
+  flex-shrink: 0 !important;
+  padding: 8px 16px !important;
+  background: #ffffff !important;
+  border-top: 1px solid var(--misa-border, #ced1d6) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  z-index: 10 !important;
+}
+
+.misa-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.misa-footer-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.misa-footer-switch-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--misa-text-heading, #334155);
+}
+
+.misa-btn-footer-cancel {
+  border-radius: 4px;
+  min-width: 70px;
+  height: 32px;
+  font-weight: 500;
+  background: #ffffff;
+  border: 1px solid var(--misa-border, #ced1d6);
+  color: var(--misa-text-heading, #1e293b);
+}
+
+.misa-btn-footer-save {
+  border-radius: 4px;
+  min-width: 70px;
+  height: 32px;
+  font-weight: 600;
+  background: #ffffff;
+  border: 1px solid var(--misa-border, #ced1d6);
+  color: var(--misa-text-heading, #1e293b);
+}
+
+.misa-btn-footer-save-add {
+  border-radius: 4px;
+  min-width: 100px;
+  height: 32px;
+  font-weight: 600;
+  background: var(--misa-primary, #1677ff);
+  border-color: var(--misa-primary, #1677ff);
+  color: #ffffff;
+}
+
+.misa-btn-footer-edit {
+  border-radius: 4px;
+  min-width: 80px;
+  height: 32px;
+  font-weight: 600;
+  background: var(--misa-primary, #1677ff);
+  border-color: var(--misa-primary, #1677ff);
+  color: #ffffff;
+}
+
+/* Detail Tabs in Modals (Bottom Section) */
+.misa-modal-tabs-wrapper-p4,
+.misa-modal-tabs-wrapper,
+.misa-tabs-outer-box {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  padding: 8px 16px 14px 16px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.misa-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.misa-modal-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  color: #64748b;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.misa-modal-close-btn:hover {
+  background: #cbd5e1;
+  color: #0f172a;
+}
+
+/* Config Bar (Top Selector Bar) */
+.misa-config-bar {
+  background: #ffffff;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 0.8px solid var(--misa-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.misa-config-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.misa-config-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Master Card 2 Columns */
+.misa-master-layout {
+  display: flex;
+  gap: 16px;
+  padding: 10px 14px;
+}
+
+.misa-master-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.misa-master-right {
+  width: 290px;
+  min-width: 290px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-left: 1px solid var(--misa-border);
+  padding-left: 16px;
+}
+
+/* Master Form Grid (12 Columns) */
+.misa-form-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 6px 12px;
+}
+
+.misa-col-1 { grid-column: span 1; }
+.misa-col-2 { grid-column: span 2; }
+.misa-col-3 { grid-column: span 3; }
+.misa-col-4 { grid-column: span 4; }
+.misa-col-5 { grid-column: span 5; }
+.misa-col-6 { grid-column: span 6; }
+.misa-col-7 { grid-column: span 7; }
+.misa-col-8 { grid-column: span 8; }
+.misa-col-9 { grid-column: span 9; }
+.misa-col-10 { grid-column: span 10; }
+.misa-col-11 { grid-column: span 11; }
+.misa-col-12 { grid-column: span 12; }
+
+/* Metadata Row (Grid Label 105px + Input) */
+.misa-meta-row {
+  display: grid;
+  grid-template-columns: 105px 1fr;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Grand Total Card (Master Right Bottom) */
+.misa-total-card {
+  margin-top: auto;
+  background: #f8fafc;
+  border: 1px solid var(--misa-border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  text-align: right;
+}
+
+.misa-total-card-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--misa-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.misa-total-card-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--misa-text-heading);
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   DETAIL GRID & TOOLBARS
+   ========================================================================== */
+
+.misa-detail-card {
+  background: #ffffff;
+  border: 0.8px solid var(--misa-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.misa-grid-tab-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 12px;
+  border-bottom: 0.8px solid var(--misa-border);
+  background: var(--misa-bg-table-header);
+}
+
+.misa-grid-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.misa-grid-tab-btn {
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--misa-text-muted);
+  transition: all 0.15s ease;
+}
+
+.misa-grid-tab-btn.active {
+  background: #ffffff;
+  font-weight: 700;
+  color: var(--misa-primary);
+  border-bottom: 2px solid var(--misa-primary);
+}
+
+/* Grid Action Footer (BELOW Table) */
+.misa-grid-action-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  border-top: 0.8px solid var(--misa-border);
+  background: #ffffff;
+}
+
+.misa-grid-actions-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Table Summary Bar (Bottom of Detail Section) */
+.misa-table-summary-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  background: var(--misa-bg-table-summary);
+  border-top: 0.8px solid var(--misa-border);
+  font-size: 13px;
+}
+
+.misa-summary-items {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.misa-summary-item {
+  color: var(--misa-text-muted);
+}
+
+.misa-summary-item strong {
+  color: var(--misa-text-heading);
+}
+
+.misa-summary-item.highlight strong {
+  color: var(--misa-primary);
+  font-size: 14px;
+}
+
+/* Voucher Summary Card (Detailed 7-indicator breakdown in footer) */
+.misa-voucher-summary-card {
+  background: #ffffff;
+  border: 1px solid var(--misa-border);
+  border-radius: 6px;
+  padding: 10px 18px;
+  min-width: 320px;
+  width: 360px;
+  margin-left: auto;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.misa-voucher-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  padding: 4px 0;
+  color: var(--misa-text-heading);
+}
+
+.misa-voucher-summary-row .value {
+  font-weight: 600;
+  color: var(--misa-text-heading);
+  text-align: right;
+  min-width: 80px;
+}
+
+.misa-voucher-summary-row.total {
+  border-top: 1px solid var(--misa-border);
+  padding-top: 6px;
+  margin-top: 4px;
+  font-weight: 700;
+  color: var(--misa-text-heading);
+}
+
+.misa-voucher-summary-row.total .value {
+  color: var(--misa-primary);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* Modal Bottom Action Footer */
+.misa-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0 4px 0;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 12px;
+}
+
+/* ==========================================================================
+   MISA STANDARD BUTTON SYSTEM (HIGH-CONTRAST & CRISP)
+   ========================================================================== */
+
+.ant-btn {
+  height: 34px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  transition: all 0.16s var(--apple-ease) !important;
+  cursor: pointer !important;
+}
+
+/* Default / Secondary Outlined Button */
+.ant-btn-default:not(.ant-btn-primary):not(.ant-btn-text):not(.ant-btn-link),
+.misa-btn-modal-cancel,
+.misa-btn-cancel,
+.misa-btn-secondary,
+.misa-btn-tool-secondary,
+.misa-btn-modal-save,
+.misa-btn-footer-secondary,
+.misa-btn-footer-save {
+  border: 1px solid #cbd5e1 !important;
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  padding: 0 16px !important;
+  height: 32px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.ant-btn-default:not(.ant-btn-primary):hover,
+.misa-btn-modal-cancel:hover,
+.misa-btn-cancel:hover,
+.misa-btn-secondary:hover,
+.misa-btn-tool-secondary:hover,
+.misa-btn-modal-save:hover,
+.misa-btn-footer-secondary:hover,
+.misa-btn-footer-save:hover {
+  border-color: #94a3b8 !important;
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Primary Action Button (Cất và Thêm, Thêm mới, Lưu, Cất và In) */
+.ant-btn-primary,
+.misa-btn-primary,
+.misa-btn-save-green,
+.misa-btn-modal-save-add,
+.misa-btn-tool-primary,
+.misa-btn-footer-primary,
+.misa-btn-primary-add {
+  border: 1px solid #1677ff !important;
+  background-color: #1677ff !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  box-shadow: 0 1px 3px rgba(22, 119, 255, 0.3) !important;
+  padding: 0 18px !important;
+  height: 32px !important;
+  border-radius: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  opacity: 1 !important;
+  filter: none !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.ant-btn-primary:hover,
+.misa-btn-primary:hover,
+.misa-btn-save-green:hover,
+.misa-btn-modal-save-add:hover,
+.misa-btn-tool-primary:hover,
+.misa-btn-footer-primary:hover,
+.misa-btn-primary-add:hover {
+  background-color: #4096ff !important;
+  border-color: #4096ff !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(22, 119, 255, 0.4) !important;
+}
+
+/* Modal Form Tabs Styling */
+.ant-tabs-nav {
+  margin-bottom: 12px !important;
+}
+
+.ant-tabs-tab {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #64748b !important;
+  padding: 8px 14px !important;
+}
+
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--misa-primary) !important;
+  font-weight: 700 !important;
+}
+
+.ant-tabs-ink-bar {
+  background: var(--misa-primary) !important;
+  height: 2.5px !important;
+}
+
+.ant-form-item-label > label {
+  font-size: 12.5px !important;
+  font-weight: 550 !important;
+  color: #334155 !important;
+  letter-spacing: -0.01em;
+}
+
+/* ==========================================================================
+   MISA VOUCHER TABLE & ALIASES
+   ========================================================================== */
+
+.misa-voucher-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.misa-voucher-table th {
+  background-color: var(--misa-bg-body);
+  color: var(--misa-text-label);
+  font-weight: 600;
+  padding: 8px 10px;
+  border-right: 1px solid rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  text-align: left;
+  white-space: nowrap;
+  font-size: 12px;
+  letter-spacing: -0.01em;
+}
+
+.misa-voucher-table td {
+  padding: 6px 10px;
+  border-right: 1px solid rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  color: var(--misa-text-heading);
+  font-size: 13px;
+  height: 32px;
+}
+
+.misa-voucher-table tr:hover td {
+  background-color: var(--misa-bg-hover);
+}
+
+.misa-voucher-table tr.selected td {
+  background-color: var(--misa-accent-light);
+}
+
+.misa-voucher-table .summary-row td {
+  background-color: var(--misa-bg-table-summary);
+  font-weight: 600;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  color: var(--misa-text-heading);
+  padding: 8px 10px;
+}
+
+/* ==========================================================================
+   PAGE CONTAINER & LIST TOOLBARS
+   ========================================================================== */
+
+.misa-page-container {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.misa-list-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.misa-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.misa-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.misa-search-box {
+  width: 280px;
+}
+
+.misa-date-select {
+  width: 120px;
+}
+
+/* Status & Tag Helpers */
+.misa-status-tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.misa-status-tag.posted,
+.misa-status-tag-posted {
+  background: #dcfce7;
+  color: var(--misa-primary-active);
+}
+
+.misa-status-tag.draft,
+.misa-status-tag-draft {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.misa-code-link {
+  font-weight: 600;
+  color: var(--misa-accent);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.misa-code-link:hover {
+  text-decoration: underline;
+}
+
+.misa-text-right {
+  text-align: right;
+}
+
+.misa-text-center {
+  text-align: center;
+}
+
+.misa-text-bold {
+  font-weight: 700;
+}
+
+.misa-text-semibold {
+  font-weight: 600;
+}
+
+.misa-text-muted {
+  color: #64748b;
+}
+
+.misa-text-primary {
+  color: var(--misa-primary);
+}
+
+.misa-text-danger {
+  color: var(--misa-danger);
+}
+
+.misa-amount {
+  font-weight: 600;
+  color: var(--misa-text-heading);
+}
+
+/* Modal Custom Header & Buttons */
+.misa-modal-custom-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border-bottom: none;
+}
+
+.misa-modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.misa-modal-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.misa-modal-header-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--misa-text-heading);
+}
+
+.misa-refresh-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid var(--misa-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #475569;
+  transition: all 0.15s;
+}
+
+.misa-refresh-btn:hover {
+  background: #e7f6f0;
+  color: var(--misa-primary);
+  border-color: var(--misa-primary);
+}
+
+.misa-help-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--misa-primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.misa-icon-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Workflow Banner */
+.misa-banner-workflow {
+  background: #f0f7ff;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.misa-banner-workflow-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.misa-banner-workflow-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.misa-banner-workflow-text {
+  font-size: 12px;
+  color: #334155;
+}
+
+/* Reference Chips */
+.misa-ref-chip-container {
+  margin-top: 8px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.misa-ref-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.misa-ref-btn {
+  color: var(--misa-accent);
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 4px;
+  padding: 1px 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.misa-ref-btn:hover {
+  background: #dbeafe;
+}
+
+.misa-ref-btn-confirm {
+  background-color: var(--ui-button-primary-background) !important;
+  border-color: var(--ui-button-primary-border) !important;
+  color: var(--ui-button-primary-text) !important;
+}
+
+.misa-ref-btn-confirm:hover:not(:disabled) {
+  background-color: var(--ui-button-primary-background-hover) !important;
+  border-color: var(--ui-button-primary-background-hover) !important;
+}
+
+/* ==========================================================================
+   Reference Voucher Modal - MISA AMIS Standard
+   ========================================================================== */
+.misa-ref-modal .ant-modal-content {
+  padding: 0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18) !important;
+}
+
+.misa-ref-modal .ant-modal-header {
+  padding: 14px 20px !important;
+  background-color: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  margin: 0 !important;
+}
+
+.misa-ref-modal .ant-modal-title {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  line-height: 1.4 !important;
+}
+
+.misa-ref-modal .ant-modal-close {
+  top: 12px !important;
+  right: 16px !important;
+  width: auto !important;
+  height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.misa-ref-modal .ant-modal-body {
+  padding: 16px 20px !important;
+  background-color: #fff !important;
+  max-height: calc(85vh - 120px) !important;
+  overflow-y: auto !important;
+}
+
+/* Filter Box */
+.misa-ref-filter-section {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.misa-ref-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.misa-ref-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.misa-ref-filter-item--fill {
+  flex: 1;
+  min-width: 280px;
+}
+
+.misa-ref-filter-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.misa-ref-btn-fetch {
+  height: 32px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 4px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  transition: all 0.2s;
+}
+
+.misa-ref-btn-fetch:hover {
+  background-color: #e2e8f0;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+/* Toolbar above table */
+.misa-ref-table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.misa-ref-search-input {
+  height: 32px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.misa-ref-count-text {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.misa-ref-count-text b {
+  color: #0f172a;
+}
+
+/* Grid & Table */
+.misa-ref-grid-wrapper {
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.misa-ref-modal .ant-table-thead > tr > th {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  padding: 8px 10px !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+}
+
+.misa-ref-modal .ant-table-tbody > tr > td {
+  font-size: 13px !important;
+  padding: 6px 10px !important;
+  color: #1e293b !important;
+}
+
+.misa-ref-modal .ant-table-tbody > tr:hover > td {
+  background-color: #f8fafc !important;
+}
+
+.misa-ref-modal .ant-table-tbody > tr.misa-ref-row-selected > td,
+.misa-ref-modal .ant-table-tbody > tr.ant-table-row-selected > td {
+  background-color: #e6f4ff !important;
+}
+
+.misa-ref-voucher-code {
+  color: #1677ff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.misa-ref-voucher-code:hover {
+  text-decoration: underline;
+}
+
+.misa-ref-empty-state {
+  padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.misa-ref-empty-state .misa-empty-icon {
+  font-size: 36px;
+  color: #cbd5e1;
+}
+
+/* Footer */
+.misa-ref-modal .ant-modal-footer {
+  padding: 12px 20px !important;
+  background-color: #f8fafc !important;
+  border-top: 1px solid #e2e8f0 !important;
+  margin: 0 !important;
+}
+
+.misa-ref-footer-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.misa-ref-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.misa-ref-btn-help {
+  color: #1677ff !important;
+  font-size: 13px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.misa-ref-summary-text {
+  font-size: 13px;
+  color: #334155;
+}
+
+.misa-ref-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.misa-ref-btn-cancel {
+  border-radius: 4px !important;
+  height: 32px !important;
+  padding: 0 16px !important;
+  font-size: 13px !important;
+}
+
+.misa-ref-btn-confirm {
+  border-radius: 4px !important;
+  height: 32px !important;
+  padding: 0 20px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  background-color: #1677ff !important;
+  border-color: #1677ff !important;
+}
+
+.misa-ref-btn-confirm:disabled {
+  background-color: #f5f5f5 !important;
+  border-color: #d9d9d9 !important;
+  color: rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Empty State */
+.misa-empty-box {
+  padding: 32px 0;
+  text-align: center;
+  color: #8c8c8c;
+}
+
+.misa-empty-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Detail Table Helpers */
+.misa-table-container {
+  overflow: auto;
+  max-height: 220px;
+  border-bottom: 1px solid var(--misa-border);
+}
+
+.misa-row-del-btn {
+  border: none;
+  background: transparent;
+  color: #e61d1d;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.misa-row-del-btn:hover {
+  color: #b91c1c;
+}
+
+.misa-unit-label {
+  font-size: 12px;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.misa-badge-ava {
+  background: #ecfdf5;
+  color: #047857;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.misa-input-w160 {
+  width: 160px;
+}
+
+.misa-input-w120 {
+  width: 120px;
+}
+
+.misa-input-w230 {
+  width: 230px;
+}
+
+.misa-input-w260 {
+  width: 260px;
+}
+
+.misa-input-w140 {
+  width: 140px;
+}
+
+.misa-input-w55 {
+  width: 55px;
+  text-align: center;
+}
+
+.misa-w-full {
+  width: 100%;
+}
+
+.misa-modal-footer-container {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--misa-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.misa-flex-center {
+  display: flex;
+  align-items: center;
+}
+
+.misa-gap-4 { gap: 4px; }
+.misa-gap-6 { gap: 6px; }
+.misa-gap-8 { gap: 8px; }
+.misa-gap-12 { gap: 12px; }
+.misa-gap-16 { gap: 16px; }
+.misa-gap-20 { gap: 20px; }
+
+.misa-btn-footer-secondary,
+button.misa-btn-footer-secondary,
+.ant-btn.misa-btn-footer-secondary {
+  height: 34px !important;
+  padding: 0 18px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border: 1.2px solid #cbd5e1 !important;
+  color: #475569 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.misa-btn-footer-secondary:hover,
+button.misa-btn-footer-secondary:hover,
+.ant-btn.misa-btn-footer-secondary:hover {
+  background: #f8fafc !important;
+  background-color: #f8fafc !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+.misa-btn-footer-save,
+button.misa-btn-footer-save,
+.ant-btn.misa-btn-footer-save {
+  height: 34px !important;
+  padding: 0 20px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border: 1.2px solid #8c9ba5 !important;
+  color: #0f172a !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.misa-btn-footer-save:hover,
+button.misa-btn-footer-save:hover,
+.ant-btn.misa-btn-footer-save:hover {
+  background: #f1f5f9 !important;
+  background-color: #f1f5f9 !important;
+  border-color: #64748b !important;
+  color: #0f172a !important;
+}
+
+.misa-btn-footer-primary,
+button.misa-btn-footer-primary,
+.ant-btn.misa-btn-footer-primary,
+.ant-btn-primary.misa-btn-footer-primary,
+.ant-dropdown-trigger.misa-btn-footer-primary {
+  background: #1677ff !important;
+  background-color: #1677ff !important;
+  border: 1px solid #1677ff !important;
+  height: 34px !important;
+  padding: 0 18px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(22, 119, 255, 0.35) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.misa-btn-footer-primary *,
+button.misa-btn-footer-primary *,
+.ant-btn.misa-btn-footer-primary * {
+  color: #ffffff !important;
+}
+
+.misa-btn-footer-primary:hover,
+button.misa-btn-footer-primary:hover,
+.ant-btn.misa-btn-footer-primary:hover {
+  background: #4096ff !important;
+  background-color: #4096ff !important;
+  border-color: #4096ff !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 8px rgba(22, 119, 255, 0.45) !important;
+}
+
+.misa-modal-body-layout {
+  height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  background: #f1f5f9;
+  padding: 16px 24px 12px 24px;
+}
+
+.misa-form-flex-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.misa-detail-flex-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.misa-detail-card-section {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid var(--misa-border);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.misa-input-w75 {
+  width: 75px;
+}
+
+.misa-input-w90 {
+  width: 90px;
+}
+
+.misa-input-w100 {
+  width: 100px;
+}
+
+.misa-input-w110 {
+  width: 110px;
+}
+
+.misa-input-w170 {
+  width: 170px;
+}
+
+.misa-input-w180 {
+  width: 180px;
+}
+
+.misa-input-w200 {
+  width: 200px;
+}
+
+.misa-input-w240 {
+  width: 240px;
+}
+
+.misa-input-w280 {
+  width: 280px;
+}
+
+.misa-input-w350 {
+  width: 350px;
+}
+
+.misa-flex-1 {
+  flex: 1;
+}
+
+.misa-flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.misa-flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.misa-table-wrapper {
+  flex: 1;
+  border: 1px solid var(--misa-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.misa-action-link {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.misa-action-link-primary {
+  color: var(--misa-accent);
+}
+
+.misa-action-link-success {
+  color: var(--misa-primary);
+}
+
+.misa-action-link-danger {
+  color: var(--misa-danger);
+}
+
+.misa-text-italic-muted {
+  color: #94a3b8;
+  font-style: italic;
+  font-size: 12px;
+}
+
+.misa-table-badge {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.misa-header-qrcode {
+  color: #8b5cf6;
+  font-size: 14px;
+}
+
+/* Multi-column Contact / Entity Select Component Classes */
+.misa-multicolumn-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  position: relative !important;
+}
+
+.misa-multicolumn-wrapper .ant-select {
+  flex: 1 !important;
+}
+
+.misa-multicolumn-plus-btn-attached {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  border: 1.2px solid #8c9ba5 !important;
+  border-left: none !important;
+  border-radius: 0 8px 8px 0 !important;
+  background: #f8fafc !important;
+  color: var(--misa-primary) !important;
+  font-size: 13px !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.misa-multicolumn-plus-btn-attached:hover {
+  background: var(--misa-primary-light) !important;
+}
+
+.misa-multicolumn-wrapper:has(.misa-multicolumn-plus-btn-attached) .ant-select-selector {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.misa-multicolumn-dropdown-container {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.misa-multicolumn-dropdown-header {
+  background: #f1f5f9;
+  border-bottom: 1px solid #cbd5e1;
+  padding: 8px 12px;
+  font-weight: 700;
+  font-size: 12px;
+  color: #1e293b;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.misa-multicolumn-header-row {
+  display: grid;
+  align-items: center;
+  width: 100%;
+}
+
+.misa-multicolumn-option-row {
+  display: grid;
+  font-size: 13px;
+  padding: 3px 0;
+  align-items: center;
+  color: #0f172a;
+  width: 100%;
+}
+
+.misa-grid-contact {
+  grid-template-columns: 140px 300px 140px 360px 140px;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+
+.misa-grid-employee {
+  grid-template-columns: 120px 260px 280px 160px;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+
+.misa-grid-bank {
+  grid-template-columns: 200px 320px 250px;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+
+.misa-col-code, .misa-col-name, .misa-col-tax, .misa-col-addr, .misa-col-phone,
+.misa-col-dept, .misa-col-branch,
+.misa-th-code, .misa-th-name, .misa-th-tax, .misa-th-addr, .misa-th-phone,
+.misa-th-dept, .misa-th-branch {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  display: block !important;
+}
+
+.misa-col-code, .misa-th-code {
+  font-weight: 700;
+  color: var(--misa-primary);
+}
+
+.misa-col-name, .misa-th-name {
+  font-weight: 600;
+}
+
+.misa-multicolumn-dropdown-footer {
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  padding: 8px 14px;
+}
+
+.misa-btn-quick-add-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--misa-primary);
+  font-weight: 600;
+  font-size: 13px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.misa-btn-quick-add-link:hover {
+  text-decoration: underline;
+  color: var(--misa-primary-hover);
+}
+
+.misa-multicolumn-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.misa-mr-6 {
+  margin-right: 6px;
+}
+
+.misa-max-w-180 {
+  max-width: 180px;
+}
+
+/* ==========================================================================
+   GLOBAL MISA TABLE SCROLL & RESPONSIVE FIXES
+   ========================================================================== */
+
+.ant-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.ant-table {
+  width: 100%;
+}
+
+.ant-table-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto !important;
+}
+
+.ant-table-content {
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+}
+
+.misa-table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.misa-table-card .ant-table-wrapper {
+  overflow-x: auto !important;
+}
+
+.misa-page-container {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.ant-tabs-content,
+.ant-tabs-tabpane {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.misa-hidden {
+  display: none !important;
+}
+
+.misa-workflow-content-box {
+  padding: 32px 24px;
+  background: #f8fafc;
+  min-height: 300px;
+}
+
+.misa-user-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.misa-user-dropdown-trigger:hover {
+  background-color: #f1f5f9;
+}
+
+.misa-workspace-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #f1f5f9;
+  padding: 8px;
+  min-width: 0;
+}
+
+.misa-workspace-card {
+  background: #ffffff;
+  border-radius: 8px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e2e8f0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Modal Detail Grid Table Scroll */
+.misa-table-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  max-height: 280px;
+  border-bottom: 1px solid var(--misa-border);
+}
+
+table.misa-voucher-table {
+  min-width: 100%;
+  width: max-content;
+  border-collapse: collapse;
+}
+
+table.misa-voucher-table th,
+table.misa-voucher-table td {
+  white-space: nowrap !important;
+}
+
+.misa-min-w-1000 {
+  min-width: 1000px !important;
+}
+
+.misa-min-w-1200 {
+  min-width: 1200px !important;
+}
+
+/* ==========================================================================
+   PURCHASE VOUCHER MODAL SPECIFIC UTILITY CLASSES
+   ========================================================================== */
+
+.misa-voucher-header-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--misa-text-heading);
+}
+
+.misa-voucher-modal-container {
+  max-width: 100vw !important;
+  width: 100vw !important;
+}
+
+.misa-voucher-content-scroll {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 280px;
+}
+
+.misa-voucher-grid-min-w-direct {
+  min-width: 1700px;
+}
+
+.misa-voucher-grid-min-w-stock {
+  min-width: 2100px;
+}
+
+.misa-voucher-grid-min-w-expense {
+  min-width: 1100px;
+}
+
+.misa-voucher-grid-min-w-tax {
+  min-width: 1200px;
+}
+
+.misa-voucher-grid-min-w-customs {
+  min-width: 900px;
+}
+
+.misa-col-w-36 { width: 36px; }
+.misa-col-w-45 { width: 45px; }
+.misa-col-w-85 { width: 85px; }
+.misa-col-w-90 { width: 90px; }
+.misa-col-w-100 { width: 100px; }
+.misa-col-w-110 { width: 110px; }
+.misa-col-w-120 { width: 120px; }
+.misa-col-w-130 { width: 130px; }
+.misa-col-w-140 { width: 140px; }
+.misa-col-w-150 { width: 150px; }
+.misa-col-w-160 { width: 160px; }
+.misa-col-w-175 { width: 175px; }
+.misa-col-w-200 { width: 200px; }
+.misa-col-min-w-200 { min-width: 200px; }
+.misa-col-min-w-260 { min-width: 260px; }
+.misa-col-min-w-280 { min-width: 280px; }
+.misa-col-min-w-320 { min-width: 320px; }
+
+.misa-select-w275 { width: 275px; font-weight: 600; }
+.misa-select-w155 { width: 155px; }
+.misa-select-w170 { width: 170px; }
+.misa-select-w190 { width: 190px; }
+.misa-input-w70 { width: 70px; }
+.misa-input-w45-center { width: 45px; text-align: center; }
+.misa-input-w150 { width: 150px; }
+.misa-input-w230 { width: 230px; }
+.misa-input-w240 { width: 240px; }
+.misa-select-term-w { width: calc(100% - 30px); }
+
+.misa-footer-layout {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  width: 100%;
+}
+
+.misa-footer-right {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.misa-footer-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.misa-footer-einvoice-box {
+  background: var(--misa-bg-hover);
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--misa-border-light);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.misa-footer-upload-box {
+  background: #ffffff;
+  border: 1px dashed var(--misa-border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.misa-footer-upload-icon {
+  color: var(--misa-primary);
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.misa-footer-upload-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--misa-text-heading);
+  margin: 0;
+}
+
+.misa-footer-upload-desc {
+  font-size: 11px;
+  color: var(--misa-text-muted);
+  margin: 0;
+}
+
+.misa-btn-tool-sm {
+  height: 26px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.misa-btn-accent-green {
+  background: var(--misa-primary) !important;
+  border-color: var(--misa-primary) !important;
+  color: #ffffff !important;
+  font-size: 12px !important;
+  height: 26px !important;
+  font-weight: 600 !important;
+}
+
+.misa-btn-accent-blue {
+  background: var(--misa-blue) !important;
+  border-color: var(--misa-blue) !important;
+  color: #ffffff !important;
+  font-size: 12px !important;
+  height: 26px !important;
+  font-weight: 600 !important;
+}
+
+.misa-cell-dropdown-grid-5col {
+  display: grid;
+  grid-template-columns: 110px 280px 220px 130px 110px;
+  gap: 8px;
+  font-size: 12px;
+  width: 100%;
+  align-items: center;
+}
+
+.misa-cell-dropdown-grid-4col {
+  display: grid;
+  grid-template-columns: 110px 240px 130px 140px;
+  gap: 8px;
+  font-size: 12px;
+  width: 100%;
+  align-items: center;
+}
+
+.misa-cell-dropdown-grid-2col {
+  display: grid;
+  grid-template-columns: 120px 240px;
+  gap: 8px;
+  font-size: 12px;
+  width: 100%;
+  align-items: center;
+}
+
+.misa-cell-dropdown-grid-5col > *,
+.misa-cell-dropdown-grid-4col > *,
+.misa-cell-dropdown-grid-2col > *,
+.misa-grid-dropdown-header > * {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  display: block !important;
+}
+
+.misa-text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.misa-nowrap {
+  white-space: nowrap;
+}
+
+.misa-btn-plus-icon-sm {
+  width: 18px;
+  height: 18px;
+  font-size: 9px;
+}
+
+.misa-btn-plus-sq {
+  height: 26px;
+  width: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--misa-border);
+  border-radius: 3px;
+  background: var(--misa-bg-hover);
+  cursor: pointer;
+  padding: 0;
+}
+
+.misa-btn-tool-ref {
+  height: 28px;
+  padding: 0 8px;
+  font-weight: 700;
+  font-size: 13px;
+  border-color: #cbd5e1;
+}
+
+.misa-btn-ref-count {
+  font-size: 11px;
+  color: var(--misa-blue);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.misa-modal-header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 32px;
+}
+
+.misa-empty-table-cell {
+  text-align: center;
+  padding: 32px 0;
+  color: var(--misa-text-disabled);
+}
+
+.misa-text-blue {
+  color: var(--misa-blue);
+}
+
+.misa-text-green {
+  color: var(--misa-primary);
+}
+
+.misa-text-amber {
+  color: #d97706;
+}
+
+.misa-cursor-pointer {
+  cursor: pointer;
+}
+
+.misa-mb-12 {
+  margin-bottom: 12px;
+}
+
+.misa-mt-12 {
+  margin-top: 12px;
+}
+
+.misa-top-8 {
+  top: 8px;
+}
+
+/* ==========================================================================
+   PURCHASE MODULE UNIFIED UTILITY & LAYOUT CLASSES
+   ========================================================================== */
+
+.misa-page-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 10px;
+  padding: 12px;
+}
+
+.misa-page-layout-white {
+  padding: 12px 16px;
+  background: #ffffff;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.misa-page-layout-gray {
+  padding: 16px 20px;
+  background: #f1f5f9;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: auto;
+}
+
+.misa-table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.misa-table-card-auto {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.misa-table-summary-row {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+.misa-table-summary-total {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.misa-table-summary-total-800 {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.misa-table-summary-primary {
+  font-weight: 800;
+  color: var(--misa-primary);
+}
+
+.misa-table-cell-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.misa-table-cell-actions-gap8 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.misa-dropdown-arrow {
+  color: #2563eb;
+  cursor: pointer;
+  font-size: 10px;
+  padding: 2px 4px;
+}
+
+.misa-cell-title-box {
+  white-space: normal;
+  word-break: break-word;
+}
+
+.misa-cell-main-title {
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.misa-cell-main-title-dark {
+  font-weight: 500;
+  color: #10141b;
+}
+
+.misa-cell-sub-title {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.misa-table-amount-bold {
+  font-weight: 600;
+  color: #10141b;
+}
+
+.misa-table-amount-dark {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.misa-table-amount-800 {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.misa-table-link {
+  font-weight: 600;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.misa-table-link-bold {
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.misa-table-cell-pointer {
+  cursor: pointer;
+}
+
+.misa-split-pane-container {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.misa-split-pane-header {
+  background: #f8fafc;
+  padding: 8px 14px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.misa-split-pane-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.misa-split-pane-subtitle {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.misa-split-pane-body {
+  overflow: auto;
+}
+
+/* Modal Window & Frame */
+.misa-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+.misa-modal-window {
+  background: #f1f5f9;
+  width: 96vw;
+  max-width: 1240px;
+  max-height: 96vh;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  border: 1px solid #cbd5e1;
+  overflow: hidden;
+}
+
+.misa-modal-window-xl {
+  background: #f1f5f9;
+  width: 98vw;
+  max-width: 1320px;
+  max-height: 96vh;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  border: 1px solid #cbd5e1;
+  overflow: hidden;
+}
+
+.misa-modal-top-bar {
+  background: #ffffff;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.misa-modal-top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.misa-modal-top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.misa-modal-title-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.misa-modal-scroll-body {
+  padding: 14px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.misa-modal-bottom-bar {
+  background: #ffffff;
+  padding: 10px 16px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.misa-radio-bar {
+  background: #ffffff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.misa-grid-subtoolbar {
+  background: #ffffff;
+  border-bottom: 1px solid #cbd5e1;
+  padding: 6px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.misa-grid-scroll-box {
+  overflow: auto;
+  max-height: 220px;
+}
+
+.misa-grid-scroll-box-240 {
+  overflow: auto;
+  max-height: 240px;
+}
+
+.misa-grid-footer-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  background: #f8fafc;
+  border-top: 1px solid #cbd5e1;
+}
+
+.misa-dropzone-box {
+  border: 2px dashed #cbd5e1;
+  border-radius: 6px;
+  padding: 20px 14px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-align: center;
+  height: calc(100% - 24px);
+}
+
+.misa-summary-financial-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.misa-summary-row-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.misa-summary-grand-total {
+  border-top: 1px solid #cbd5e1;
+  padding-top: 8px;
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.misa-summary-grand-value {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--misa-primary);
+}
+
+.misa-summary-grand-value-green {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--misa-primary);
+}
+
+/* Dashboard Classes */
+.misa-dashboard-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.misa-dashboard-card {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.misa-dashboard-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.misa-dashboard-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.misa-dashboard-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f8fafc;
+  padding-bottom: 5px;
+}
+
+.misa-dashboard-card-row-last {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.misa-dashboard-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #f1f5f9;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.misa-dashboard-donut-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.misa-donut-container {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  flex-shrink: 0;
+}
+
+.misa-donut-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.misa-donut-center-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.misa-donut-layout {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 0;
+}
+
+.misa-donut-legend-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.misa-donut-legend-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.misa-donut-legend-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.misa-donut-legend-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.misa-donut-legend-name {
+  color: #334155;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+.misa-donut-legend-value {
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+/* Reports Classes */
+.misa-report-header-filter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: #ffffff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.misa-report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 14px;
+}
+
+.misa-report-card {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  position: relative;
+}
+
+.misa-report-card:hover {
+  border-color: var(--misa-primary);
+  box-shadow: 0 4px 12px rgba(0, 168, 107, 0.12);
+  transform: translateY(-2px);
+}
+
+.misa-report-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.misa-report-card-sub {
+  font-size: 11px;
+  color: #64748b;
+  font-style: italic;
+  margin-bottom: 6px;
+}
+
+.misa-report-card-desc {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.4;
+}
+
+.misa-report-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+.misa-report-viewer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.misa-report-viewer-content {
+  flex: 1;
+  padding: 24px;
+  overflow: auto;
+  background: #525659;
+  display: flex;
+  justify-content: center;
+}
+
+.misa-report-sheet {
+  width: 900px;
+  min-height: 1100px;
+  background: #ffffff;
+  padding: 40px 48px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  font-size: 12px;
+  color: #000000;
+  font-family: "Times New Roman", serif;
+}
+
+.misa-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 12px;
+}
+
+.misa-report-table th {
+  border: 1px solid #333;
+  padding: 6px 4px;
+  background: #f1f5f9;
+  text-align: center;
+}
+
+.misa-report-table td {
+  border: 1px solid #333;
+  padding: 5px;
+}
+
+.misa-report-sign-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  text-align: center;
+  margin-top: 48px;
+  page-break-inside: avoid;
+}
+
+/* Sizing Utilities */
+.misa-w-110 { width: 110px; }
+.misa-w-160 { width: 160px; }
+.misa-w-170 { width: 170px; }
+.misa-w-180 { width: 180px; }
+.misa-w-200 { width: 200px; }
+.misa-w-220 { width: 220px; }
+.misa-w-230 { width: 230px; }
+.misa-w-260 { width: 260px; }
+.misa-w-280 { width: 280px; }
+.misa-w-320 { width: 320px; }
+.misa-w-340 { width: 340px; }
+.misa-w-360 { width: 360px; }
+
+.misa-icon-green { color: var(--misa-primary); }
+.misa-icon-blue { color: #2563eb; }
+.misa-icon-cyan { color: #0891b2; }
+.misa-icon-purple { color: #7c3aed; }
+.misa-icon-orange { color: #ea580c; }
+.misa-icon-amber { color: #f59e0b; }
+.misa-icon-red { color: #ef4444; }
+.misa-icon-muted { color: #94a3b8; }
+.misa-icon-emerald { color: #10b981; }
+.misa-icon-violet { color: #8b5cf6; }
+
+.misa-btn-plain {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.misa-btn-plain:hover {
+  color: #1e293b;
+}
+
+.misa-btn-plain-primary {
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.misa-btn-plain-danger {
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.misa-btn-plain-danger:hover {
+  color: #dc2626;
+}
+
+.misa-input-joined-btn {
+  border: 1px solid #cbd5e1;
+  border-left: none;
+  background: #f8fafc;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+}
+
+.misa-input-joined-left {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.misa-center-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}
+
+.misa-unit-badge {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.misa-unit-badge:hover {
+  background: #f8fafc;
+}
+
+
+/* ==========================================================================
+   MISA UTILITY CLASSES FOR MODALS, GL & REPORTS
+   ========================================================================== */
+
+.misa-page-container {
+  padding: 16px;
+  background: #ffffff;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.misa-page-container-h-full {
+  background: #ffffff;
+  border-radius: 8px;
+  height: 100%;
+}
+
+.misa-filter-box {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.misa-filter-box-lg {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.misa-filter-box-compact {
+  background: #f8fafc;
+  padding: 10px 14px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.misa-filter-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.misa-filter-grid-4col {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.misa-filter-grid-12col {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.misa-grid-col-3 {
+  grid-column: span 3;
+}
+
+.misa-kpi-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.misa-card-revenue {
+  background: #f0f7ff !important;
+  border-color: #bbf7d0 !important;
+}
+
+.misa-card-expense {
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+}
+
+.misa-card-profit {
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+
+.misa-card-label-green {
+  font-size: 12px;
+  color: var(--misa-primary-active);
+  font-weight: 600;
+}
+
+.misa-card-label-red {
+  font-size: 12px;
+  color: #991b1b;
+  font-weight: 600;
+}
+
+.misa-card-label-blue {
+  font-size: 12px;
+  color: #1e40af;
+  font-weight: 600;
+}
+
+.misa-card-value-green {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--misa-primary-hover);
+  margin-top: 4px;
+}
+
+.misa-card-value-red {
+  font-size: 24px;
+  font-weight: 900;
+  color: #b91c1c;
+  margin-top: 4px;
+}
+
+.misa-card-value-blue {
+  font-size: 24px;
+  font-weight: 900;
+  color: #1d4ed8;
+  margin-top: 4px;
+}
+
+.misa-table-wrapper {
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.misa-table-wrapper-rounded {
+  flex: 1;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.misa-table-card-header {
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.misa-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.misa-modal-footer-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+.misa-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.misa-modal-title-lg {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.misa-modal-title-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-right: 20px;
+}
+
+.misa-modal-title-between-sm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 24px;
+}
+
+.misa-modal-top-20 {
+  top: 20px;
+}
+
+.misa-modal-top-30 {
+  top: 30px;
+}
+
+.misa-modal-top-40 {
+  top: 40px;
+}
+
+.misa-dragger-area {
+  padding: 20px 0 !important;
+  background: #ffffff !important;
+  border: 2px dashed #cbd5e1 !important;
+  border-radius: 6px !important;
+}
+
+.misa-upload-icon {
+  color: var(--misa-primary);
+  font-size: 40px;
+}
+
+.misa-upload-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.misa-upload-hint {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.misa-upload-hint-sm {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.misa-badge-posted {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  background: #dcfce7;
+  color: var(--misa-primary-active);
+}
+
+.misa-badge-draft {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.misa-badge-cancelled {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.misa-alert-info-custom {
+  border: 1px solid #bfdbfe !important;
+  background: #eff6ff !important;
+}
+
+.misa-alert-warning-custom {
+  border: 1px solid #fed7aa !important;
+  background: #fff7ed !important;
+}
+
+.misa-text-red {
+  color: #ef4444 !important;
+}
+
+.misa-text-green-bold {
+  color: var(--misa-primary);
+  font-weight: 600;
+}
+
+.misa-text-primary-bold {
+  color: var(--misa-primary) !important;
+  font-weight: 700;
+}
+
+.misa-text-blue-bold {
+  color: #2563eb !important;
+  font-weight: 600;
+}
+
+.misa-text-dark-bold {
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.misa-text-dark-black {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.misa-text-semibold {
+  font-weight: 600;
+}
+
+.misa-text-bold {
+  font-weight: 700;
+}
+
+.misa-text-muted-sm {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.misa-text-muted-xs {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.misa-text-heading-dark {
+  color: #1e293b;
+}
+
+.misa-label-bold {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.misa-label-bold-mb6 {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.misa-w-full {
+  width: 100% !important;
+}
+
+.misa-w-75 {
+  width: 75px !important;
+}
+
+.misa-w-80 {
+  width: 80px !important;
+}
+
+.misa-w-100 {
+  width: 100px !important;
+}
+
+.misa-w-115 {
+  width: 115px !important;
+}
+
+.misa-w-120 {
+  width: 120px !important;
+}
+
+.misa-w-130 {
+  width: 130px !important;
+}
+
+.misa-w-140 {
+  width: 140px !important;
+}
+
+.misa-w-160 {
+  width: 160px !important;
+}
+
+.misa-w-170 {
+  width: 170px !important;
+}
+
+.misa-w-200 {
+  width: 200px !important;
+}
+
+.misa-w-220 {
+  width: 220px !important;
+}
+
+.misa-w-260 {
+  width: 260px !important;
+}
+
+.misa-w-280 {
+  width: 280px !important;
+}
+
+.misa-w-320 {
+  width: 320px !important;
+}
+
+.misa-w-350 {
+  width: 350px !important;
+}
+
+.misa-w-40 {
+  width: 160px !important;
+}
+
+.misa-max-w-450 {
+  max-width: 450px;
+}
+
+.misa-max-w-650 {
+  max-width: 650px;
+}
+
+.misa-flex-col-gap-14 {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.misa-flex-col-gap-12 {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.misa-flex-col-gap-10 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.misa-flex-col-center-32 {
+  padding: 32px 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.misa-flex-center-gap-8 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.misa-flex-center-gap-10 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.misa-flex-center-gap-12 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.misa-flex-center-gap-6 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.misa-flex-between-center {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.misa-flex-end-center {
+  display: flex;
+  align-items: flex-end;
+}
+
+.misa-kpi-summary-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 14px;
+  text-align: right;
+  min-width: 170px;
+}
+
+.misa-quick-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  background: #ffffff;
+  padding: 6px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+.misa-steps-wrapper {
+  margin-bottom: 20px;
+  padding: 0 16px;
+}
+
+.misa-validation-card-gray {
+  flex: 1;
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.misa-validation-card-green {
+  flex: 1;
+  background: #f0f7ff;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #bbf7d0;
+  text-align: center;
+}
+
+.misa-validation-card-red {
+  flex: 1;
+  background: #fef2f2;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #fecaca;
+  text-align: center;
+}
+
+.misa-validation-val-dark {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.misa-validation-val-green {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--misa-primary);
+}
+
+.misa-validation-val-red {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ef4444;
+}
+
+.misa-btn-modal-action {
+  background: var(--misa-primary) !important;
+  border-color: var(--misa-primary) !important;
+  border-radius: 4px !important;
+  height: 32px !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+}
+
+.misa-btn-modal-action-wide {
+  background: var(--misa-primary) !important;
+  border-color: var(--misa-primary) !important;
+  border-radius: 4px !important;
+  height: 32px !important;
+  font-weight: 600 !important;
+  padding: 0 24px !important;
+  color: #ffffff !important;
+}
+
+.misa-btn-modal-action-p20 {
+  background: var(--misa-primary) !important;
+  border-color: var(--misa-primary) !important;
+  font-weight: 600 !important;
+  height: 32px !important;
+  padding: 0 20px !important;
+}
+
+.misa-btn-modal-action-flex1 {
+  background: var(--misa-primary) !important;
+  border-color: var(--misa-primary) !important;
+  height: 32px !important;
+  font-weight: 700 !important;
+  flex: 1 !important;
+  border-radius: 4px !important;
+  color: #ffffff !important;
+}
+
+.misa-btn-cancel {
+  border-radius: 4px !important;
+  height: 32px !important;
+}
+
+.misa-btn-sm-h28 {
+  height: 28px !important;
+}
+
+.misa-btn-blue {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.misa-btn-blue-sm {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  color: #ffffff !important;
+}
+
+.misa-btn-blue-outline {
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+  border-color: #2563eb !important;
+  color: #2563eb !important;
+}
+
+.misa-btn-pill-primary {
+  border-radius: 999px !important;
+  height: 36px !important;
+  padding: 0 20px !important;
+  background: var(--misa-primary) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.misa-btn-dark-cancel {
+  background: transparent !important;
+  color: #ffffff !important;
+  border-color: #6b7280 !important;
+  border-radius: 4px !important;
+}
+
+.misa-btn-dark-submit {
+  background: transparent !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+  border-radius: 4px !important;
+}
+
+.misa-btn-dark-save-add {
+  background: var(--misa-primary) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 4px !important;
+}
+
+.misa-font-18-bold {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.misa-font-16-bold {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.misa-font-13-muted {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.misa-font-12-blue {
+  font-size: 12px;
+  font-weight: 500;
+  color: #2563eb;
+}
+
+.misa-font-12-muted {
+  font-size: 12px;
+  color: #475569;
+}
+
+.misa-font-13-bold-dark {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.misa-font-11-muted {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.misa-summary-row-bold {
+  background: #f8fafc !important;
+  font-weight: 700 !important;
+}
+
+.misa-modal-drawer-body {
+  padding-bottom: 0 !important;
+  height: calc(100vh - 150px) !important;
+  overflow-y: auto !important;
+}
+
+.misa-dark-footer-bar {
+  background: #0f172a;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* ==========================================================================
+   CASH & BANK MODULE UNIFIED CSS CLASSES
+   ========================================================================== */
+
+/* Layout Containers */
+.misa-page-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 10px;
+  padding: 12px;
+}
+
+.misa-page-layout-p16 {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  height: 100%;
+  padding: 16px;
+  background: #ffffff;
+}
+
+.misa-flex-col-gap-6 {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.misa-flex-col-gap-8 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.misa-flex-col-gap-10 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.misa-flex-col-gap-12 {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 12px;
+  padding: 12px;
+}
+
+.misa-flex-col-gap-12-pt6 {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+.misa-flex-col-gap-14-pt10 {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 10px;
+}
+
+.misa-flex-col-gap-14-pt12 {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 12px;
+}
+
+.misa-flex-col-gap-16 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.misa-flex-col-gap-16-mt16 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* ==========================================================================
+   APPLE WIDGET STAT CARDS & PRO TOOLBARS
+   ========================================================================== */
+
+.misa-stat-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.misa-stat-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.misa-stat-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
+  transform: translateY(-1px);
+  border-color: rgba(0, 0, 0, 0.16);
+}
+
+.misa-stat-label {
+  font-size: 11.5px;
+  color: #71717a;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.misa-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #18181b;
+  letter-spacing: -0.025em;
+  font-variant-numeric: tabular-nums;
+  margin: 4px 0 6px 0;
+}
+
+.misa-stat-time {
+  font-size: 11px;
+  color: #a1a1aa;
+  font-weight: 450;
+  letter-spacing: -0.01em;
+}
+
+/* Toolbars */
+.misa-toolbar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.misa-toolbar-header-mb16 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.misa-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.misa-toolbar-group-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.misa-toolbar-group-right-gap8 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.misa-filter-subbar {
+  background: #f8fafc;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.misa-filter-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #52525b;
+}
+
+.misa-btn-filter-active {
+  background: rgba(37, 99, 235, 0.1) !important;
+  color: #2563eb !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+}
+
+.misa-btn-filter-inactive {
+  background: transparent !important;
+  color: #71717a !important;
+  border-radius: 8px !important;
+}
+
+.misa-btn-action-primary {
+  background: #18181b !important;
+  border-color: #18181b !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  height: 34px !important;
+  border-radius: 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.15s ease !important;
+}
+
+.misa-btn-action-primary:hover {
+  background: #27272a !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+  transform: translateY(-0.5px) !important;
+}
+
+.misa-btn-primary-green,
+.misa-btn-save-green {
+  background: #18181b !important;
+  border-color: #18181b !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  height: 34px !important;
+}
+
+.misa-btn-primary-green:hover,
+.misa-btn-save-green:hover {
+  background: #27272a !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+.misa-btn-action-h32 {
+  height: 32px !important;
+  border-radius: 8px !important;
+}
+
+.misa-btn-action-h32-b600 {
+  height: 32px !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+}
+
+.misa-btn-primary-blue {
+  background: var(--misa-accent) !important;
+  border-color: var(--misa-accent) !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+}
+
+.misa-btn-primary-green {
+  background: var(--misa-primary) !important;
+  border-color: var(--misa-primary) !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+}
+
+.misa-btn-save-green {
+  background: var(--misa-primary) !important;
+  border-color: var(--misa-primary) !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+}
+
+/* Apple Pro Table & Card Containers */
+.misa-table-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--misa-shadow-card);
+}
+
+.misa-table-card-flex {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 14px;
+  overflow: hidden;
+  flex: none;
+  height: auto;
+  min-height: auto;
+  max-height: 280px;
+  box-shadow: var(--misa-shadow-card);
+}
+
+.misa-table-card-border-cbd {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.misa-table-footer-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.misa-detail-header-text {
+  font-weight: 700;
+  font-size: 13px;
+  color: #1e293b;
+  margin-top: 4px;
+}
+
+.misa-table-summary-row {
+  background: #f1f5f9 !important;
+  font-weight: 700 !important;
+}
+
+.misa-table-summary-row-alt {
+  background: #f8fafc !important;
+  font-weight: 700 !important;
+}
+
+.misa-table-row-selected {
+  background-color: #f0f7ff !important;
+}
+
+.misa-table-empty-box {
+  padding: 40px 0;
+  text-align: center;
+  color: #64748b;
+}
+
+.misa-table-empty-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+  display: block;
+  color: #cbd5e1;
+  margin: 0 auto;
+}
+
+/* Button Links & Inline Actions */
+.misa-btn-link-action {
+  color: #2563eb;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.misa-btn-link-action:hover {
+  text-decoration: underline;
+}
+
+.misa-btn-link-action-bold {
+  color: #2563eb;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.misa-btn-link-action-bold:hover {
+  text-decoration: underline;
+}
+
+.misa-btn-link-success {
+  color: var(--misa-primary);
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.misa-btn-link-danger {
+  color: #ef4444;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.misa-btn-link-orange {
+  color: #ea580c;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.misa-btn-transparent {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.misa-btn-icon-del {
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.misa-btn-icon-del:hover {
+  color: #dc2626;
+}
+
+/* Modals */
+.misa-modal-warning-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #d97706;
+}
+
+.misa-modal-warning-body {
+  padding: 12px 0;
+  font-size: 14px;
+  color: #334155;
+}
+
+.misa-modal-edit-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.misa-modal-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-right: 24px;
+}
+
+.misa-modal-detail-header-20 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-right: 20px;
+}
+
+.misa-modal-info-box {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.misa-modal-info-box-3col {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.misa-modal-info-box-3col-p14 {
+  background: #f8fafc;
+  padding: 14px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.misa-modal-info-box-2col-p14 {
+  background: #f8fafc;
+  padding: 14px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.misa-modal-btn-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.misa-modal-btn-footer-pt10 {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid #cbd5e1;
+}
+
+.misa-modal-btn-footer-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+}
+
+/* Report Cards & Viewer */
+.misa-report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 12px;
+}
+
+.misa-report-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.misa-report-card:hover {
+  border-color: var(--misa-primary) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.misa-report-card-blue:hover {
+  border-color: #2563eb !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.misa-report-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.misa-report-card-header {
+  display: flex;
+  gap: 12px;
+}
+
+.misa-report-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.misa-report-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.misa-report-desc {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.misa-report-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 8px;
+}
+
+.misa-report-standard-text {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.misa-report-viewer {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.misa-report-canvas {
+  padding: 24px 32px;
+  overflow-y: auto;
+  flex: 1;
+  background: #ffffff;
+}
+
+.misa-report-company-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.misa-report-main-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.misa-report-sign-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  text-align: center;
+  margin-top: 36px;
+  font-size: 13px;
+}
+
+.misa-report-sign-space {
+  margin-top: 48px;
+  font-weight: 600;
+}
+
+/* Forecast Table & Utilities */
+.misa-forecast-item-revenue {
+  padding: 10px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background: #f8fafc;
+}
+
+.misa-forecast-item-revenue:hover {
+  border-color: var(--misa-primary);
+  background: #f0f7ff;
+}
+
+.misa-forecast-table-th {
+  background: #f1f5f9;
+  border-bottom: 2px solid #cbd5e1;
+  color: #334155;
+  text-align: left;
+  padding: 8px 12px;
+}
+
+/* Grids & Dimension Utilities */
+.misa-grid-2col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.misa-grid-2col-gap-16 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 16px;
+}
+
+.misa-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.misa-grid-3col-pt8 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.misa-grid-12col-gap-16 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: 16px;
+  row-gap: 10px;
+}
+
+.misa-audit-top-section {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.misa-audit-diff-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  width: 340px;
+  margin-bottom: 12px;
+}
+
+.misa-audit-card-section {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.misa-audit-collapse {
+  background: #fff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  margin-bottom: 12px !important;
+}
+
+.misa-audit-collapse-label {
+  font-weight: 600;
+  font-size: 12px;
+  color: #334155;
+}
+
+.misa-audit-custom-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px 20px;
+  background: #f8fafc;
+  margin: -16px -24px 0 -24px;
+  border-bottom: 1px solid #e2e8f0;
+  border-radius: 8px 8px 0 0;
+}
+
+.misa-contract-custom-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px 20px;
+  background: #f8fafc;
+  margin: -16px -24px 0 -24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.misa-upload-box-dashed {
+  padding: 24px;
+  text-align: center;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.misa-tab-btn-header {
+  padding: 6px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px 4px 0 0;
+  margin-bottom: -1px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.misa-tab-btn-header.active {
+  border-bottom: 1px solid #ffffff;
+  background: #ffffff;
+  color: var(--misa-primary);
+  font-weight: 700;
+}
+
+.misa-tab-btn-header.inactive {
+  border-bottom: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 500;
+}
+
+/* Sizing Helpers */
+.misa-w-40 { width: 40px !important; }
+.misa-w-65 { width: 65px !important; }
+.misa-w-70 { width: 70px !important; }
+.misa-w-80 { width: 80px !important; }
+.misa-w-90 { width: 90px !important; }
+.misa-w-95 { width: 95px !important; }
+.misa-w-100 { width: 100px !important; }
+.misa-w-110 { width: 110px !important; }
+.misa-w-120 { width: 120px !important; }
+.misa-w-130 { width: 130px !important; }
+.misa-w-140 { width: 140px !important; }
+.misa-w-150 { width: 150px !important; }
+.misa-w-160 { width: 160px !important; }
+.misa-w-180 { width: 180px !important; }
+.misa-w-190 { width: 190px !important; }
+.misa-w-200 { width: 200px !important; }
+.misa-w-220 { width: 220px !important; }
+.misa-w-260 { width: 260px !important; }
+.misa-w-280 { width: 280px !important; }
+.misa-w-300 { width: 300px !important; }
+.misa-w-320 { width: 320px !important; }
+.misa-w-340 { width: 340px !important; }
+.misa-w-400 { width: 400px !important; }
+.misa-w-500 { width: 500px !important; }
+.misa-w-700 { width: 700px !important; }
+.misa-w-780 { width: 780px !important; }
+.misa-w-800 { width: 800px !important; }
+.misa-w-860 { width: 860px !important; }
+.misa-w-880 { width: 880px !important; }
+.misa-w-900 { width: 900px !important; }
+.misa-w-960 { width: 960px !important; }
+.misa-w-1000 { width: 1000px !important; }
+.misa-w-full { width: 100% !important; }
+
+.misa-min-w-160 { min-width: 160px !important; }
+.misa-min-w-170 { min-width: 170px !important; }
+.misa-min-w-180 { min-width: 180px !important; }
+.misa-min-w-200 { min-width: 200px !important; }
+.misa-min-w-220 { min-width: 220px !important; }
+.misa-min-w-240 { min-width: 240px !important; }
+.misa-min-w-260 { min-width: 260px !important; }
+
+.misa-col-span-2 { grid-column: span 2 !important; }
+.misa-col-span-3 { grid-column: span 3 !important; }
+.misa-col-span-4 { grid-column: span 4 !important; }
+.misa-col-span-6 { grid-column: span 6 !important; }
+.misa-col-span-8 { grid-column: span 8 !important; }
+.misa-col-span-12 { grid-column: span 12 !important; }
+
+.misa-border-radius-4 { border-radius: 4px !important; }
+.misa-border-radius-6 { border-radius: 6px !important; }
+.misa-border-radius-8 { border-radius: 8px !important; }
+.misa-border-radius-12 { border-radius: 12px !important; }
+
+.misa-color-primary { color: var(--misa-primary) !important; }
+.misa-color-blue { color: #2563eb !important; }
+.misa-color-green { color: var(--misa-primary) !important; }
+.misa-color-orange { color: #ea580c !important; }
+.misa-color-red { color: #ef4444 !important; }
+.misa-color-muted { color: #64748b !important; }
+.misa-color-dark { color: #1e293b !important; }
+.misa-color-darker { color: #0f172a !important; }
+.misa-color-purple { color: #8b5cf6 !important; }
+.misa-color-warning { color: #d97706 !important; }
+.misa-color-gray-border { color: #cbd5e1 !important; }
+.misa-color-disabled { color: #94a3b8 !important; }
+
+.misa-report-header-debit {
+  background: #f8fafc !important;
+  font-weight: 700 !important;
+}
+
+.misa-report-total-row {
+  background: #f1f5f9 !important;
+  font-weight: 800 !important;
+}
+
+.misa-report-ending-row {
+  background: #e6f9ed !important;
+  font-weight: 800 !important;
+}
+
+.misa-report-ending-row-bank {
+  background: #eff6ff !important;
+  font-weight: 800 !important;
+}
+
+.misa-status-tag-green {
+  background: #dcfce7 !important;
+  color: var(--misa-primary-active) !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+
+.misa-status-tag-green-bold {
+  background: #dcfce7 !important;
+  color: var(--misa-primary-active) !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.misa-help-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--misa-primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.misa-circle-icon-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #475569;
+}
+
+.misa-border-l {
+  border-left: 1px solid #e2e8f0;
+}
+
+.misa-pl-24 {
+  padding-left: 24px;
+}
+
+.misa-ml-8 {
+  margin-left: 8px;
+}
+
+.misa-mb-6 {
+  margin-bottom: 6px;
+}
+
+.misa-mb-8 {
+  margin-bottom: 8px;
+}
+
+.misa-p-16 {
+  padding: 16px 0;
+}
+
+.misa-color-label {
+  color: #475569;
+}
+
+.misa-h-24 {
+  height: 24px !important;
+}
+
+.misa-m-0 {
+  margin: 0 !important;
+}
+
+.misa-px-16 {
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+}
+
+.misa-bg-light {
+  background: #f8fafc !important;
+}
+
+.misa-border-b {
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.misa-border-e2e {
+  border: 1px solid #e2e8f0 !important;
+}
+
+.misa-mb-20 {
+  margin-bottom: 20px !important;
+}
+
+.misa-mt-4 {
+  margin-top: 4px !important;
+}
+
+.misa-mt-2 {
+  margin-top: 2px !important;
+}
+
+.misa-mb-4 {
+  margin-bottom: 4px !important;
+}
+
+.misa-mb-2 {
+  margin-bottom: 2px !important;
+}
+
+.misa-p-10-12 {
+  padding: 10px 12px !important;
+}
+
+.misa-py-6-px-12 {
+  padding: 6px 12px !important;
+}
+
+.misa-py-8-px-12 {
+  padding: 8px 12px !important;
+}
+
+.misa-pl-12 {
+  padding-left: 12px !important;
+}
+
+.misa-pl-28 {
+  padding-left: 28px !important;
+}
+
+.misa-pt-10 {
+  padding-top: 10px !important;
+}
+
+.misa-btn-add-green {
+  border-color: var(--misa-primary) !important;
+  color: var(--misa-primary) !important;
+  font-weight: 600 !important;
+}
+
+.misa-btn-add-orange {
+  border-color: #ea580c !important;
+  color: #ea580c !important;
+  font-weight: 600 !important;
+}
+
+.misa-col-span-2 {
+  grid-column: span 2 !important;
+}
+
+.misa-pt-8 {
+  padding-top: 8px !important;
+}
+
+.misa-flex-col-gap-12-pt6 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  padding-top: 6px !important;
+}
+
+.misa-grid-2col-card {
+  background: #f8fafc !important;
+  padding: 14px !important;
+  border-radius: 6px !important;
+  border: 1px solid #e2e8f0 !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px !important;
+}
+
+/* ==========================================================================
+   MISA QUICK ADD MODALS UNIFIED CSS CLASSES
+   ========================================================================== */
+
+/* Modal Headers & Titles */
+.misa-modal-header-left-gap18 {
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+}
+
+.misa-modal-header-left-gap18-wrap {
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  flex-wrap: wrap !important;
+}
+
+.misa-modal-title-text-16 {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+}
+
+.misa-modal-title-text-18 {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+}
+
+.misa-modal-help-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #2563eb !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  font-size: 12px !important;
+}
+
+/* Modal Position Positioning */
+.misa-modal-top-15 {
+  top: 15px !important;
+}
+
+.misa-modal-top-16 {
+  top: 16px !important;
+}
+
+/* Modal Buttons & Footers */
+.misa-btn-modal-cancel {
+  height: 32px !important;
+  padding: 0 16px !important;
+  border-radius: 4px !important;
+}
+
+.misa-btn-modal-save {
+  height: 32px !important;
+  padding: 0 20px !important;
+  font-weight: 600 !important;
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  border-radius: 4px !important;
+}
+
+.misa-btn-modal-save-add {
+  background: var(--misa-primary) !important;
+  border-color: var(--misa-primary) !important;
+  height: 32px !important;
+  padding: 0 20px !important;
+  font-weight: 600 !important;
+  border-radius: 4px !important;
+  color: #ffffff !important;
+}
+
+.misa-btn-modal-save-add:hover {
+  background: var(--misa-primary-hover) !important;
+  border-color: var(--misa-primary-hover) !important;
+  color: #ffffff !important;
+}
+
+.misa-btn-modal-primary-save {
+  background: var(--misa-primary) !important;
+  border-color: var(--misa-primary) !important;
+  height: 32px !important;
+  padding: 0 20px !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+}
+
+.misa-btn-modal-primary-save-green {
+  background: var(--misa-primary) !important;
+  border-color: var(--misa-primary) !important;
+  color: #ffffff !important;
+}
+
+.misa-modal-footer-end-p8 {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  padding: 8px 0 !important;
+}
+
+.misa-modal-footer-end-gap10 {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+}
+
+.misa-modal-footer-hints {
+  display: flex !important;
+  flex-direction: column !important;
+  font-size: 11px !important;
+  color: #64748b !important;
+  text-align: left !important;
+}
+
+/* Master Grids & Layouts */
+.misa-modal-employee-master-grid {
+  display: grid !important;
+  grid-template-columns: 1.2fr 1fr !important;
+  column-gap: 24px !important;
+  row-gap: 0 !important;
+  margin-bottom: 6px !important;
+}
+
+.misa-modal-contact-master-grid {
+  display: grid !important;
+  grid-template-columns: 1.2fr 1fr !important;
+  column-gap: 24px !important;
+  row-gap: 0 !important;
+  margin-bottom: 8px !important;
+}
+
+.misa-modal-master-box {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 4px !important;
+  padding: 14px 18px !important;
+  margin-bottom: 12px !important;
+  display: flex !important;
+  gap: 16px !important;
+}
+
+.misa-modal-tabs-wrapper {
+  margin-top: 2px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 4px !important;
+  padding: 0 12px 8px 12px !important;
+  background: #ffffff !important;
+}
+
+.misa-modal-tabs-wrapper-p4 {
+  margin-top: 4px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 4px !important;
+  padding: 0 12px 8px 12px !important;
+  background: #ffffff !important;
+}
+
+.misa-tabs-outer-box {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 4px !important;
+  padding: 0 14px 14px !important;
+}
+
+.misa-modal-account-box {
+  margin-top: 4px !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 4px !important;
+  padding: 8px 12px !important;
+}
+
+.misa-box-card-slate {
+  background: #f8fafc !important;
+  padding: 10px 14px !important;
+  border-radius: 6px !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.misa-box-empty-slate {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 4px !important;
+  padding: 32px 0 !important;
+  text-align: center !important;
+  background: #f8fafc !important;
+  color: #94a3b8 !important;
+  font-size: 12px !important;
+}
+
+.misa-combo-details-box {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 4px !important;
+  padding: 12px 16px !important;
+  margin-bottom: 12px !important;
+}
+
+/* Common Form & Text Styles */
+.misa-form-label-semibold {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #475569 !important;
+  margin-bottom: 4px !important;
+}
+
+.misa-section-title-sm {
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  color: #334155 !important;
+  margin-bottom: 8px !important;
+}
+
+.misa-section-title-12 {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  margin-bottom: 6px !important;
+}
+
+.misa-section-title-13-bold {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  margin-bottom: 8px !important;
+}
+
+.misa-price-label {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #475569 !important;
+}
+
+.misa-text-danger {
+  color: #ef4444 !important;
+}
+
+.misa-text-muted-11 {
+  color: #94a3b8 !important;
+  font-size: 11px !important;
+}
+
+.misa-text-muted-12 {
+  font-size: 12px !important;
+  color: #64748b !important;
+}
+
+.misa-text-muted-icon {
+  color: #94a3b8 !important;
+}
+
+.misa-icon-help-muted {
+  color: #64748b !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+}
+
+.misa-text-label-sm-bold {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #475569 !important;
+}
+
+.misa-link-blue-11 {
+  font-size: 11px !important;
+  color: #2563eb !important;
+  text-decoration: none !important;
+}
+
+.misa-link-blue-11:hover {
+  text-decoration: underline !important;
+}
+
+.misa-badge-new-orange {
+  background: #f97316 !important;
+  color: #ffffff !important;
+  font-size: 10px !important;
+  padding: 1px 4px !important;
+  border-radius: 3px !important;
+  font-weight: 700 !important;
+}
+
+.misa-tag-nature {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  padding: 2px 8px !important;
+}
+
+.misa-btn-change-nature {
+  padding: 0 !important;
+  font-size: 12px !important;
+  color: #2563eb !important;
+}
+
+/* Inputs & Elements */
+.misa-input-bold {
+  height: 30px !important;
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+}
+
+.misa-input-h30 {
+  height: 30px !important;
+  border-radius: 4px !important;
+}
+
+.misa-input-h30-bold-700 {
+  height: 30px !important;
+  border-radius: 4px !important;
+  font-weight: 700 !important;
+}
+
+.misa-input-blue-bold {
+  font-weight: 600 !important;
+  color: #2563eb !important;
+}
+
+.misa-input-monospace {
+  font-family: monospace !important;
+  font-size: 13px !important;
+}
+
+.misa-input-number-right {
+  text-align: right !important;
+}
+
+.misa-input-number-right input {
+  text-align: right !important;
+}
+
+.misa-select-bold-12 {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+.misa-font-semibold {
+  font-weight: 600 !important;
+}
+
+.misa-font-11 {
+  font-size: 11px !important;
+}
+
+.misa-font-13 {
+  font-size: 13px !important;
+}
+
+.misa-font-14 {
+  font-size: 14px !important;
+}
+
+.misa-w-85 {
+  width: 85px !important;
+}
+
+.misa-w-240 {
+  width: 240px !important;
+}
+
+.misa-w-60pct {
+  width: 60% !important;
+}
+
+.misa-w-40pct {
+  width: 40% !important;
+}
+
+.misa-w-calc-32 {
+  width: calc(100% - 32px) !important;
+}
+
+.misa-h-30 {
+  height: 30px !important;
+}
+
+.misa-min-w-800 {
+  min-width: 800px !important;
+}
+
+.misa-flex-1 {
+  flex: 1 !important;
+}
+
+.misa-btn-ellipsis-28 {
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  font-weight: 700 !important;
+}
+
+.misa-plus-btn-18 {
+  width: 18px !important;
+  height: 18px !important;
+  font-size: 9px !important;
+}
+
+.misa-btn-tool-secondary {
+  font-size: 12px !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
+.misa-btn-icon-danger {
+  border: none !important;
+  background: transparent !important;
+  color: #ef4444 !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+}
+
+/* Specific Grid Templates */
+.misa-grid-1-2-gap8-12 {
+  display: grid !important;
+  grid-template-columns: 1fr 2fr !important;
+  gap: 8px 12px !important;
+}
+
+.misa-grid-1-16-gap8 {
+  display: grid !important;
+  grid-template-columns: 1fr 1.6fr !important;
+  gap: 8px !important;
+}
+
+.misa-grid-12-1-gap8 {
+  display: grid !important;
+  grid-template-columns: 1.2fr 1fr !important;
+  gap: 8px !important;
+}
+
+.misa-grid-13-1-11-gap8 {
+  display: grid !important;
+  grid-template-columns: 1.3fr 1fr 1.1fr !important;
+  gap: 8px !important;
+}
+
+.misa-grid-14-1-11-gap8 {
+  display: grid !important;
+  grid-template-columns: 1.4fr 1fr 1.1fr !important;
+  gap: 8px !important;
+}
+
+.misa-grid-2col-gap8 {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+}
+
+.misa-grid-2col-gap16 {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 16px !important;
+}
+
+.misa-grid-3col-gap12 {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr !important;
+  gap: 12px !important;
+}
+
+.misa-grid-4col-equal {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+.misa-grid-12-1-gap24-pt4 {
+  display: grid !important;
+  grid-template-columns: 1.2fr 1fr !important;
+  column-gap: 24px !important;
+  padding-top: 4px !important;
+}
+
+.misa-grid-salary-row1 {
+  display: grid !important;
+  grid-template-columns: 1.2fr 1fr 1.2fr !important;
+  gap: 16px !important;
+}
+
+.misa-grid-salary-row2 {
+  display: grid !important;
+  grid-template-columns: 1.2fr 1.6fr 0.8fr !important;
+  gap: 16px !important;
+}
+
+.misa-grid-12col-gap12 {
+  display: grid !important;
+  grid-template-columns: repeat(12, 1fr) !important;
+  gap: 12px !important;
+}
+
+.misa-grid-12col-gap-10-14 {
+  display: grid !important;
+  grid-template-columns: repeat(12, 1fr) !important;
+  gap: 10px 14px !important;
+}
+
+.misa-grid-12col-gap-12-8 {
+  display: grid !important;
+  grid-template-columns: repeat(12, 1fr) !important;
+  column-gap: 12px !important;
+  row-gap: 8px !important;
+}
+
+/* Flex Helpers */
+.misa-flex-col-gap2 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+.misa-flex-col-gap4 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.misa-flex-col-gap10 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+.misa-flex-col-gap12 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.misa-flex-col-gap12-wfull {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.misa-flex-gap-6 {
+  display: flex !important;
+  gap: 6px !important;
+}
+
+.misa-flex-gap-8 {
+  display: flex !important;
+  gap: 8px !important;
+}
+
+.misa-flex-gap-8-mt6 {
+  display: flex !important;
+  gap: 8px !important;
+  margin-top: 6px !important;
+}
+
+.misa-flex-gap4 {
+  display: flex !important;
+  gap: 4px !important;
+}
+
+.misa-flex-gap4-wfull {
+  display: flex !important;
+  gap: 4px !important;
+  width: 100% !important;
+}
+
+.misa-flex-align-gap2 {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+}
+
+.misa-flex-align-gap4 {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.misa-flex-align-gap6-mt6 {
+  margin-top: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.misa-flex-align-gap6-mt8 {
+  margin-top: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.misa-flex-align-gap8-wrap {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+
+.misa-flex-align-gap12 {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.misa-flex-between-center {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+/* Margins & Paddings */
+.misa-mb-12 {
+  margin-bottom: 12px !important;
+}
+
+.misa-mb-16 {
+  margin-bottom: 16px !important;
+}
+
+.misa-pt-2 {
+  padding-top: 2px !important;
+}
+
+.misa-pt-4 {
+  padding-top: 4px !important;
+}
+
+.misa-pt-4-overflow-x {
+  padding-top: 4px !important;
+  overflow-x: auto !important;
+}
+
+.misa-p-8-4 {
+  padding: 8px 4px !important;
+}
+
+/* Tab Containers */
+.misa-tab-content-flex-gap4 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  padding-top: 4px !important;
+}
+
+.misa-tab-content-flex-gap6 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  padding-top: 4px !important;
+}
+
+.misa-tab-payment-terms {
+  padding-top: 6px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.misa-tab-extra-info {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  padding-top: 6px !important;
+}
+
+/* Tables & Cells */
+.misa-table-sm-12 {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 12px !important;
+}
+
+.misa-th-w180 {
+  padding: 6px 8px !important;
+  width: 180px !important;
+}
+
+.misa-th-minw200 {
+  padding: 6px 8px !important;
+  min-width: 200px !important;
+}
+
+.misa-th-w160 {
+  padding: 6px 8px !important;
+  width: 160px !important;
+}
+
+.misa-th-action {
+  padding: 6px 8px !important;
+  width: 36px !important;
+  text-align: center !important;
+}
+
+.misa-td-label-bold {
+  font-weight: 600 !important;
+  color: #334155 !important;
+}
+
+.misa-td-p3 {
+  padding: 3px !important;
+}
+
+.misa-td-action {
+  padding: 3px !important;
+  text-align: center !important;
+}
+
+.misa-td-empty-muted {
+  text-align: center !important;
+  padding: 16px 0 !important;
+  color: #94a3b8 !important;
+}
+
+.misa-td-empty-muted-24 {
+  text-align: center !important;
+  padding: 24px 0 !important;
+  color: #94a3b8 !important;
+}
+
+.misa-table-border-wrapper {
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+}
+
+.misa-table-action-footer {
+  padding: 6px 12px !important;
+  background: #f8fafc !important;
+  border-top: 1px solid #cbd5e1 !important;
+}
+
+.misa-table-action-footer .misa-btn-tool,
+.misa-table-action-footer-gap10 .misa-btn-tool {
+  width: auto !important;
+  min-width: 36px !important;
+  white-space: nowrap !important;
+}
+
+.misa-table-action-footer-gap10 {
+  padding: 6px 12px !important;
+  background: #f8fafc !important;
+  border-top: 1px solid #cbd5e1 !important;
+  display: flex !important;
+  gap: 10px !important;
+}
+
+/* Product Image Upload Box */
+.misa-product-image-upload-box {
+  width: 180px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px dashed #cbd5e1 !important;
+  border-radius: 4px !important;
+  background: #f8fafc !important;
+  padding: 8px !important;
+}
+
+.misa-upload-transparent-120 {
+  width: 100% !important;
+  height: 120px !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.misa-text-center {
+  text-align: center !important;
+}
+
+.misa-upload-picture-icon {
+  font-size: 28px !important;
+  color: #94a3b8 !important;
+  margin-bottom: 4px !important;
+}
+
+.misa-upload-avatar-title {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #475569 !important;
+}
+
+.misa-upload-avatar-hint {
+  font-size: 10px !important;
+  color: #94a3b8 !important;
+}
+
+/* Formula & Variables */
+.misa-formula-toolbar {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  background: #f8fafc !important;
+  padding: 10px 14px !important;
+  border-radius: 4px !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.misa-btn-formula-var {
+  font-size: 11px !important;
+  border-radius: 3px !important;
+}
+
+.misa-btn-formula-op {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  min-width: 30px !important;
+}
+
+.misa-btn-check-formula {
+  color: #2563eb !important;
+  margin-left: auto !important;
+}
+
+/* Sale Price & Nature Cards */
+.misa-sale-prices-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  padding: 10px 0 !important;
+}
+
+.misa-nature-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  padding: 8px 0 !important;
+}
+
+.misa-nature-card {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 10px 14px !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  background: #ffffff !important;
+  transition: all 0.15s ease !important;
+}
+
+.misa-nature-card.active {
+  border: 1.5px solid var(--misa-primary) !important;
+  background: #f0f7ff !important;
+}
+
+.misa-nature-card-title {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+}
+
+.misa-grid-11-1-gap24-pt4 {
+  display: grid !important;
+  grid-template-columns: 1.1fr 1fr !important;
+  column-gap: 24px !important;
+  padding-top: 4px !important;
+}
+
+/* ==========================================================================
+   MISA AMIS CA PROCESS (QUY TRÌNH TIỀN MẶT) 1:1 DESIGN SYSTEM
+   ========================================================================== */
+
+/* ==========================================================================
+   APPLE HIG CA PROCESS (QUY TRÌNH TIỀN MẶT) DESIGN SYSTEM
+   ========================================================================== */
+
+.misa-ca-process-container {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 16px;
+  background: var(--misa-bg-body);
+  padding: 16px;
+  min-height: calc(100vh - 120px);
+  box-sizing: border-box;
+}
+
+.misa-ca-process-main {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 28px;
+  position: relative;
+  box-shadow: var(--misa-shadow-card);
+}
+
+.misa-ca-canvas {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  margin: auto 0;
+  padding: 24px 0;
+}
+
+.misa-ca-canvas-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  position: relative;
+}
+
+.misa-ca-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 170px;
+  min-height: 86px;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 3px 10px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.misa-ca-node:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 0, 0, 0.18);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.misa-ca-node-badge {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.misa-ca-node-label {
+  font-size: 15px;
+  font-weight: 650;
+  color: #18181b;
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.misa-ca-node-subactions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.misa-ca-subaction-link {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #2563eb;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.misa-ca-subaction-link:hover {
+  text-decoration: underline;
+  color: #1d4ed8;
+}
+
+/* Apple Smooth Connectors */
+.misa-ca-arrow-right {
+  display: flex;
+  align-items: center;
+  width: 60px;
+  justify-content: center;
+}
+
+.misa-ca-arrow-line {
+  flex: 1;
+  height: 2px;
+  background: #c7c7cc;
+  border-radius: 1px;
+}
+
+.misa-ca-arrow-head {
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 8px solid #c7c7cc;
+}
+
+/* Right Sidebar: Apple Pro Reports Card */
+.misa-ca-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.misa-ca-report-card {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  box-shadow: var(--misa-shadow-card);
+}
+
+.misa-ca-report-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--misa-text-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.misa-ca-report-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.misa-ca-report-item {
+  font-size: 13px;
+  color: var(--misa-text-label);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  letter-spacing: -0.01em;
+}
+
+.misa-ca-report-item:hover {
+  background: rgba(0, 113, 227, 0.06);
+  color: var(--misa-accent);
+  transform: translateX(2px);
+}
+
+.misa-ca-report-bullet {
+  color: var(--misa-text-muted);
+  font-size: 12px;
+}
+
+.misa-ca-all-reports-link {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--misa-accent);
+  cursor: pointer;
+  letter-spacing: -0.01em;
+}
+
+.misa-ca-all-reports-link:hover {
+  text-decoration: underline;
+}
+
+/* Bottom Master Data & Categories Bar */
+.misa-ca-bottom-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.misa-ca-category-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--misa-text-label);
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: -0.01em;
+}
+
+.misa-ca-category-btn:hover {
+  background: rgba(0, 0, 0, 0.07);
+  color: var(--misa-text-heading);
+  transform: translateY(-0.5px);
+}
+
+.misa-big-total-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.5px;
+}
+
+.misa-big-total-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--misa-primary);
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+/* Multi-Column Account & Operation Dropdown */
+.misa-account-dropdown-container {
+  background: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border: 1px solid #ced1d6;
+  overflow: hidden;
+}
+
+.misa-account-dropdown-header {
+  display: flex;
+  background: #e5e8ec;
+  padding: 6px 12px;
+  font-weight: 700;
+  font-size: 12px;
+  color: #10141b;
+  border-bottom: 1px solid #ced1d6;
+}
+
+.misa-account-header-col {
+  display: inline-block;
+}
+
+.misa-account-col-code {
+  width: 90px;
+  min-width: 90px;
+}
+
+.misa-account-col-name {
+  flex: 1;
+}
+
+.misa-account-dropdown-body {
+  /* AdaptiveSelect sizes the inner list from viewport space. A second
+     capped scroller here clips the list and distorts its chrome measurement. */
+  min-height: 0;
+}
+
+.misa-account-option-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font-size: 13px;
+  padding: 2px 0;
+}
+
+.misa-account-option-code {
+  width: 90px;
+  min-width: 90px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.misa-account-option-name {
+  flex: 1;
+  color: #334155;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Multi-column grid dropdown */
+.misa-grid-dropdown-header {
+  background: #e5e8ec;
+  padding: 6px 12px;
+  font-weight: 700;
+  font-size: 12px;
+  color: #10141b;
+  border-bottom: 1px solid #ced1d6;
+}
+
+.misa-grid-dropdown-footer {
+  padding: 6px 12px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Clean Modal Header & Dialog Standards */
+.misa-clean-modal,
+.misa-dialog-modal {
+  max-width: calc(100vw - 32px) !important;
+  margin: auto !important;
+}
+
+.misa-clean-modal .ant-modal-content,
+.misa-dialog-modal .ant-modal-content {
+  padding: 0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: 88vh !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25) !important;
+}
+
+.misa-clean-modal .ant-modal-header,
+.misa-dialog-modal .ant-modal-header {
+  padding: 12px 20px !important;
+  background: var(--misa-bg-table-header, #dfe7e8) !important;
+  border-bottom: 1px solid var(--misa-border, #ced1d6) !important;
+  margin-bottom: 0 !important;
+  border-radius: 8px 8px 0 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.misa-clean-modal .ant-modal-title,
+.misa-dialog-modal .ant-modal-title {
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+.misa-modal-title {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: var(--misa-text-heading, #10141b) !important;
+}
+
+.misa-clean-modal .ant-modal-body,
+.misa-dialog-modal .ant-modal-body {
+  padding: 16px 20px !important;
+  background: #ffffff !important;
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  max-height: calc(88vh - 110px) !important;
+}
+
+.misa-clean-modal .ant-modal-footer,
+.misa-dialog-modal .ant-modal-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  padding: 10px 16px !important;
+  background: #f8fafc !important;
+  border-top: 1px solid #e2e8f0 !important;
+  margin: 0 !important;
+  border-radius: 0 0 8px 8px !important;
+  flex-shrink: 0 !important;
+}
+
+/* ==========================================================================
+   MISA MULTI-COLUMN COMBOBOX & POPUP
+   ========================================================================== */
+.misa-multicolumn-container {
+  position: relative;
+  width: 100%;
+}
+
+.misa-multicolumn-input-box {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.misa-multicolumn-input {
+  width: 100%;
+  height: 28px;
+  padding: 4px 60px 4px 8px;
+  font-size: 13px;
+  color: #10141b;
+  background-color: #ffffff;
+  border: 1px solid #ced1d6;
+  border-radius: 3px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.misa-multicolumn-input:focus,
+.misa-multicolumn-input.focused {
+  border-color: var(--misa-primary);
+  box-shadow: 0 0 0 1px var(--misa-primary);
+}
+
+.misa-multicolumn-input-actions {
+  position: absolute;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.misa-icon-clear-btn {
+  font-size: 12px;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.misa-icon-clear-btn:hover {
+  color: #ef4444;
+}
+
+.misa-multicolumn-plus-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--misa-primary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 2px;
+  font-size: 12px;
+  font-weight: bold;
+}
+.misa-multicolumn-plus-btn:hover {
+  background: #e8f5e9;
+}
+
+.misa-multicolumn-arrow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
+}
+.misa-multicolumn-arrow-btn:hover {
+  color: #10141b;
+}
+
+/* Floating Table Dropdown */
+.misa-multicolumn-dropdown {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  width: 680px;
+  max-width: 90vw;
+  background: #ffffff;
+  border: 1px solid #ced1d6;
+  border-radius: 3px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  z-index: 999999;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.misa-multicolumn-table-wrapper {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.misa-multicolumn-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+
+.misa-multicolumn-table th {
+  position: sticky;
+  top: 0;
+  background: #e5e8ec;
+  color: #10141b;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-bottom: 1px solid #ced1d6;
+  border-right: 1px solid #ced1d6;
+  white-space: nowrap;
+  z-index: 2;
+}
+.misa-multicolumn-table th:last-child {
+  border-right: none;
+}
+
+.misa-multicolumn-tr {
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.misa-multicolumn-tr:nth-child(even) {
+  background: #fafbfc;
+}
+
+.misa-multicolumn-tr td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #edf2f7;
+  border-right: 1px solid #edf2f7;
+  color: #334155;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.misa-multicolumn-tr td:last-child {
+  border-right: none;
+}
+
+.misa-multicolumn-tr:hover,
+.misa-multicolumn-tr.focused {
+  background: #e8f5e9 !important;
+  color: #10141b;
+}
+
+.misa-multicolumn-tr.selected {
+  background: var(--misa-accent-hover) !important;
+  color: #ffffff !important;
+}
+.misa-multicolumn-tr.selected td {
+  color: #ffffff !important;
+}
+.misa-multicolumn-tr.selected .misa-table-link-bold {
+  color: #ffffff !important;
+}
+
+.misa-multicolumn-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: #f1f5f9;
+  border-top: 1px solid #e2e8f0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.misa-quick-search-f3-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--misa-primary);
+  font-weight: 600;
+  font-size: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.misa-quick-search-f3-btn:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   APPLE HIG BADGES & PRO DATA TABLE PILLS
+   ========================================================================== */
+
+.misa-apple-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 11.5px;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+}
+
+.misa-apple-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.misa-apple-pill-green {
+  background: rgba(14, 154, 98, 0.1);
+  color: var(--misa-primary);
+}
+.misa-apple-pill-green .misa-apple-pill-dot {
+  background: var(--misa-primary);
+}
+
+.misa-apple-pill-orange {
+  background: rgba(255, 149, 0, 0.12);
+  color: var(--misa-warning);
+}
+.misa-apple-pill-orange .misa-apple-pill-dot {
+  background: var(--misa-warning);
+}
+
+.misa-apple-pill-blue {
+  background: rgba(0, 113, 227, 0.1);
+  color: var(--misa-accent);
+}
+.misa-apple-pill-blue .misa-apple-pill-dot {
+  background: var(--misa-accent);
+}
+
+.misa-apple-pill-red {
+  background: rgba(255, 59, 48, 0.1);
+  color: var(--misa-danger);
+}
+.misa-apple-pill-red .misa-apple-pill-dot {
+  background: var(--misa-danger);
+}
+
+.misa-badge-type {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.misa-badge-receipt {
+  background: rgba(14, 154, 98, 0.08);
+  color: var(--misa-primary);
+}
+
+.misa-badge-payment {
+  background: rgba(255, 149, 0, 0.1);
+  color: #ea580c;
+}
+
+.misa-btn-link-action-bold {
+  color: var(--misa-accent);
+  font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  transition: all 0.15s ease;
+}
+
+.misa-btn-link-action-bold:hover {
+  text-decoration: underline;
+  color: var(--misa-accent-hover);
+}
+
+/* ==========================================================================
+   MACOS & iOS SILKY SMOOTH MOTION SYSTEM (60FPS / 120FPS GPU COMPOSITED)
+   ========================================================================== */
+
+:root {
+  --apple-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --apple-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --apple-ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --apple-ease-in-out: cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+/* Global Smooth Scrolling */
+html, body {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Apple Slim Minimal Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.14);
+  border-radius: 9999px;
+  transition: background-color 0.2s var(--apple-ease);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.28);
+}
+
+/* Tactile Spring Bounce on Active Press */
+button:active,
+.ant-btn:active,
+.misa-workspace-tab-item:active,
+.misa-ca-node:active,
+.misa-ca-category-btn:active,
+.misa-stat-card:active {
+  transform: scale(0.975) translateZ(0) !important;
+  transition: transform 0.08s var(--apple-ease) !important;
+}
+
+/* iOS Pro Spring Tab Transition Engine (60/120 FPS GPU Composited) */
+.misa-tab-panel-container {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.misa-tab-panel-container > div.misa-tab-pane {
+  animation: iosTabSlideIn 0.22s var(--apple-ease);
+  will-change: transform, opacity;
+  contain: layout paint;
+  transform: translateZ(0);
+}
+
+@keyframes iosTabSlideIn {
+  0% {
+    opacity: 0.7;
+    transform: translate3d(12px, 0, 0) scale(0.996);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* Smooth Tab Item Transition */
+.misa-workspace-tab-item {
+  transition: all 0.18s var(--apple-ease);
+  transform: translateZ(0);
+}
+
+.misa-workspace-tab-item:hover:not(.active) {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--misa-text-heading);
+}
+
+/* Fluid Stat Card Elevation */
+.misa-stat-card {
+  transition: all 0.22s var(--apple-ease) !important;
+  transform: translateZ(0);
+  will-change: transform, box-shadow, border-color;
+}
+
+.misa-stat-card:hover {
+  transform: translate3d(0, -2.5px, 0) !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(22, 163, 74, 0.25) !important;
+}
+
+/* Fluid Process Node Elevation & Glow */
+.misa-ca-node {
+  transition: all 0.22s var(--apple-ease) !important;
+  transform: translateZ(0);
+  will-change: transform, box-shadow, border-color;
+}
+
+.misa-ca-node:hover {
+  transform: translate3d(0, -3px, 0) !important;
+  box-shadow: 0 10px 26px -4px rgba(22, 119, 255, 0.15), 0 3px 8px rgba(0, 0, 0, 0.04) !important;
+  border-color: var(--misa-primary) !important;
+}
+
+.misa-ca-node .misa-ca-node-badge {
+  transition: transform 0.2s var(--apple-ease);
+}
+
+.misa-ca-node:hover .misa-ca-node-badge {
+  transform: scale(1.05);
+}
+
+/* Smooth Category Button */
+.misa-ca-category-btn {
+  transition: all 0.18s var(--apple-ease);
+  transform: translateZ(0);
+}
+
+.misa-ca-category-btn:hover {
+  transform: translate3d(0, -1.5px, 0);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+/* Modal Mask Standards (Clean Fade, No Lingering Blur) */
+.ant-modal-mask-hidden {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Dropdowns & Select Popovers */
+.ant-dropdown:not(.ant-dropdown-hidden),
+.ant-select-dropdown:not(.ant-select-dropdown-hidden),
+.ant-picker-dropdown:not(.ant-picker-dropdown-hidden) {
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+  border-radius: 8px !important;
+}
+
+.ant-dropdown-hidden,
+.ant-select-dropdown-hidden,
+.ant-picker-dropdown-hidden {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+/* Smooth Table Row Transitions */
+.ant-table-tbody > tr,
+.misa-voucher-table tbody tr,
+.misa-grid-table tbody tr {
+  transition: background-color 0.15s var(--apple-ease) !important;
+}
+
+.ant-table-tbody > tr:hover,
+.misa-voucher-table tbody tr:hover {
+  background-color: rgba(244, 245, 248, 0.85) !important;
+}
+
+/* Smooth Button Hover Elevation */
+.misa-btn-primary,
+.misa-btn-action-primary,
+.misa-btn-primary-blue,
+.misa-btn-primary-green {
+  transition: all 0.18s var(--apple-ease) !important;
+  transform: translateZ(0);
+}
+
+.misa-btn-primary:hover,
+.misa-btn-action-primary:hover,
+.misa-btn-primary-blue:hover,
+.misa-btn-primary-green:hover {
+  transform: translate3d(0, -1px, 0) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* MISA TOOLBAR REFACTOR */
+.misa-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+.misa-toolbar-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.misa-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.misa-toolbar-split-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--misa-primary);
+}
+.misa-btn-primary-add {
+  height: 100%;
+  background: var(--misa-primary);
+  color: #ffffff;
+  border: none;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s ease;
+}
+.misa-btn-primary-add:hover {
+  background: var(--misa-primary-hover);
+}
+.misa-btn-primary-add-menu {
+  height: 100%;
+  background: var(--misa-primary);
+  color: #ffffff;
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0 8px;
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+.misa-btn-primary-add-menu:hover {
+  background: var(--misa-primary-hover);
+}
+
+.misa-stat-blue .ant-statistic-content { color: #1890ff; font-size: 1.25rem; font-weight: 600; }
+.misa-stat-green .ant-statistic-content { color: #52c41a; font-size: 1.25rem; font-weight: 600; }
+.misa-stat-red .ant-statistic-content { color: #f5222d; font-size: 1.25rem; font-weight: 600; }
+.misa-stat-purple .ant-statistic-content { color: #722ed1; font-size: 1.25rem; font-weight: 600; }
+.misa-dashboard-icon { font-size: 48px; color: #d1d5db; margin-bottom: 16px; }
+
+
+.misa-tabs .ant-tabs-nav::before { border-bottom: 1px solid #e5e7eb; }
+.misa-tabs .ant-tabs-tab { padding: 12px 16px; margin: 0 8px 0 0 !important; }
+.misa-tabs .ant-tabs-tab-active .ant-tabs-tab-btn { color: #16a34a !important; font-weight: 600; }
+.misa-tabs .ant-tabs-ink-bar { background: #22c55e !important; height: 3px !important; }
+
+/* Tab Pane Utility Classes (Zero Layout Shift & GPU Containment) */
+.misa-tab-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  contain: layout paint;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+.misa-tab-pane-hidden {
+  display: none !important;
+}
+
+
+.misa-ca-spacer-60 {
+  width: 60px;
+  flex-shrink: 0;
+}
+
+.misa-ca-spacer-140 {
+  width: 140px;
+  flex-shrink: 0;
+}
+
+.misa-ca-spacer-170 {
+  width: 170px;
+  flex-shrink: 0;
+}
+
+

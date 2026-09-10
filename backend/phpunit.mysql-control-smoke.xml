@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This is deliberately separate from phpunit.xml. The normal suite keeps
+  legacy behaviour tests runnable on SQLite; this suite proves selected
+  production control paths on MySQL with deployment defaults enabled.
+
+  DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME and DB_PASSWORD are supplied by
+  the invoking environment. Do not add credentials to this file.
+
+  The selected files currently discover 111 test cases. The release preflight
+  floor is 110 until a fresh MySQL 8.4 artifact is produced; any test
+  addition/removal requires a fresh artifact before release evidence can pass.
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true">
+    <testsuites>
+        <testsuite name="MySQL accounting control smoke">
+            <file>tests/Feature/AccountHierarchyConcurrencyTest.php</file>
+            <file>tests/Feature/ApprovalWorkflowFoundationTest.php</file>
+            <file>tests/Feature/AccountingDocumentDimensionAssignmentTest.php</file>
+            <file>tests/Feature/PurchaseInvoicePostingPolicyGateTest.php</file>
+            <file>tests/Feature/PurchaseInvoicePostingApprovalGateTest.php</file>
+            <file>tests/Feature/PurchaseInvoiceAccountMappingPostingGateTest.php</file>
+            <file>tests/Feature/CommercialDraftAccountEvidenceGateTest.php</file>
+            <file>tests/Feature/SalesInvoicePostingApprovalGateTest.php</file>
+            <file>tests/Feature/SalesInvoiceDimensionAssignmentTest.php</file>
+            <file>tests/Feature/SalesInvoicePostingPolicyGateTest.php</file>
+            <file>tests/Feature/SalesInvoiceAccountMappingPostingGateTest.php</file>
+            <file>tests/Feature/CashBankVoucherPostingApprovalGateTest.php</file>
+            <file>tests/Feature/CashBankVoucherAccountMappingPostingGateTest.php</file>
+            <file>tests/Feature/PeriodCloseSignoffEvidenceFoundationTest.php</file>
+            <file>tests/Feature/PeriodCloseSignoffPostingGateTest.php</file>
+            <file>tests/Feature/ControlledPeriodCloseReconciliationAggregatorTest.php</file>
+            <file>tests/Feature/AppendOnlyTriggerInventoryTest.php</file>
+            <file>tests/Feature/AppendOnlySqlMutationControlTest.php</file>
+            <file>tests/Feature/InventoryPostingAccountMappingGateTest.php</file>
+            <file>tests/Feature/FixedAssetPostingAccountMappingGateTest.php</file>
+            <file>tests/Feature/ReturnDiscountPostingAccountMappingGateTest.php</file>
+            <file>tests/Feature/AllocationClosedPeriodSourceMutationGuardTest.php</file>
+            <file>tests/Feature/SalesTransactionalTenantBoundaryTest.php</file>
+            <file>tests/Feature/InventoryValuationClosedPeriodIntegrityTest.php</file>
+            <file>tests/Feature/InventoryValuationTenantBoundaryTest.php</file>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include><directory>app</directory></include>
+    </source>
+    <php>
+        <env name="APP_ENV" value="testing" force="true"/>
+        <env name="DB_CONNECTION" value="mysql" force="true"/>
+        <env name="APP_MAINTENANCE_DRIVER" value="file" force="true"/>
+        <env name="BCRYPT_ROUNDS" value="4" force="true"/>
+        <env name="BROADCAST_CONNECTION" value="null" force="true"/>
+        <env name="CACHE_STORE" value="array" force="true"/>
+        <env name="MAIL_MAILER" value="array" force="true"/>
+        <env name="QUEUE_CONNECTION" value="sync" force="true"/>
+        <env name="SESSION_DRIVER" value="array" force="true"/>
+        <env name="PULSE_ENABLED" value="false" force="true"/>
+        <env name="TELESCOPE_ENABLED" value="false" force="true"/>
+        <env name="NIGHTWATCH_ENABLED" value="false" force="true"/>
+
+        <!-- Production accounting controls: no legacy phpunit.xml opt-outs. -->
+        <env name="ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_POLICY" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_POLICY" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_APPROVAL" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_DIMENSIONS" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_ACCOUNT_MAPPINGS" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_APPROVAL" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_DIMENSIONS" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_ACCOUNT_MAPPINGS" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_CASH_BANK_POSTING_POLICY" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_CASH_BANK_POSTING_APPROVAL" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_CASH_BANK_POSTING_ACCOUNT_MAPPINGS" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_VOUCHER_REFERENCE_ACCOUNT_MAPPINGS" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_INVENTORY_POSTING_ACCOUNT_MAPPINGS" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_INVENTORY_STOCK_AVAILABILITY" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_FIXED_ASSET_POSTING_ACCOUNT_MAPPINGS" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_RETURN_DISCOUNT_POSTING_ACCOUNT_MAPPINGS" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_COSTING_INTEGER_ALLOCATION_EVIDENCE" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_PERIOD_CLOSE_SIGNOFF" value="true" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_PERIOD_CLOSE_ACCOUNT_MAPPINGS" value="true" force="true"/>
+    </php>
+</phpunit>

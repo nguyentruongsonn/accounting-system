@@ -1,0 +1,55 @@
+.cash-reports-page .ui-page-body { min-height: 0; }
+.cash-reports-page .cash-report-workbench { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 12px; min-height: 0; }
+
+.cash-report-workbench .cash-report-selector, .cash-report-workbench .cash-report-result { border: 1px solid var(--ui-compact-border); border-radius: 8px; background: var(--ui-compact-surface); overflow: hidden; }
+
+.cash-report-workbench .cash-report-selector__heading { padding: 12px; font-weight: 700; border-bottom: 1px solid var(--ui-compact-border); }
+
+.cash-report-workbench .cash-report-selector__list { display: grid; }
+
+.cash-report-workbench .cash-report-selector__item { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; align-items: center; width: 100%; padding: 10px 12px; color: inherit; background: transparent; border: 0; border-left: 3px solid transparent; text-align: left; cursor: pointer; }
+
+.cash-report-workbench .cash-report-selector__item:hover, .cash-report-workbench .cash-report-selector__item:focus-visible { background: color-mix(in srgb, var(--ui-primary) 5%, white); outline: none; }
+
+.cash-report-workbench .cash-report-selector__item[aria-selected='true'] { border-left-color: var(--ui-primary); background: color-mix(in srgb, var(--ui-primary) 8%, white); color: var(--ui-primary); }
+
+.cash-report-workbench .cash-report-selector__code { font-size: 12px; font-weight: 700; white-space: nowrap; }
+
+.cash-report-workbench .cash-report-selector__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.cash-report-workbench .cash-report-result { min-width: 0; padding: 16px; }
+
+.cash-report-workbench .cash-report-result--instruction { display: grid; min-height: 180px; place-items: center; color: var(--ui-compact-muted, #64748b); }
+
+.cash-report-workbench .cash-report-result__header h2 { margin: 0; font-size: 18px; }
+.cash-report-workbench .cash-report-result__header p, .cash-report-workbench .cash-report-result__filter-note { margin: 4px 0 0; color: var(--ui-compact-muted, #64748b); }
+
+.cash-report-workbench .cash-report-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; margin: 16px 0; }
+
+.cash-report-workbench .cash-report-summary-card { padding: 10px; border: 1px solid var(--ui-compact-border); border-radius: 6px; }
+.cash-report-workbench .cash-report-summary-card span { display: block; color: var(--ui-compact-muted, #64748b); font-size: 12px; }
+.cash-report-workbench .cash-report-summary-card strong { display: block; margin-top: 3px; text-align: right; }
+.cash-report-workbench .cash-report-source-link { color: var(--ui-primary); font-weight: 600; text-decoration: none; }
+.cash-report-workbench .cash-report-source-link:hover, .cash-report-workbench .cash-report-source-link:focus-visible { text-decoration: underline; }
+
+.cash-report-workbench .cash-report-table-wrap { min-width: 0; max-height: 65vh; overflow: auto; overscroll-behavior: contain; }
+.cash-report-workbench .cash-report-table-wrap .ant-table-wrapper { min-width: 0; }
+
+.cash-report-parameter-modal .cash-report-form__range { width: 100%; }
+@media (max-width: 900px) { .cash-reports-page .cash-report-workbench { grid-template-columns: 1fr; }
+.cash-report-workbench .cash-report-selector__list { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); } }
+
+/* Only this full-result subtree is copied into the isolated print document. */
+.cash-report-print { font: 10pt Arial, sans-serif; color: #000; overflow: visible; }
+.cash-report-print h1 { font-size: 16pt; margin: 0 0 8pt; }
+.cash-report-print p { margin: 3pt 0; }
+.cash-report-print section { display: flex; flex-wrap: wrap; gap: 6pt 18pt; margin: 10pt 0; }
+.cash-report-print table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.cash-report-print :is(th, td) { border: 0.5pt solid #666; padding: 4pt; overflow-wrap: anywhere; vertical-align: top; }
+.cash-report-print th { background: #f3f4f6; text-align: left; }
+.cash-report-print .cash-report-print__number { text-align: right; }
+@media print {
+  .cash-report-print thead { display: table-header-group; }
+  .cash-report-print tr { break-inside: avoid; }
+  .cash-report-print header { break-after: avoid; }
+}

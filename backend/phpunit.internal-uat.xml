@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Disposable local MariaDB acceptance. Never point at application data. -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="tests/internal-uat-bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite name="Internal UAT">
+            <directory>tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <env name="APP_ENV" value="testing" force="true"/>
+        <env name="DB_CONNECTION" value="mysql" force="true"/>
+        <env name="DB_HOST" value="127.0.0.1" force="true"/>
+        <env name="DB_PORT" value="3306" force="true"/>
+        <env name="DB_DATABASE" value="accounting_uat_20260901" force="true"/>
+        <env name="DB_USERNAME" value="root" force="true"/>
+        <env name="DB_PASSWORD" value="" force="true"/>
+        <env name="DB_URL" value="" force="true"/>
+        <env name="APP_CONFIG_CACHE" value="bootstrap/cache/internal-uat-no-cache.php" force="true"/>
+        <!-- Match the disposable SQLite test baseline. Focused gate tests
+             explicitly enable the controls they exercise. Production forces
+             these controls on in AppServiceProvider. -->
+        <env name="ACCOUNTING_ENFORCE_INVENTORY_POSTING_ACCOUNT_MAPPINGS" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_INVENTORY_STOCK_AVAILABILITY" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_POLICY" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_APPROVAL" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_DIMENSIONS" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_ACCOUNT_MAPPINGS" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_POLICY" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_APPROVAL" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_DIMENSIONS" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_ACCOUNT_MAPPINGS" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_CASH_BANK_POSTING_POLICY" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_CASH_BANK_POSTING_APPROVAL" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_CASH_BANK_POSTING_ACCOUNT_MAPPINGS" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_VOUCHER_REFERENCE_ACCOUNT_MAPPINGS" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_FIXED_ASSET_POSTING_ACCOUNT_MAPPINGS" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_RETURN_DISCOUNT_POSTING_ACCOUNT_MAPPINGS" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_COSTING_INTEGER_ALLOCATION_EVIDENCE" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_PERIOD_CLOSE_SIGNOFF" value="false" force="true"/>
+        <env name="ACCOUNTING_ENFORCE_PERIOD_CLOSE_ACCOUNT_MAPPINGS" value="false" force="true"/>
+        <env name="CACHE_STORE" value="array" force="true"/>
+        <env name="SESSION_DRIVER" value="array" force="true"/>
+        <env name="QUEUE_CONNECTION" value="sync" force="true"/>
+        <env name="MAIL_MAILER" value="array" force="true"/>
+        <env name="BCRYPT_ROUNDS" value="4" force="true"/>
+    </php>
+</phpunit>

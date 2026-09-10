@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+            <!-- Row-lock concurrency requires the disposable MySQL job. It is
+                 explicitly selected by phpunit.mysql-control-smoke.xml and
+                 release preflight requires its successful JUnit testcase. -->
+            <exclude>tests/Feature/AccountHierarchyConcurrencyTest.php</exclude>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>app</directory>
+        </include>
+    </source>
+    <php>
+        <!-- Force the disposable test runtime even when a developer's
+             application .env exports local MySQL credentials. PHPUnit must
+             never reset or write the accounting application database. -->
+        <env name="APP_ENV" value="testing" force="true"/>
+        <!-- Legacy suites pre-date the tenant policy catalogue. Focused policy
+             gate tests enable this explicitly to prove fail-closed behavior. -->
+        <env name="ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_POLICY" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_POLICY" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_APPROVAL" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_DIMENSIONS" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_PURCHASE_INVOICE_POSTING_ACCOUNT_MAPPINGS" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_APPROVAL" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_DIMENSIONS" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_SALES_INVOICE_POSTING_ACCOUNT_MAPPINGS" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_CASH_BANK_POSTING_POLICY" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_CASH_BANK_POSTING_APPROVAL" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_CASH_BANK_POSTING_ACCOUNT_MAPPINGS" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_VOUCHER_REFERENCE_ACCOUNT_MAPPINGS" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_INVENTORY_POSTING_ACCOUNT_MAPPINGS" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_FIXED_ASSET_POSTING_ACCOUNT_MAPPINGS" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_RETURN_DISCOUNT_POSTING_ACCOUNT_MAPPINGS" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_COSTING_INTEGER_ALLOCATION_EVIDENCE" value="false"/>
+        <env name="ACCOUNTING_ENFORCE_PERIOD_CLOSE_SIGNOFF" value="false"/>
+        <!-- Period-close preview/decimal suites are diagnostic legacy tests;
+             production close posting remains fail-closed until owner-approved
+             effective account mappings exist. -->
+        <env name="ACCOUNTING_ENFORCE_PERIOD_CLOSE_ACCOUNT_MAPPINGS" value="false"/>
+        <env name="APP_MAINTENANCE_DRIVER" value="file"/>
+        <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="BROADCAST_CONNECTION" value="null"/>
+        <env name="CACHE_STORE" value="array"/>
+        <env name="DB_CONNECTION" value="sqlite" force="true"/>
+        <env name="DB_DATABASE" value=":memory:" force="true"/>
+        <!-- Do not allow an externally supplied DSN to override the disposable
+             SQLite connection selected above. -->
+        <env name="DB_URL" value="" force="true"/>
+        <env name="MAIL_MAILER" value="array"/>
+        <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="PULSE_ENABLED" value="false"/>
+        <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="NIGHTWATCH_ENABLED" value="false"/>
+    </php>
+</phpunit>

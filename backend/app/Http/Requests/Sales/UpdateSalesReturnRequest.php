@@ -1,0 +1,87 @@
+<?php
+
+namespace App\Http\Requests\Sales;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class UpdateSalesReturnRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        $id = $this->route('return') ?? $this->route('id') ?? $this->id;
+
+        return [
+            'company_id' => 'nullable|integer',
+            'branch_id' => 'nullable|integer',
+            'customer_id' => 'sometimes|required',
+            'customer_name' => 'nullable|string',
+            'customer_address' => 'nullable|string',
+            'tax_code' => 'nullable|string|max:50',
+            'receiver_name' => 'nullable|string|max:255',
+            'employee_id' => 'nullable',
+            'voucher_type' => 'nullable|string|max:100',
+            'payment_method' => 'nullable|string|in:reduce_receivable,cash,bank',
+            'bank_account_id' => 'nullable',
+            'voucher_number' => 'nullable|string|max:50|unique:sales_returns,voucher_number,'.$id,
+            'voucher_date' => 'sometimes|required|date',
+            'accounting_date' => 'nullable|date',
+            'reason' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'attached_docs' => 'nullable',
+            'sub_total' => 'nullable|numeric|min:0',
+            'discount_amount' => 'nullable|numeric|min:0',
+            'tax_amount' => 'nullable|numeric|min:0',
+            'total_amount' => 'nullable|numeric|min:0',
+            'grand_total' => 'nullable|numeric|min:0',
+            'cogs_total_amount' => 'nullable|numeric|min:0',
+            'is_inward' => 'nullable|boolean',
+            'is_import_slip' => 'nullable|boolean',
+            'is_decrease_debt' => 'nullable|boolean',
+            'is_posted' => 'nullable|boolean',
+            'status' => 'nullable|string|max:30',
+            'reference_invoice_id' => 'nullable',
+            'referenced_vouchers' => 'nullable|array',
+            'lines' => 'nullable|array',
+            'lines.*.item_id' => 'nullable',
+            'lines.*.item_code' => 'nullable|string|max:50',
+            'lines.*.item_name' => 'nullable|string|max:255',
+            'lines.*.description' => 'nullable|string',
+            'lines.*.unit' => 'nullable|string|max:50',
+            'lines.*.warehouse_id' => 'nullable',
+            'lines.*.debit_account' => 'nullable|string|max:20',
+            'lines.*.credit_account' => 'nullable|string|max:20',
+            'lines.*.quantity' => 'required|numeric|gt:0',
+            'lines.*.unit_price' => 'nullable|numeric|min:0',
+            'lines.*.amount' => 'nullable|numeric|min:0',
+            'lines.*.tax_rate' => 'nullable|numeric|min:0|max:100',
+            'lines.*.tax_amount' => 'nullable|numeric|min:0',
+            'lines.*.tax_account' => 'nullable|string|max:20',
+            'lines.*.inventory_account' => 'nullable|string|max:20',
+            'lines.*.cogs_account' => 'nullable|string|max:20',
+            'lines.*.cogs_debit_account' => 'nullable|string|max:20',
+            'lines.*.cogs_credit_account' => 'nullable|string|max:20',
+            'lines.*.cogs_price' => 'nullable|numeric|min:0',
+            'lines.*.cogs_unit_price' => 'nullable|numeric|min:0',
+            'lines.*.cogs_amount' => 'nullable|numeric|min:0',
+            'lines.*.invoice_number' => 'nullable|string|max:50',
+            'lines.*.invoice_date' => 'nullable|date',
+            'lines.*.sales_order_id' => 'nullable',
+            'lines.*.contract_id' => 'nullable',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'customer_id.required' => 'Vui lòng chọn khách hàng.',
+            'voucher_date.required' => 'Vui lòng nhập ngày chứng từ.',
+            'lines.*.quantity.required' => 'Vui lòng nhập số lượng hàng trả lại.',
+            'lines.*.quantity.gt' => 'Số lượng phải lớn hơn 0.',
+        ];
+    }
+}

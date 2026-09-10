@@ -1,0 +1,114 @@
+@import "./styles/tokens.css";
+@import "tailwindcss";
+@import "./styles/misa-theme.css";
+@import "./styles/apple-shell.css";
+@import "./components/layout/SidebarFlyout.css";
+@import "./styles/ui-compact.css";
+@import "./styles/app-modal.css";
+
+/* One global host keeps Ant messages in the toast contract regardless of the
+ * screen that triggered the feedback. Tokens keep the spacing in step with
+ * the compact shell. */
+.ant-message {
+  top: var(--ui-space-6) !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+  pointer-events: none !important;
+  transform: none !important;
+}
+
+.ant-message-notice {
+  padding-bottom: var(--ui-space-2) !important;
+  text-align: center !important;
+}
+
+.ant-message-notice-content {
+  display: inline-block !important;
+  pointer-events: all !important;
+  border: 1px solid var(--shell-border);
+  border-radius: var(--ui-radius-control) !important;
+  box-shadow: var(--misa-shadow-float);
+  text-align: left;
+}
+
+
+body {
+  margin: 0;
+  font-family: var(--misa-font-family);
+  color: var(--color-text);
+  background-color: var(--misa-bg-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* Scrollbar custom styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #a1a1aa;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Global animation/transition */
+.transition-all-300 {
+  transition: all 0.3s ease;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background-color: white;
+  }
+  .ant-layout {
+    background: transparent !important;
+  }
+}
+
+/* UNIVERSAL OUTLINED BORDER DEFINITION FOR ALL SELECTS AND INPUTS */
+.ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector,
+.ant-select .ant-select-selector,
+.ant-select-single .ant-select-selector,
+.misa-account-select .ant-select-selector,
+.misa-voucher-table td .ant-select .ant-select-selector,
+.misa-voucher-table td .ant-select-single .ant-select-selector,
+.misa-voucher-table td .misa-account-select .ant-select-selector,
+.misa-grid-table td .ant-select .ant-select-selector,
+.misa-grid-table td .ant-select-single .ant-select-selector,
+.misa-grid-table td .misa-account-select .ant-select-selector {
+  border: 1px solid var(--ui-border) !important;
+  border-radius: var(--ui-radius-control) !important;
+  background-color: var(--ui-surface) !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+.ant-select-outlined:not(.ant-select-customize-input):not(.ant-select-disabled):hover .ant-select-selector,
+.ant-select:hover .ant-select-selector,
+.misa-voucher-table td .ant-select:hover .ant-select-selector {
+  border-color: var(--ui-primary-hover) !important;
+}
+
+.ant-select-focused.ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector,
+.ant-select-open.ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector,
+.ant-select-focused .ant-select-selector,
+.ant-select-open .ant-select-selector,
+.misa-voucher-table td .ant-select-focused .ant-select-selector,
+.misa-voucher-table td .ant-select-open .ant-select-selector {
+  border-color: var(--ui-primary) !important;
+  box-shadow: var(--ui-focus-ring) !important;
+}

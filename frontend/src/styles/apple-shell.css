@@ -1,0 +1,2445 @@
+/*
+ * Apple-inspired application shell.
+ * This file is intentionally isolated from misa-theme.css so screens can be
+ * migrated incrementally without changing their accounting behavior.
+ */
+
+:root {
+  --shell-sidebar: var(--misa-sidebar-bg);
+  --shell-border: rgba(60, 60, 67, 0.14);
+  --shell-muted: #6e6e73;
+  --shell-text: #1d1d1f;
+  --shell-blue: var(--ui-primary);
+  /* Shared 8px rhythm used by page shells, toolbars, tables, and modals. */
+  --ui-space-1: 4px;
+  --ui-space-2: 8px;
+  --ui-space-3: 12px;
+  --ui-space-4: 16px;
+  --ui-space-5: 20px;
+  --ui-space-6: 24px;
+}
+
+body {
+  overflow: hidden;
+}
+
+.apple-shell,
+.misa-layout-sider,
+.misa-layout-sider.ant-layout-sider {
+  background: var(--shell-sidebar) !important;
+}
+
+.misa-layout-sider {
+  border-right: 1px solid var(--shell-border);
+  box-shadow: 1px 0 0 rgba(255, 255, 255, 0.65);
+  z-index: 20;
+}
+
+.misa-logo-container {
+  height: 76px;
+  padding: 0 20px;
+  background: var(--shell-sidebar) !important;
+  border-bottom: 1px solid var(--shell-border);
+  color: var(--shell-text);
+}
+
+.misa-logo-icon-box {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: var(--shell-text);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(29, 29, 31, 0.16);
+}
+
+.misa-logo-text-title {
+  color: var(--shell-text);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.misa-logo-text-subtitle {
+  color: var(--shell-muted);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.misa-quick-add-btn-box {
+  padding: 16px 16px 10px;
+}
+
+.misa-quick-add-btn {
+  width: 100%;
+  height: 38px;
+  border-color: transparent !important;
+  background: var(--shell-text) !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  box-shadow: 0 3px 10px rgba(29, 29, 31, 0.16);
+}
+
+.misa-quick-add-btn:hover {
+  background: #3a3a3c !important;
+  transform: translateY(-1px);
+}
+
+.custom-menu.misa-bg-dark,
+.custom-menu.ant-menu-light {
+  background: transparent !important;
+  color: var(--shell-muted) !important;
+  padding: 8px 10px;
+}
+
+.custom-menu .ant-menu-item,
+.custom-menu .ant-menu-submenu-title {
+  height: 42px;
+  line-height: 42px;
+  margin: 3px 0;
+  padding-inline: 12px !important;
+  border-radius: 10px;
+  color: var(--shell-muted) !important;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.custom-menu .ant-menu-item .anticon,
+.custom-menu .ant-menu-submenu-title .anticon {
+  color: currentColor;
+  font-size: 17px;
+}
+
+.custom-menu .ant-menu-item:hover,
+.custom-menu .ant-menu-submenu-title:hover {
+  background: rgba(0, 122, 255, 0.08) !important;
+  color: var(--shell-blue) !important;
+}
+
+.custom-menu .ant-menu-item-selected {
+  background: #eaf3ff !important;
+  color: var(--shell-blue) !important;
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--shell-blue);
+}
+
+.custom-menu .ant-menu-item-selected::after,
+.custom-menu .ant-menu-item::after {
+  display: none;
+}
+
+.misa-header-bar {
+  height: var(--ui-header-height);
+  line-height: var(--ui-header-height);
+  padding: 0 28px;
+  background: var(--misa-bg-header) !important;
+  border-bottom: 1px solid var(--shell-border);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+}
+
+.misa-btn-tool {
+  width: auto;
+  min-width: 36px;
+  height: 36px;
+  white-space: nowrap;
+  border: 1px solid var(--shell-border) !important;
+  border-radius: 10px !important;
+  color: var(--shell-muted) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+}
+
+.misa-btn-tool:hover {
+  color: var(--shell-blue) !important;
+  border-color: rgba(0, 122, 255, 0.35) !important;
+  background: #fff !important;
+}
+
+.misa-badge-year {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 11px;
+  border: 1px solid rgba(0, 122, 255, 0.18);
+  border-radius: 999px;
+  background: #eaf3ff;
+  color: var(--ui-primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.misa-user-dropdown-trigger {
+  min-height: 38px;
+  padding: 4px 8px 4px 5px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 160ms ease;
+}
+
+.misa-user-dropdown-trigger:hover {
+  background: var(--misa-bg-hover);
+}
+
+.misa-user-dropdown-trigger .misa-bg-blue {
+  background: #eaf3ff !important;
+  color: var(--shell-blue) !important;
+}
+
+.misa-content-area {
+  min-height: calc(100vh - var(--ui-header-height));
+  padding: 24px 28px 32px;
+  overflow: auto;
+  background: var(--misa-bg-body) !important;
+}
+
+.misa-content-area > * {
+  width: 100%;
+  max-width: var(--ui-content-max-width);
+  margin: 0 auto;
+}
+
+/* One contract for every module workspace.  Older modules used an 8px
+ * wrapper while newer modules used the full content gutter, which made tabs
+ * jump when switching between cash, purchasing, inventory and reports. */
+.misa-page-container,
+.misa-workspace-surface,
+.misa-workspace-container {
+  border-radius: 16px;
+}
+
+.misa-workspace-container {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  gap: 16px;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.misa-workspace-container > .misa-workspace-card,
+.misa-workspace-surface > .misa-workspace-card {
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.misa-workspace-surface {
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--shell-border);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--misa-shadow-card);
+}
+
+/* Legacy feature roots share the same Apple surface while they are migrated. */
+.misa-page-layout,
+.misa-page-layout-white,
+.misa-page-layout-gray,
+.misa-page-layout-p16 {
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: 22px !important;
+  gap: 16px;
+  background: var(--misa-bg-body) !important;
+}
+
+.misa-page-layout > .misa-table-card,
+.misa-page-layout-white > .misa-table-card,
+.misa-page-layout-gray > .misa-table-card,
+.misa-page-layout-p16 > .misa-table-card {
+  border: 1px solid var(--shell-border) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--misa-shadow-card) !important;
+}
+
+.apple-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-height: 0;
+  padding: 0 0 8px;
+}
+
+.misa-inline-note {
+  display: block;
+  margin: 0 0 18px;
+  padding: 10px 12px;
+  border: 1px solid var(--shell-border);
+  border-radius: 10px;
+  background: rgba(118, 118, 128, 0.08);
+  line-height: 1.5;
+}
+
+.apple-report-page,
+.apple-ledger-page {
+  padding: 22px;
+}
+
+.apple-legacy-page-header {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--shell-border);
+}
+
+.apple-legacy-page-header h2 {
+  margin: 0;
+  color: var(--shell-text);
+  font-size: 24px;
+  letter-spacing: -0.025em;
+}
+
+.apple-legacy-page-header p {
+  color: var(--shell-muted) !important;
+}
+
+.misa-workspace-card,
+.misa-page-container > .ant-card,
+.misa-table-card {
+  border: 1px solid var(--shell-border) !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: var(--misa-shadow-card) !important;
+}
+
+.apple-page-title {
+  padding: 20px 22px 12px;
+  color: var(--shell-text);
+  font-size: 20px;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+
+.apple-page-title::after {
+  display: block;
+  width: 28px;
+  height: 3px;
+  margin-top: 9px;
+  border-radius: 999px;
+  background: var(--shell-blue);
+  content: "";
+}
+
+.apple-report-inline-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 0 0 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--shell-border);
+  border-radius: 10px;
+  background: rgba(118, 118, 128, 0.06);
+  color: var(--shell-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.apple-report-inline-status > .ant-typography {
+  color: inherit;
+}
+
+.apple-report-inline-status > .ant-typography strong,
+.apple-report-inline-status > .ant-typography.ant-typography-strong {
+  color: var(--shell-text);
+}
+
+.apple-report-inline-status ul {
+  flex: 1 1 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2px 20px;
+  max-height: 70px;
+  margin: 0;
+  padding-left: 18px;
+  overflow: auto;
+}
+
+.apple-report-inline-status p {
+  margin: 0;
+}
+
+.apple-report-inline-status .ant-btn {
+  margin-left: auto;
+}
+
+/* Keep legacy alert children compact if a nested surface still renders one. */
+.apple-report-inline-status .ant-alert {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 12px !important;
+}
+
+.apple-report-inline-status .ant-alert-message {
+  color: var(--shell-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.apple-report-inline-status .ant-alert-description {
+  margin-top: 3px;
+  color: var(--shell-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.apple-report-inline-status .ant-alert-description ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 3px 20px;
+  max-height: 86px;
+  overflow: auto;
+}
+
+.misa-workspace-tab-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
+  margin-bottom: 16px;
+  padding: 4px;
+  border-radius: 9px;
+  background: #E2E8F0;
+}
+
+.misa-workspace-tab-list {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 3px;
+  overflow-x: auto;
+  min-width: 0;
+  scrollbar-width: none;
+}
+
+.misa-workspace-tab-list::-webkit-scrollbar {
+  display: none;
+}
+
+.misa-workspace-tab-item {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 7px;
+  color: #64748B;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.misa-workspace-tab-item:hover {
+  color: #0F172A;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.misa-workspace-tab-item.active {
+  background: #FFFFFF;
+  color: #1677FF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  font-weight: 700;
+}
+
+.misa-workspace-card {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.misa-tab-panel-container {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto !important;
+}
+
+/* Shared list pages: a quiet toolbar and a single surface for the table. */
+.misa-list-toolbar,
+.misa-toolbar-header,
+.apple-section-gap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 58px;
+  padding: 10px 14px;
+  margin-bottom: 14px !important;
+  border: 1px solid var(--shell-border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--misa-shadow-xs);
+}
+
+.misa-toolbar-left,
+.misa-toolbar-right,
+.misa-toolbar-group,
+.misa-toolbar-group-right,
+.misa-toolbar-group-right-gap8 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.misa-search-box {
+  min-width: min(360px, 42vw);
+}
+
+.misa-list-toolbar .misa-input,
+.misa-toolbar-header .misa-input {
+  min-height: 36px;
+  border-radius: 10px !important;
+}
+
+.misa-list-toolbar .misa-font-18-bold {
+  color: var(--shell-text);
+  font-size: 18px;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+.apple-feature-page {
+  width: 100%;
+  padding: 22px;
+  border: 1px solid var(--shell-border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--misa-shadow-card);
+}
+
+.apple-feature-heading {
+  width: 100%;
+  padding-bottom: 4px;
+  border-bottom: 0;
+}
+
+.apple-feature-heading .ant-typography {
+  color: var(--shell-text);
+}
+
+.apple-feature-heading h3.ant-typography {
+  margin: 0 !important;
+  font-size: 18px;
+  letter-spacing: -0.015em;
+}
+
+.apple-feature-heading .ant-typography-secondary {
+  display: none;
+}
+
+.apple-feature-heading .ant-typography-secondary {
+  color: var(--shell-muted);
+  font-size: 13px;
+}
+
+.apple-settings-page {
+  max-width: 980px;
+  padding: 22px;
+}
+
+.apple-settings-title {
+  margin: 0 0 18px;
+  color: var(--shell-text);
+  font-size: 24px;
+  letter-spacing: -0.025em;
+}
+
+.apple-settings-page .ant-card {
+  border: 1px solid var(--shell-border) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--misa-shadow-card) !important;
+}
+
+.misa-table-wrapper {
+  margin-top: 14px;
+  flex: 0 0 auto !important;
+  min-height: 0;
+  height: auto;
+  max-width: 100%;
+  overflow-x: auto !important;
+  overflow-y: visible;
+  border: 1px solid var(--shell-border);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--misa-shadow-sm);
+}
+
+.misa-table-wrapper .ant-table,
+.misa-table-card .ant-table,
+.misa-table-card-flex .ant-table {
+  min-width: 100%;
+}
+
+.misa-table-card,
+.misa-table-card-flex,
+.misa-table-container {
+  max-width: 100%;
+  overflow-x: auto !important;
+}
+
+.misa-table-wrapper .ant-table {
+  background: transparent;
+}
+
+.misa-table-wrapper .ant-table-thead > tr > th {
+  background: var(--misa-bg-table-header) !important;
+  color: var(--misa-text-label);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.misa-table-wrapper .ant-table-tbody > tr > td {
+  border-bottom-color: rgba(60, 60, 67, 0.09);
+}
+
+.misa-table-wrapper .ant-table-tbody > tr:hover > td {
+  background: #f2f8ff !important;
+}
+
+.misa-table-wrapper .ant-table-placeholder > td {
+  padding: 24px 16px !important;
+}
+
+.misa-table-wrapper .ant-empty {
+  margin: 10px 0 !important;
+}
+
+/* A table with no rows should be content-sized, not a viewport-sized blank
+ * canvas. This applies to every shared table surface, including modal grids. */
+.ant-table-placeholder > td {
+  padding: 24px 16px !important;
+}
+
+.ant-table-placeholder .ant-empty {
+  margin: 10px 0 !important;
+}
+
+.misa-stat-grid-3 {
+  gap: 12px !important;
+  margin-bottom: 14px;
+}
+
+.misa-stat-card {
+  border: 1px solid var(--shell-border) !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: var(--misa-shadow-sm) !important;
+}
+
+.misa-stat-value {
+  color: var(--shell-text) !important;
+  letter-spacing: -0.02em;
+}
+
+.apple-dashboard {
+  padding: 0;
+}
+
+.apple-dashboard .ant-tabs-nav {
+  margin: 0 0 18px;
+}
+
+.apple-dashboard .ant-tabs-tab {
+  padding: 10px 14px;
+  border-radius: 9px;
+  color: var(--shell-muted);
+  font-size: 13px;
+}
+
+.apple-dashboard .ant-tabs-tab-active {
+  background: #fff;
+}
+
+.apple-dashboard .ant-tabs-ink-bar {
+  display: none;
+}
+
+.apple-dashboard .ant-card {
+  border: 1px solid var(--shell-border) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--misa-shadow-sm) !important;
+}
+
+.apple-dashboard .ant-card-head {
+  min-height: 52px;
+  border-bottom-color: rgba(60, 60, 67, 0.09);
+}
+
+.apple-dashboard .ant-card-head-title {
+  color: var(--shell-text);
+  font-size: 14px;
+}
+
+.apple-dashboard .ant-statistic-title {
+  color: var(--shell-muted);
+  font-size: 12px;
+}
+
+.apple-dashboard .ant-statistic-content {
+  color: var(--shell-text);
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.misa-flyout-menu {
+  border: 1px solid var(--shell-border) !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: var(--misa-shadow-float) !important;
+  backdrop-filter: blur(18px);
+}
+
+.misa-flyout-item:hover {
+  background: #eaf3ff !important;
+  color: var(--shell-blue) !important;
+}
+
+.ant-btn {
+  font-weight: 600;
+}
+
+.ant-card,
+.ant-modal-content,
+.ant-dropdown,
+.ant-popover-inner {
+  border-radius: 14px !important;
+}
+
+.ant-modal-content {
+  overflow: hidden;
+  border: 1px solid var(--shell-border);
+  box-shadow: var(--misa-shadow-float) !important;
+}
+
+.ant-modal-header {
+  margin-bottom: 0 !important;
+  padding: 18px 22px 14px !important;
+  border-bottom: 1px solid rgba(60, 60, 67, 0.09);
+  background: #fff;
+}
+
+.ant-modal-title {
+  color: var(--shell-text);
+  font-size: 17px;
+  letter-spacing: -0.015em;
+}
+
+.ant-modal-body {
+  padding: 20px 22px !important;
+  background: #fff;
+}
+
+.ant-modal-footer {
+  margin-top: 0 !important;
+  padding: 13px 22px 16px !important;
+  border-top: 1px solid rgba(60, 60, 67, 0.09);
+  background: #fbfbfd;
+}
+
+/* Canonical DOM contracts for incremental screen migration. */
+.ui-page-shell {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--ui-content-max-width, 1600px);
+  min-width: 0;
+  min-height: calc(100vh - var(--ui-header-height, 64px) - 28px);
+  margin: 0 auto;
+  gap: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden;
+}
+
+.ui-page-toolbar-slot,
+.ui-page-body {
+  min-width: 0;
+  width: 100%;
+}
+
+.ui-page-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  min-height: 50px;
+  box-sizing: border-box;
+  padding: 9px 12px;
+  border: 1px solid var(--shell-border, #d2d2d7);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--misa-shadow-xs, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.ui-page-toolbar:empty {
+  display: none;
+}
+
+.ui-page-toolbar__leading,
+.ui-page-toolbar__filters,
+.ui-page-toolbar__actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ui-page-toolbar__filters {
+  justify-content: flex-start;
+}
+
+.ui-page-toolbar__actions {
+  justify-content: flex-end;
+}
+
+.ui-table-surface {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--shell-border, #d2d2d7);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--misa-shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.05));
+}
+
+.ui-table-surface__scroll {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: thin;
+}
+
+.ui-table-surface__scroll > .ant-table-wrapper,
+.ui-table-surface__scroll > table {
+  min-width: 100%;
+}
+
+.ui-table-surface__summary {
+  flex: 0 0 auto;
+  width: 100%;
+  min-width: 0;
+  border-top: 1px solid var(--shell-border, #d2d2d7);
+}
+
+/* Legacy voucher pages use the adapter as a non-invasive bridge while their
+ * feature-specific table cards are migrated. Keep the shared DOM marker
+ * without adding a second card or clipping modal content. */
+.ui-table-surface.misa-voucher-surface {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.ui-table-surface.misa-voucher-surface > .ui-table-surface__scroll {
+  overflow: visible;
+}
+
+.ui-modal-frame {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ui-modal-frame__body {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ui-modal-frame__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--shell-border, #d2d2d7);
+}
+
+@media (max-width: 760px) {
+  .ui-page-shell {
+    padding: 12px !important;
+  }
+
+  .ui-page-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .ui-page-toolbar__actions {
+    justify-content: flex-start;
+  }
+}
+
+/* Purchase/cash utility dialogs share the same compact Apple surface. The
+ * legacy class names remain valid hooks, but no longer create a second visual
+ * language for otherwise identical dialogs. */
+.misa-custom-modal .ant-modal-content,
+.misa-clean-modal .ant-modal-content,
+.misa-dialog-modal .ant-modal-content {
+  padding: 0 !important;
+  border: 1px solid var(--shell-border) !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  box-shadow: var(--misa-shadow-float) !important;
+}
+
+.misa-custom-modal .ant-modal-header,
+.misa-clean-modal .ant-modal-header,
+.misa-dialog-modal .ant-modal-header {
+  margin: 0 !important;
+  padding: 16px 22px 13px !important;
+  border-bottom: 1px solid rgba(60, 60, 67, 0.09) !important;
+  border-radius: 14px 14px 0 0 !important;
+  background: #fff !important;
+}
+
+.misa-custom-modal .ant-modal-body,
+.misa-clean-modal .ant-modal-body,
+.misa-dialog-modal .ant-modal-body {
+  padding: 18px 22px !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+}
+
+.misa-custom-modal .ant-modal-footer,
+.misa-clean-modal .ant-modal-footer,
+.misa-dialog-modal .ant-modal-footer {
+  margin: 0 !important;
+  padding: 12px 22px 16px !important;
+  border-top: 1px solid rgba(60, 60, 67, 0.09) !important;
+  border-radius: 0 0 14px 14px !important;
+  background: #fbfbfd !important;
+}
+
+.misa-custom-modal .ant-btn,
+.misa-clean-modal .ant-btn,
+.misa-dialog-modal .ant-btn {
+  min-height: 36px;
+  border-radius: 10px !important;
+  font-weight: 600;
+}
+
+.ant-form-item-label > label {
+  color: var(--misa-text-label);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.ant-form-item-explain-error {
+  color: var(--misa-danger);
+  font-size: 12px;
+}
+
+.misa-voucher-table,
+.misa-grid-table {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--shell-border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+/* Native detail tables are intentionally wider than a phone viewport. Keep
+ * their columns intact and let the owning surface provide the horizontal
+ * scrollbar instead of compressing accounting fields into unreadable text. */
+table.misa-voucher-table,
+table.misa-grid-table {
+  width: max-content;
+  min-width: 100% !important;
+  border-collapse: collapse;
+  overflow: visible;
+}
+
+.misa-voucher-table th,
+.misa-voucher-table td,
+.misa-grid-table th,
+.misa-grid-table td {
+  white-space: nowrap;
+}
+
+.apple-section-gap {
+  margin-bottom: 14px !important;
+}
+
+.apple-help-button {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 122, 255, 0.18);
+  border-radius: 10px;
+  background: #edf5ff;
+  color: var(--shell-blue);
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.apple-help-button:hover {
+  border-color: rgba(0, 122, 255, 0.32);
+  background: #e0efff;
+  transform: translateY(-1px);
+}
+
+.misa-voucher-table thead th,
+.misa-grid-table thead th {
+  background: var(--misa-bg-table-header) !important;
+  color: var(--misa-text-label) !important;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.misa-voucher-table tbody tr:hover td,
+.misa-grid-table tbody tr:hover td {
+  background: #f2f8ff !important;
+}
+
+.misa-modal-footer,
+.misa-action-footer {
+  border-top-color: rgba(60, 60, 67, 0.12) !important;
+  background: #fbfbfd !important;
+}
+
+.ant-btn-primary,
+.misa-btn-primary,
+.misa-btn-pill-primary {
+  border-color: var(--ui-button-primary-border) !important;
+  border-radius: 10px !important;
+  background: var(--ui-button-primary-background) !important;
+  box-shadow: 0 2px 5px rgba(0, 122, 255, 0.2);
+}
+
+.ant-btn-primary:hover,
+.misa-btn-primary:hover,
+.misa-btn-pill-primary:hover {
+  border-color: var(--ui-button-primary-background-hover) !important;
+  background: var(--ui-button-primary-background-hover) !important;
+  box-shadow: 0 4px 9px rgba(0, 122, 255, 0.24);
+}
+
+.ant-drawer-content,
+.ant-drawer-header,
+.ant-drawer-body,
+.ant-drawer-footer {
+  background: #fff;
+}
+
+.ant-drawer-header {
+  padding: 18px 22px !important;
+  border-bottom-color: rgba(60, 60, 67, 0.1) !important;
+}
+
+.ant-drawer-title {
+  color: var(--shell-text);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.ant-tag {
+  border-radius: 999px;
+  border-color: transparent;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.ant-pagination .ant-pagination-item {
+  border-radius: 8px;
+  border-color: transparent;
+}
+
+.ant-pagination .ant-pagination-item-active {
+  border-color: rgba(0, 122, 255, 0.18);
+  background: #eaf3ff;
+}
+
+.ant-pagination .ant-pagination-item-active a {
+  color: var(--shell-blue);
+}
+
+.ant-segmented {
+  border-radius: 10px;
+  background: #f2f2f7;
+}
+
+.ant-segmented-item-selected {
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.ant-input,
+.ant-input-number,
+.ant-picker,
+.ant-select-selector {
+  border-radius: 10px !important;
+}
+
+*:focus-visible {
+  outline: 3px solid rgba(0, 122, 255, 0.28);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .misa-header-bar { padding: 0 16px; }
+  .misa-content-area { padding: 16px; }
+  .misa-user-dropdown-trigger > span { display: none; }
+  .misa-list-toolbar,
+  .misa-toolbar-header { align-items: stretch; flex-direction: column; }
+  .misa-toolbar-left,
+  .misa-toolbar-right { width: 100%; }
+  .misa-search-box { flex: 1; min-width: 0; }
+  .misa-toolbar-right { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; }
+  .misa-toolbar-right > * { flex: 0 0 auto; }
+  .apple-feature-page .ant-row > .ant-col { max-width: 100%; flex: 0 0 100%; }
+}
+
+@media (max-width: 640px) {
+  .misa-content-area { padding: 12px; }
+  .misa-badge-year { display: none; }
+  .misa-stat-grid-3 { grid-template-columns: 1fr !important; }
+  .misa-ca-process-container { min-width: 620px; }
+}
+
+/* -------------------------------------------------------------------------
+ * Unified business surfaces
+ *
+ * misa-theme.css contains several historical definitions for the same
+ * helpers. Keep the migration predictable by defining the final contract in
+ * this last-loaded Apple layer. These rules are presentation-only: they do
+ * not change table data, API calls, or accounting behaviour.
+ */
+
+.misa-page-container,
+.apple-feature-page,
+.apple-settings-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--ui-content-max-width);
+  min-width: 0;
+  margin: 0 auto;
+  padding: 0 !important;
+  gap: 10px;
+  border-radius: 8px;
+  background: transparent !important;
+}
+
+.misa-workspace-container {
+  height: auto !important;
+  min-height: calc(100vh - var(--ui-header-height) - 28px);
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+}
+
+/* Cash uses a dedicated root class for its pre-warmed tabs. Give it the
+ * exact same outer rhythm as the generic workspace so switching modules does
+ * not introduce a second gutter or a different background. */
+.cash-workspace-shell {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--ui-content-max-width);
+  min-width: 0;
+  min-height: calc(100vh - var(--ui-header-height) - 28px);
+  margin: 0 auto;
+  padding: 0 !important;
+  gap: 14px;
+  background: transparent !important;
+}
+
+.misa-workspace-card {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--shell-border) !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: var(--misa-shadow-card) !important;
+}
+
+
+/* ===================================================================
+ * Workspace tab-nav, tab-list, panel, and pane rules are now owned
+ * by tokens.css (the canonical source). These legacy apple-shell
+ * rules are intentionally neutralized to prevent cascade conflicts.
+ * =================================================================== */
+
+.cash-workspace-shell .misa-tab-pane {
+  padding: 0 !important;
+}
+
+
+/* Every list toolbar uses the same quiet, two-sided layout. */
+.misa-list-toolbar,
+.misa-toolbar-header,
+.apple-section-gap,
+.misa-toolbar {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 50px;
+  margin: 0 0 12px !important;
+  padding: 9px 12px !important;
+  border: 1px solid var(--shell-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--misa-shadow-xs);
+}
+
+.misa-toolbar-left,
+.misa-toolbar-right,
+.misa-toolbar-group,
+.misa-toolbar-group-right,
+.misa-toolbar-filter-group,
+.misa-toolbar-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.misa-toolbar-right,
+.misa-toolbar-actions,
+.misa-toolbar-group-right {
+  justify-content: flex-end;
+}
+
+.misa-list-toolbar :is(.ant-input, .ant-input-affix-wrapper, .ant-select-selector, .ant-picker, .ant-input-number),
+.misa-toolbar-header :is(.ant-input, .ant-input-affix-wrapper, .ant-select-selector, .ant-picker, .ant-input-number),
+.apple-section-gap :is(.ant-input, .ant-input-affix-wrapper, .ant-select-selector, .ant-picker, .ant-input-number),
+.misa-toolbar :is(.ant-input, .ant-input-affix-wrapper, .ant-select-selector, .ant-picker, .ant-input-number) {
+  min-height: 36px;
+  border-radius: 10px !important;
+}
+
+/* Long tables must scroll inside their own surface, never push the page. */
+.ant-table-wrapper,
+.misa-table-container,
+.misa-table-card,
+.misa-table-card-auto,
+.misa-table-wrapper,
+.misa-table-scroll-box,
+.misa-grid-scroll-box,
+.misa-grid-scroll-box-240,
+.misa-split-pane-body {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ant-table-wrapper,
+.misa-table-container,
+.misa-table-wrapper,
+.misa-grid-scroll-box,
+.misa-grid-scroll-box-240,
+.misa-table-scroll-box {
+  overflow-x: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(60, 60, 67, 0.25) transparent;
+}
+
+.ant-table-wrapper .ant-table {
+  width: 100%;
+  min-width: 100%;
+}
+
+.ant-table-wrapper .ant-table-container {
+  min-width: 100%;
+}
+
+.misa-voucher-table,
+.misa-grid-table,
+table.misa-voucher-table {
+  min-width: 100%;
+  width: 100%;
+}
+
+.misa-voucher-table th,
+.misa-grid-table th,
+.misa-voucher-table td,
+.misa-grid-table td {
+  white-space: nowrap;
+}
+
+.misa-table-card,
+.misa-table-card-auto,
+.misa-table-card-flex,
+.misa-voucher-table-wrapper {
+  overflow-x: auto !important;
+  overflow-y: hidden;
+  border: 1px solid var(--shell-border) !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  box-shadow: var(--misa-shadow-sm) !important;
+}
+
+.misa-table-card > .ant-table-wrapper,
+.misa-table-card-auto > .ant-table-wrapper {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+/* Normalise old Tailwind-heavy GL/fixed-asset panels to the same surfaces. */
+.apple-ledger-page > .ant-card,
+.apple-report-page > .ant-card,
+.apple-ledger-page > .bg-white,
+.apple-report-page > .bg-white,
+.apple-ledger-page > .border,
+.apple-report-page > .border {
+  border: 1px solid var(--shell-border) !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  box-shadow: var(--misa-shadow-sm) !important;
+}
+
+.apple-ledger-page .bg-gray-50,
+.apple-report-page .bg-gray-50,
+.apple-ledger-page .bg-slate-50,
+.apple-report-page .bg-slate-50 {
+  background: #f7f7f9 !important;
+}
+
+.apple-ledger-page .text-gray-500,
+.apple-report-page .text-gray-500,
+.apple-ledger-page .text-slate-500,
+.apple-report-page .text-slate-500,
+.apple-ledger-page .text-gray-400,
+.apple-report-page .text-gray-400 {
+  color: var(--shell-muted) !important;
+}
+
+.apple-ledger-page .text-blue-600,
+.apple-report-page .text-blue-600,
+.apple-ledger-page .text-blue-700,
+.apple-report-page .text-blue-700 {
+  color: var(--shell-blue) !important;
+}
+
+/* Legacy custom modals now match Ant modal/drawer surfaces. */
+.misa-modal-window,
+.misa-modal-window-xl {
+  max-width: min(1320px, 96vw);
+  max-height: 94vh;
+  border: 1px solid var(--shell-border);
+  border-radius: 16px !important;
+  background: #f7f7f9;
+  box-shadow: var(--misa-shadow-float);
+}
+
+.misa-modal-overlay {
+  padding: 18px;
+  background: rgba(29, 29, 31, 0.35);
+  backdrop-filter: blur(5px);
+}
+
+.misa-modal-top-bar,
+.misa-modal-bottom-bar {
+  padding: 12px 18px;
+  border-color: var(--shell-border);
+  background: #fff;
+}
+
+.misa-modal-scroll-body {
+  padding: 16px;
+  gap: 12px;
+}
+
+.misa-master-card,
+.misa-radio-bar,
+.misa-grid-subtoolbar,
+.misa-grid-footer-bar,
+.misa-split-pane-header {
+  border-color: var(--shell-border) !important;
+  border-radius: 8px;
+  background: #fff !important;
+}
+
+.misa-grid-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border: 1px solid var(--shell-border, #e5e7eb);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+}
+
+.misa-grid-footer-bar .misa-btn-tool,
+.misa-grid-footer-bar .misa-btn-link-action {
+  width: auto !important;
+  min-width: auto !important;
+  height: 28px !important;
+  padding: 0 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  border-radius: 4px !important;
+}
+
+.misa-config-bar {
+  background: #f8fafc !important;
+  padding: 8px 14px !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--shell-border, #e5e7eb) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 10px !important;
+}
+
+.ant-modal.misa-voucher-modal,
+.misa-voucher-modal {
+  max-width: calc(100vw - 48px) !important;
+  width: min(1440px, calc(100vw - 48px)) !important;
+  height: auto !important;
+  max-height: 92vh !important;
+  top: 0 !important;
+  padding-bottom: 0 !important;
+  margin: 0 auto !important;
+}
+
+.ant-modal.misa-voucher-modal .ant-modal-content,
+.misa-voucher-modal .ant-modal-content {
+  height: min(92vh, 900px) !important;
+  max-height: 92vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border-radius: 10px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.misa-voucher-modal .ant-modal-header {
+  padding: 10px 18px !important;
+  margin-bottom: 0 !important;
+  border-bottom: 1px solid var(--shell-border, #e5e7eb) !important;
+  flex: 0 0 auto !important;
+  background: #ffffff !important;
+}
+
+.misa-voucher-modal .ant-modal-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+  padding: 0 !important;
+}
+
+/* Voucher entry windows follow the MISA two-column composition: the
+ * document fields occupy the main column while posting dates, document
+ * number and total stay together in the narrow side column.  The previous
+ * block layout pushed that side column underneath the form and left a large
+ * unused area in the header card. */
+.misa-voucher-modal .ant-modal-body {
+  height: auto !important;
+  overflow: hidden !important;
+}
+
+.misa-voucher-modal .misa-voucher-modal-frame .ui-modal-frame__body {
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.misa-voucher-modal .misa-master-card {
+  display: flex !important;
+  align-items: stretch !important;
+  gap: 16px !important;
+  padding: 12px 16px !important;
+}
+
+.misa-voucher-modal .misa-master-left {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+
+.misa-voucher-modal .misa-master-right {
+  flex: 0 0 300px !important;
+  width: 300px !important;
+  min-width: 300px !important;
+  box-sizing: border-box !important;
+}
+
+.misa-voucher-modal .misa-master-right .misa-meta-row {
+  grid-template-columns: 106px minmax(0, 1fr) !important;
+}
+
+.misa-voucher-modal .misa-master-right .misa-input-w160 {
+  width: 100% !important;
+}
+
+.misa-voucher-modal .misa-master-right .misa-total-card {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Keep the detail grid and its row actions inside the independently scrolling
+ * document body; the command bar remains visible at the bottom of the window. */
+.misa-voucher-modal .misa-voucher-scroll-body {
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+.misa-voucher-modal .misa-voucher-fixed-footer {
+  min-height: 52px !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 900px) {
+  .misa-voucher-modal .misa-master-card {
+    display: block !important;
+  }
+
+  .misa-voucher-modal .misa-master-right {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin-top: 12px !important;
+    padding: 12px 0 0 !important;
+    border-top: 1px solid var(--shell-border, #e5e7eb) !important;
+    border-left: 0 !important;
+  }
+}
+
+.misa-voucher-modal .ui-modal-frame {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  width: 100% !important;
+}
+
+.misa-voucher-modal .ui-modal-frame__body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 12px 16px !important;
+  gap: 10px !important;
+}
+
+.misa-voucher-modal .ant-modal-footer,
+.misa-voucher-modal .misa-modal-footer {
+  flex: 0 0 auto !important;
+  padding: 10px 18px !important;
+  border-top: 1px solid var(--shell-border, #e5e7eb) !important;
+  background: #f8fafc !important;
+  margin-top: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.misa-grid-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid var(--shell-border, #e5e7eb) !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+}
+
+.misa-voucher-content-scroll {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  max-height: 280px !important;
+}
+
+.misa-master-layout {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 16px !important;
+  padding: 12px 16px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.misa-master-left {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+
+.misa-master-right {
+  width: 310px !important;
+  min-width: 310px !important;
+  max-width: 310px !important;
+  flex: 0 0 310px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  border-left: 1px solid var(--shell-border, #e5e7eb) !important;
+  padding-left: 16px !important;
+}
+
+.misa-master-tabs {
+  display: flex !important;
+  background: #f1f5f9 !important;
+  border-bottom: 1px solid var(--shell-border, #e5e7eb) !important;
+  padding: 4px 10px 0 10px !important;
+  gap: 4px !important;
+  width: 100% !important;
+}
+
+.misa-master-tab-btn {
+  padding: 7px 18px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  border: 1px solid transparent !important;
+  border-bottom: none !important;
+  background: transparent !important;
+  color: #64748b !important;
+  cursor: pointer !important;
+  border-radius: 6px 6px 0 0 !important;
+  transition: all 0.15s ease !important;
+  position: relative !important;
+  bottom: -1px !important;
+}
+
+.misa-master-tab-btn:hover {
+  color: #1e293b !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+}
+
+.misa-master-tab-btn.active {
+  color: var(--ui-primary) !important;
+  background: #ffffff !important;
+  border-color: var(--shell-border, #e5e7eb) !important;
+  border-bottom-color: #ffffff !important;
+  font-weight: 700 !important;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.02) !important;
+}
+
+.misa-total-card,
+.misa-total-box {
+  margin-top: auto !important;
+  background: #f8fafc !important;
+  border: 1px solid var(--shell-border, #e5e7eb) !important;
+  border-radius: 8px !important;
+  padding: 12px 14px !important;
+  text-align: right !important;
+}
+
+.misa-total-card .total-label,
+.misa-total-box .total-label {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.misa-total-card .total-amount,
+.misa-total-box .total-amount {
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  color: var(--ui-primary) !important;
+  line-height: 1.2 !important;
+  margin-top: 4px !important;
+}
+
+.misa-filter-box,
+.misa-filter-box-lg,
+.misa-filter-box-compact,
+.misa-filter-subbar {
+  margin: 0 0 12px !important;
+  padding: 12px !important;
+  border: 1px solid var(--shell-border) !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: var(--misa-shadow-xs);
+}
+
+/* Keep secondary copy and section rhythm consistent in legacy surfaces. */
+.apple-muted-text {
+  color: var(--ui-text-muted) !important;
+  font-size: 12px !important;
+}
+
+.apple-section-gap {
+  margin-bottom: 12px !important;
+}
+
+/* Purchase/sales legacy lists use action-bar/grid-wrapper names instead of
+ * misa-list-toolbar. Give them the same layout contract so a module does not
+ * change rhythm merely because it uses an older screen implementation. */
+.misa-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  width: 100%;
+  min-height: 50px;
+  margin: 0 0 12px !important;
+  padding: 9px 12px;
+  border: 1px solid var(--shell-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--misa-shadow-xs);
+}
+
+.misa-action-bar-left,
+.misa-action-bar-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.misa-action-bar-left {
+  flex: 1 1 520px;
+}
+
+.misa-action-bar-right {
+  justify-content: flex-end;
+  flex: 0 0 auto;
+}
+
+.misa-action-bar .misa-input-search,
+.misa-action-bar-left .ant-input {
+  width: min(420px, 100%);
+  min-height: 36px;
+  border-radius: 10px !important;
+}
+
+.misa-action-bar .misa-select-date-preset,
+.misa-action-bar .ant-select-selector {
+  min-height: 36px;
+  border-radius: 10px !important;
+}
+
+.misa-grid-wrapper {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto !important;
+  border: 1px solid var(--shell-border);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--misa-shadow-sm);
+  scrollbar-width: thin;
+}
+
+.misa-grid-wrapper .ant-table-wrapper,
+.misa-grid-wrapper .ant-table-container,
+.misa-grid-wrapper .misa-table {
+  min-width: 100%;
+  border: 0 !important;
+}
+
+.misa-grid-wrapper .ant-table-thead > tr > th {
+  background: var(--misa-bg-table-header) !important;
+  color: var(--misa-text-label);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.misa-grid-wrapper .ant-table-tbody > tr > td {
+  border-bottom-color: rgba(60, 60, 67, 0.09);
+}
+
+.misa-grid-wrapper .ant-table-tbody > tr:hover > td {
+  background: #f2f8ff !important;
+}
+
+.misa-table-footer-nav,
+.misa-table-summary-bar {
+  border-color: var(--shell-border) !important;
+  background: #f7f7f9 !important;
+}
+
+/* Remove layout-only class coupling from old screens while preserving the
+ * readable muted text treatment through the Apple token. */
+.apple-secondary-text {
+  color: var(--shell-muted) !important;
+}
+
+@media (max-width: 900px) {
+  .misa-page-container,
+  .apple-feature-page,
+  .apple-settings-page {
+    padding: 14px !important;
+  }
+
+  .misa-workspace-container {
+    padding: 0 !important;
+  }
+
+  .misa-workspace-tab-nav {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .misa-workspace-tab-extra {
+    justify-content: flex-end;
+  }
+
+  .misa-tab-pane {
+    padding: 12px !important;
+  }
+
+  .misa-toolbar-left,
+  .misa-toolbar-right,
+  .misa-toolbar-group,
+  .misa-toolbar-filter-group {
+    width: 100%;
+  }
+
+  .misa-toolbar-right,
+  .misa-toolbar-actions {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .misa-action-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .misa-action-bar-left,
+  .misa-action-bar-right {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .misa-action-bar-right {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .misa-action-bar-right > * {
+    flex: 0 0 auto;
+  }
+}
+
+/* Cash workspace primitives. Every cash tab uses the same surface, toolbar,
+ * and table rhythm; legacy page classes stay out of the feature markup. */
+.cash-workspace-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  gap: 14px;
+  border-radius: 16px;
+}
+
+.cash-workspace-surface {
+  min-width: 0;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.cash-tab-panel {
+  min-width: 0;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.cash-list-page,
+.cash-report-page {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 10px;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.cash-workspace-shell .misa-tab-panel-container {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.cash-workspace-shell .misa-tab-pane > .cash-list-page,
+.cash-workspace-shell .misa-tab-pane > .cash-report-page {
+  width: 100%;
+}
+
+
+
+/* Wide accounting grids should remain readable and gain a real horizontal
+ * scrollbar instead of compressing columns into unreadable slivers. */
+.cash-list-page .misa-table-card,
+.cash-list-page .misa-table-card-flex,
+.cash-report-page .misa-table-card,
+.cash-report-page .misa-table-card-flex {
+  min-width: 0;
+  overflow-x: auto;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--shell-border);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--misa-shadow-sm);
+}
+
+.cash-list-page .misa-table-card > .ant-table-wrapper,
+.cash-list-page .misa-table-card-flex > table,
+.cash-report-page .misa-table-card > .ant-table-wrapper,
+.cash-report-page .misa-table-card-flex > table {
+  min-width: 100%;
+}
+
+@media (max-width: 900px) {
+  .cash-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .cash-toolbar-left,
+  .cash-toolbar-right {
+    width: 100%;
+  }
+
+  .cash-toolbar-right {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+  }
+
+  .cash-toolbar-right > * {
+    flex: 0 0 auto;
+  }
+
+  .cash-tab-panel,
+  .cash-workspace-shell .misa-tab-pane {
+    padding: 14px;
+  }
+}
+
+/* Edge-to-edge workspace contract. The application content, workspace shell,
+ * active tab, and process canvas previously contributed four independent
+ * gutters. Keep spacing inside cards/nodes, but remove those stacked wrappers. */
+.misa-content-area {
+  padding: 0 !important;
+}
+
+.ui-page-shell.misa-workspace-container,
+.ui-page-shell.cash-workspace-shell {
+  gap: 0;
+  padding: 0 !important;
+}
+
+.misa-tab-pane {
+  padding: 0 !important;
+}
+
+.misa-ca-process-container {
+  padding: 0 !important;
+}
+
+
+.misa-tab-pane > .ui-page-shell {
+  min-height: 0;
+  padding: 0 !important;
+}
+
+/* Compact ERP shell contract. Legacy misa-* hooks remain on the same nodes
+ * so feature styles and navigation tests keep their existing API. */
+.app-shell {
+  min-height: 100vh;
+  background: var(--misa-bg-body);
+}
+
+.app-sidebar {
+  width: var(--ui-sidebar-width) !important;
+  min-width: var(--ui-sidebar-width) !important;
+  max-width: var(--ui-sidebar-width) !important;
+  flex: 0 0 var(--ui-sidebar-width) !important;
+}
+
+.app-sidebar.ant-layout-sider-collapsed {
+  width: var(--ui-sidebar-collapsed-width) !important;
+  min-width: var(--ui-sidebar-collapsed-width) !important;
+  max-width: var(--ui-sidebar-collapsed-width) !important;
+  flex: 0 0 var(--ui-sidebar-collapsed-width) !important;
+}
+
+.app-header {
+  min-height: var(--ui-header-height);
+  height: var(--ui-header-height);
+}
+
+.app-content {
+  padding: 12px !important;
+  min-width: 0;
+}
+
+.app-main {
+  background: var(--misa-bg-body);
+  min-width: 0;
+}
+
+/* Shared compact state surfaces. Feature components provide the message and
+ * data; these rules only keep the visual footprint predictable. */
+.ui-table-empty,
+.ui-table-loading,
+.ui-state-inline,
+.ui-state-unavailable {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 112px;
+  padding: var(--ui-space-5);
+  color: var(--misa-text-muted);
+  text-align: center;
+}
+
+.ui-table-empty,
+.ui-table-loading {
+  background: var(--misa-bg-table-header);
+  border-top: 1px solid var(--misa-border-light);
+}
+
+.ui-state-inline,
+.ui-state-unavailable {
+  border: 1px solid var(--misa-border-light);
+  border-radius: var(--misa-border-radius);
+  background: rgba(118, 118, 128, 0.06);
+}
+
+.ui-state-unavailable {
+  color: var(--misa-text-muted);
+}
+
+.misa-modal .ant-modal-header {
+  padding: 0 !important;
+  border-bottom: 0;
+}
+
+.misa-modal__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 58px;
+  padding: 10px 18px;
+  background: #fff;
+  border-bottom: 1px solid var(--misa-border-light);
+}
+
+.misa-modal__title-main,
+.misa-modal__title-actions,
+.misa-modal__footer,
+.misa-modal__footer-left,
+.misa-modal__footer-actions,
+.misa-modal__account-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.misa-modal__title-main {
+  min-width: 0;
+  gap: 10px;
+}
+
+.misa-modal__title-actions,
+.misa-modal__footer-actions {
+  gap: 8px;
+}
+
+.misa-modal__reload,
+.misa-modal__icon-button {
+  display: inline-grid;
+  place-items: center;
+  border: 0;
+  color: var(--misa-text-muted);
+  cursor: pointer;
+}
+
+.misa-modal__reload {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--misa-bg-hover);
+}
+
+.misa-modal__reload:hover,
+.misa-modal__icon-button:hover {
+  color: var(--misa-primary);
+}
+
+.misa-modal__icon-button {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border-radius: 8px;
+}
+
+.misa-modal__title-text {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--misa-text-heading);
+  font-size: 17px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.misa-modal__voucher-type {
+  width: 240px;
+  margin-left: 4px;
+}
+
+.misa-modal__voucher-type .ant-select {
+  width: 100%;
+}
+
+.misa-modal__content {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.misa-modal__content-body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.misa-modal__footer {
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 54px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--misa-border);
+}
+
+.misa-modal__footer-left {
+  min-width: 0;
+}
+
+.misa-modal__account-toggle {
+  gap: 8px;
+  color: var(--misa-text-label);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.misa-modal__account-toggle .ant-switch-checked {
+  background: var(--misa-primary) !important;
+}
+
+/* Semantic control contract. This intentionally sits after historical theme
+ * declarations so legacy class names retain their API while resolving to one
+ * default density. Use .ui-table-action only when a table action must stay
+ * compact. */
+.ant-btn,
+.misa-btn-tool,
+.misa-btn-primary {
+  min-height: var(--ui-control-height) !important;
+  height: var(--ui-control-height) !important;
+  border-radius: var(--ui-radius-control) !important;
+}
+
+.ant-btn-primary,
+.misa-btn-primary {
+  background: var(--ui-primary) !important;
+  background-color: var(--ui-primary) !important;
+  border-color: var(--ui-primary) !important;
+}
+
+.misa-toolbar-split-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: var(--ui-control-height, 36px) !important;
+  height: var(--ui-control-height, 36px) !important;
+  border-radius: var(--ui-radius-control, 8px) !important;
+  overflow: hidden !important;
+  background: var(--ui-button-primary-background) !important;
+  box-shadow: none !important;
+}
+
+.misa-toolbar-split-btn .misa-btn-primary,
+.misa-toolbar-split-btn .misa-btn-primary-add,
+.misa-toolbar-split-btn > button:first-child {
+  height: 100% !important;
+  min-height: 100% !important;
+  background: var(--ui-button-primary-background) !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 0 16px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  border-radius: 0 !important;
+}
+
+.misa-toolbar-split-btn .misa-btn-split-arrow,
+.misa-toolbar-split-btn .misa-btn-primary-add-menu,
+.misa-toolbar-split-btn > button:last-child:not(:first-child) {
+  height: 100% !important;
+  min-height: 100% !important;
+  background: var(--ui-button-primary-background) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.25) !important;
+  padding: 0 10px !important;
+  font-size: 12px !important;
+  border-radius: 0 !important;
+}
+
+.misa-btn-secondary {
+  min-height: var(--ui-control-height, 36px) !important;
+  height: var(--ui-control-height, 36px) !important;
+  background: var(--ui-button-secondary-background) !important;
+  color: var(--ui-button-secondary-text) !important;
+  border: 1px solid var(--ui-button-secondary-border) !important;
+  border-radius: var(--ui-radius-control, 8px) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  padding: 0 16px !important;
+  box-shadow: none !important;
+}
+
+.misa-btn-secondary:hover {
+  border-color: var(--ui-button-secondary-border-hover) !important;
+  color: var(--ui-primary-hover) !important;
+  background: var(--ui-button-secondary-background-hover) !important;
+}
+
+.ant-btn-primary:hover,
+.misa-btn-primary:hover {
+  background: var(--ui-primary-hover) !important;
+  background-color: var(--ui-primary-hover) !important;
+  border-color: var(--ui-primary-hover) !important;
+}
+
+.ant-btn-primary:active,
+.misa-btn-primary:active {
+  background: var(--ui-primary-active) !important;
+  background-color: var(--ui-primary-active) !important;
+  border-color: var(--ui-primary-active) !important;
+}
+
+.ant-btn:focus-visible,
+.misa-btn-tool:focus-visible,
+.misa-btn-primary:focus-visible,
+.misa-btn-secondary:focus-visible,
+.misa-btn-danger:focus-visible,
+.ant-input:focus,
+.ant-input-affix-wrapper-focused,
+.ant-input-number-focused,
+.ant-picker-focused,
+.ant-select-focused,
+.ant-select-open {
+  outline: none !important;
+  box-shadow: var(--ui-focus-ring) !important;
+}
+
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-input-number,
+.ant-picker,
+.ant-select-outlined,
+.ant-select-outlined .ant-select-selector {
+  min-height: var(--ui-control-height) !important;
+  height: var(--ui-control-height) !important;
+  border-radius: var(--ui-radius-control) !important;
+}
+
+.ant-select-outlined:not(.ant-select-disabled):hover,
+.ant-select-outlined:not(.ant-select-disabled):hover .ant-select-selector,
+.ant-picker:hover {
+  --ant-select-border-color: var(--ui-primary-hover) !important;
+  border-color: var(--ui-primary-hover) !important;
+}
+
+.ant-select-focused.ant-select-outlined,
+.ant-select-open.ant-select-outlined,
+.ant-select-focused .ant-select-selector,
+.ant-select-open .ant-select-selector,
+.ant-picker-focused {
+  --ant-select-border-color: var(--ui-primary) !important;
+  border-color: var(--ui-primary) !important;
+}
+
+.ui-table-action,
+.misa-voucher-table .ui-table-action,
+.misa-grid-table .ui-table-action {
+  min-height: var(--ui-control-height-compact) !important;
+  height: var(--ui-control-height-compact) !important;
+  border-radius: var(--ui-radius-compact) !important;
+}
+
+.misa-voucher-table :is(.ant-input, .ant-input-affix-wrapper, .ant-input-number, .ant-picker, .ant-select-outlined, .ant-select-outlined .ant-select-selector),
+.misa-grid-table :is(.ant-input, .ant-input-affix-wrapper, .ant-input-number, .ant-picker, .ant-select-outlined, .ant-select-outlined .ant-select-selector) {
+  min-height: var(--ui-control-height-compact) !important;
+  height: var(--ui-control-height-compact) !important;
+  border-radius: var(--ui-radius-compact) !important;
+}
+
+@media (max-width: 768px) {
+  .misa-modal__title {
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 14px;
+  }
+
+  .misa-modal__title-main {
+    flex-wrap: wrap;
+  }
+
+  .misa-modal__voucher-type {
+    width: min(240px, 100%);
+    margin-left: 40px;
+  }
+
+  .misa-modal__footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .misa-modal__footer-actions {
+    justify-content: flex-end;
+  }
+}
+
+/* Shared button state contract. These selectors deliberately target only
+ * Ant's semantic types and compatibility button aliases, leaving feature
+ * layouts and custom action classes in charge of their own arrangement. */
+.ant-btn-primary,
+.misa-btn-primary {
+  background: var(--ui-button-primary-background) !important;
+  background-color: var(--ui-button-primary-background) !important;
+  border-color: var(--ui-button-primary-border) !important;
+  color: var(--ui-button-primary-text) !important;
+}
+
+.ant-btn-primary:hover:not(:disabled),
+.misa-btn-primary:hover:not(:disabled) {
+  background: var(--ui-button-primary-background-hover) !important;
+  background-color: var(--ui-button-primary-background-hover) !important;
+  border-color: var(--ui-button-primary-background-hover) !important;
+}
+
+.ant-btn-primary:active:not(:disabled),
+.misa-btn-primary:active:not(:disabled) {
+  background: var(--ui-button-primary-background-active) !important;
+  background-color: var(--ui-button-primary-background-active) !important;
+  border-color: var(--ui-button-primary-background-active) !important;
+}
+
+.ant-btn-default,
+.misa-btn-secondary,
+.misa-btn-tool-secondary {
+  background: var(--ui-button-secondary-background) !important;
+  border-color: var(--ui-button-secondary-border) !important;
+  color: var(--ui-button-secondary-text) !important;
+}
+
+.ant-btn-default:hover:not(:disabled),
+.misa-btn-secondary:hover:not(:disabled),
+.misa-btn-tool-secondary:hover:not(:disabled) {
+  background: var(--ui-button-secondary-background-hover) !important;
+  border-color: var(--ui-button-secondary-border-hover) !important;
+  color: var(--ui-primary) !important;
+}
+
+.ant-btn-dangerous,
+.misa-btn-danger {
+  background: var(--ui-button-danger-background) !important;
+  background-color: var(--ui-button-danger-background) !important;
+  border-color: var(--ui-button-danger-border) !important;
+  color: var(--ui-button-danger-text) !important;
+}
+
+.ant-btn-dangerous:hover:not(:disabled),
+.misa-btn-danger:hover:not(:disabled) {
+  background: var(--ui-button-danger-background-hover) !important;
+  background-color: var(--ui-button-danger-background-hover) !important;
+  border-color: var(--ui-button-danger-background-hover) !important;
+}
+
+:is(.ant-btn, .misa-btn-primary, .misa-btn-secondary, .misa-btn-danger):is(:disabled, [disabled]),
+.ant-btn-disabled,
+.misa-btn-disabled {
+  background: var(--ui-button-disabled-background) !important;
+  border-color: var(--ui-button-disabled-border) !important;
+  color: var(--ui-button-disabled-text) !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
+}
+
+/* Voucher dialogs are work surfaces, not application pages.  Keep them
+ * centered with a bounded viewport while allowing only the form body to
+ * scroll; the command footer therefore remains visible at all times. */
+.ant-modal.misa-voucher-modal,
+.misa-voucher-modal {
+  width: min(1440px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
+  height: auto !important;
+  max-height: 92vh !important;
+  margin: 0 auto !important;
+  padding-bottom: 0 !important;
+}
+
+.misa-voucher-modal .ant-modal-content {
+  height: min(92vh, 900px) !important;
+  max-height: 92vh !important;
+}
+
+.misa-voucher-modal .ant-modal-body {
+  height: auto !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.misa-voucher-modal .misa-voucher-modal-frame .ui-modal-frame__body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+@media (max-width: 900px) {
+  .ant-modal.misa-voucher-modal,
+  .misa-voucher-modal {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+    max-height: 96vh !important;
+  }
+
+  .misa-voucher-modal .ant-modal-content {
+    height: 96vh !important;
+    max-height: 96vh !important;
+  }
+}

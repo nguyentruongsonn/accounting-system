@@ -1,0 +1,90 @@
+# Environment & Secrets
+.env
+.env.backup
+.env.production
+backend/.env
+backend/.env.backup
+backend/.env.production
+*.local
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# PHP / Backend
+backend/vendor/
+backend/.phpunit.result.cache
+backend/storage/*.key
+backend/storage/pail
+backend/storage/logs/*.log
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/public/storage
+backend/public/build
+backend/public/hot
+backend/storage/test-results/
+
+# Temporary scripts and screenshots
+customer_modal_check.png
+customer_modal_focused.png
+backend/fix*.php
+backend/test_*.php
+backend/list_users.php
+backend/reset_pass.php
+backend/verify_db.php
+backend/refactor_*.php
+frontend/fix*.js
+frontend/fix_*.cjs
+frontend/update_*.js
+frontend/update_*.cjs
+
+# Logs
+*.log
+logs/
+
+# Local browser automation profiles (never release artifacts)
+tmp_chrome_profile/
+tmp_puppeteer_profile*/
+.playwright-cli/
+
+# Local validation builds and one-off audit scripts
+frontend/dist-validation-*/
+frontend/check_files.mjs
+frontend/direct_purchase_audit.mjs
+
+# Superpowers agent execution ledgers and review packages
+.superpowers/
+.agents/
+agents/
+AGENTS.md
+
+# Local baseline archives, outputs, and database dumps
+output/
+
+# Browser screenshots and captured command streams used only for local QA
+output/playwright*/
+frontend/output/playwright*/
+frontend/test_screenshots/
+output/two-role-before/
+output/*.out.txt
+output/*.err.txt
+.tmp_rg_frontend.txt
+account-latest.png
+release-inventory-*.json
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

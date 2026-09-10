@@ -1,0 +1,1128 @@
+/*
+ * Canonical compact ERP presentation layer.
+ *
+ * This file is loaded after legacy theme layers. It intentionally contains
+ * presentation-only overrides: routes, data, handlers, form contracts and
+ * accounting rules remain owned by feature code.
+ */
+:root {
+  --ui-compact-page-gap: 16px;
+  --ui-compact-control-gap: 8px;
+  --ui-compact-radius: 10px;
+  --ui-compact-border: rgba(60, 60, 67, 0.14);
+  --ui-compact-surface: #ffffff;
+  --ui-compact-muted-surface: #f7f8fa;
+  --ui-shell-sidebar: #172335;
+  --ui-shell-sidebar-hover: #21334c;
+  --ui-shell-sidebar-active: #263a57;
+  --ui-shell-sidebar-text: #aebdd0;
+  --ui-shell-sidebar-muted: #8fa1b7;
+}
+
+/* Approved mockup shell: dark navigation, quiet white header, neutral canvas. */
+.app-sidebar,
+.app-sidebar.ant-layout-sider,
+.app-sidebar .ant-layout-sider-children {
+  background: var(--ui-shell-sidebar) !important;
+  border-color: rgba(255, 255, 255, 0.09) !important;
+  box-shadow: none !important;
+}
+
+.app-sidebar .misa-logo-container {
+  height: 76px;
+  padding: 0 20px;
+  background: var(--ui-shell-sidebar) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.app-sidebar .misa-logo-icon-box {
+  background: #ffffff !important;
+  color: var(--ui-shell-sidebar) !important;
+  box-shadow: none !important;
+}
+
+.app-sidebar .misa-logo-text-title {
+  color: #ffffff !important;
+}
+
+.app-sidebar .misa-logo-text-subtitle {
+  color: var(--ui-shell-sidebar-muted) !important;
+}
+
+.app-sidebar .misa-quick-add-btn-box {
+  display: none !important;
+}
+
+.app-sidebar .custom-menu,
+.app-sidebar .custom-menu.ant-menu-light {
+  margin-top: 18px;
+  padding: 0 12px !important;
+  background: transparent !important;
+  color: var(--ui-shell-sidebar-text) !important;
+}
+
+.app-sidebar .custom-menu .ant-menu-item,
+.app-sidebar .custom-menu .ant-menu-submenu-title {
+  height: 44px;
+  line-height: 44px;
+  margin: 4px 0;
+  padding-inline: 12px !important;
+  border-radius: 8px;
+  color: var(--ui-shell-sidebar-text) !important;
+}
+
+.app-sidebar .custom-menu .ant-menu-item:hover,
+.app-sidebar .custom-menu .ant-menu-submenu-title:hover {
+  background: var(--ui-shell-sidebar-hover) !important;
+  color: #ffffff !important;
+}
+
+.app-sidebar .custom-menu .ant-menu-item-selected {
+  background: var(--ui-shell-sidebar-active) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.app-sidebar .custom-menu .ant-menu-item-selected::after {
+  display: none !important;
+}
+
+.app-header {
+  padding: 0 24px !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #e3e7ec !important;
+  backdrop-filter: none !important;
+}
+
+.app-header__leading,
+.app-breadcrumb {
+  display: flex;
+  align-items: center;
+}
+
+.app-header__leading {
+  min-width: 0;
+  gap: 12px;
+}
+
+.app-sidebar-toggle {
+  display: none !important;
+}
+
+.app-breadcrumb {
+  min-width: 0;
+  gap: 6px;
+  color: #687386;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.app-breadcrumb__separator {
+  color: #a7b0bd;
+}
+
+.app-breadcrumb strong {
+  overflow: hidden;
+  color: #182230;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-main,
+.app-content {
+  background: #f4f6f8 !important;
+}
+
+/* Keep the application viewport bounded so long pages scroll inside their
+ * active workspace instead of expanding the document behind body overflow. */
+.app-shell {
+  height: 100vh;
+  min-height: 0 !important;
+  overflow: hidden;
+}
+
+.app-main {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* One page rhythm; nested legacy roots no longer add independent gutters. */
+:where(.app-content, .ui-page-shell, .misa-page-container, .apple-feature-page,
+  .apple-settings-page, .misa-page-layout, .misa-page-layout-white,
+  .misa-page-layout-gray, .misa-page-layout-p16) {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.app-content {
+  display: flex;
+  flex: 1 1 auto;
+  height: calc(100vh - var(--ui-header-height, 56px));
+  min-height: 0 !important;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 12px !important;
+}
+
+/* Shared page metadata remains available to the few standalone legacy views
+ * that still render it directly; the page shell itself owns the page layout. */
+.page-title-content {
+  display: block !important;
+}
+
+.page-title-content__eyebrow,
+.page-title-content__title,
+.page-title-content__description {
+  margin: 0;
+}
+
+.page-title-content__eyebrow {
+  color: var(--ui-text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.page-title-content__title {
+  color: var(--ui-text);
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.page-title-content__description {
+  margin-top: 4px;
+  color: var(--ui-text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.page-title-content__extra {
+  margin-top: 12px;
+}
+
+/* The application shell owns the one outer page inset. These wrappers remain
+ * edge-to-edge so a page shell, workspace, or active tab cannot add it again. */
+.ui-page-shell,
+.misa-page-container,
+.apple-feature-page,
+.apple-settings-page,
+.misa-workspace-container,
+.cash-workspace-shell,
+.misa-workspace-surface,
+.misa-workspace-shell {
+  min-width: 0;
+  min-height: 0;
+  gap: 0 !important;
+  padding: 0 !important;
+  border-radius: var(--ui-compact-radius);
+}
+
+.ui-workspace {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+}
+
+/* Cash/report workspace: the tab pane is the scroll owner while the shell
+ * and page body stay constrained to the viewport. */
+.ui-page-shell.misa-workspace-shell {
+  height: 100%;
+  min-height: 0 !important;
+  overflow: hidden;
+}
+
+.ui-page-shell.misa-workspace-shell > .ui-page-body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ui-workspace-frame {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: var(--ui-radius-control);
+  background: var(--ui-surface);
+}
+
+/* Match the flat tab / toolbar / content structure of Cash and Purchase. */
+.misa-workspace-shell .ui-workspace-frame {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.ui-page-shell > .ui-workspace-tabs {
+  flex-shrink: 0;
+}
+
+.ui-page-shell > .ui-workspace-tabs a.misa-workspace-tab-item {
+  text-decoration: none;
+}
+
+.ui-workspace-frame > .ui-page-toolbar {
+  flex-shrink: 0;
+}
+
+.ui-workspace-tabs-root,
+.ui-workspace-body {
+  min-width: 0;
+  min-height: 0;
+}
+
+.ui-workspace-tabs-root {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.ui-workspace-tabs-root > .ant-tabs-content-holder,
+.ui-workspace-frame > .ui-workspace-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.ui-workspace-tabs {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 8px;
+}
+
+/* Keep long workspace tab labels reachable on narrow viewports. Ant Tabs
+ * otherwise sizes its nav to the full label row and the workspace frame clips
+ * the trailing tabs. The nav stays inside the frame while its inner list can
+ * scroll horizontally; this is presentation-only and does not change tab
+ * routing or selection state. */
+.ui-workspace-tabs-root .ant-tabs-nav {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: thin;
+}
+
+.ui-workspace-tabs-root .ant-tabs-nav-wrap {
+  min-width: 0 !important;
+  overflow-x: auto !important;
+}
+
+.ui-workspace-tabs-root .ant-tabs-nav-list {
+  min-width: max-content !important;
+}
+
+/* Cash workspace mirrors the approved reference without changing its handlers. */
+:where(.misa-workspace-shell, .cash-workspace-shell, .misa-workspace-container,
+  .inventory-workspace-shell, .fixed-asset-workspace-shell, .gl-workspace-shell,
+  .bank-workspace-shell, .reports-workspace-shell, .cash-workspace-surface) {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.misa-workspace-tab-nav {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 38px !important;
+  margin: 0 0 10px !important;
+  padding: 3px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: #E2E8F0 !important;
+  box-shadow: none !important;
+}
+
+.misa-workspace-tab-list {
+  display: flex !important;
+  align-items: center !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  gap: 3px !important;
+  overflow-x: auto !important;
+}
+
+.misa-workspace-tab-item {
+  height: 38px !important;
+  padding: 0 14px !important;
+  border: 0 !important;
+  border-radius: 7px !important;
+  background: transparent !important;
+  color: #64748B !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.misa-workspace-tab-item:hover {
+  color: #0F172A !important;
+  background: rgba(255, 255, 255, 0.4) !important;
+}
+
+.misa-workspace-tab-item.active {
+  background: #FFFFFF !important;
+  color: var(--ui-primary) !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+  border: 1px solid #E5E7EB !important;
+}
+
+.misa-workspace-tab-extra {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-left: 8px !important;
+}
+
+.cash-list-page {
+  gap: var(--ui-compact-section-gap) !important;
+  padding: 0 !important;
+}
+
+.cash-voucher-surface {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--ui-compact-control-gap);
+}
+
+
+:where(.misa-tab-pane, .cash-tab-panel) {
+  min-width: 0;
+  padding: 0 !important;
+}
+
+/* The workspace body is the sole scroll owner for native-tab workspaces.
+ * Individual panes stay flow content so a zoomed toolbar cannot create a
+ * nested vertical scrollbar or trap scrolling before the table is reached. */
+.misa-tab-panel-container > .misa-tab-pane:not(.misa-tab-pane-hidden) {
+  min-height: 0;
+}
+
+/* Legacy cash selectors are more specific than the generic tab wrapper. */
+.cash-workspace-shell .misa-tab-pane {
+  padding: 0 !important;
+}
+
+:where(.misa-workspace-card, .misa-table-card, .misa-table-card-flex,
+  .misa-table-card-auto, .misa-grid-wrapper, .ui-table-surface) {
+  min-width: 0;
+  border: 1px solid var(--ui-compact-border) !important;
+  border-radius: var(--ui-compact-radius) !important;
+  background: var(--ui-compact-surface) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.045) !important;
+}
+
+/* Toolbars have one height and one gap, regardless of originating module. */
+:where(.ui-page-toolbar, .cash-toolbar, .misa-list-toolbar,
+  .misa-toolbar-header, .misa-toolbar, .misa-action-bar, .apple-section-gap) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--ui-compact-control-gap);
+  min-height: 48px;
+  margin: 0 0 12px !important;
+  padding: 8px 10px !important;
+  border: 1px solid var(--ui-compact-border);
+  border-radius: var(--ui-compact-radius);
+  background: var(--ui-compact-surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.035);
+}
+
+.ui-page-toolbar--hidden,
+.ui-page-toolbar:empty,
+.ui-page-toolbar-slot:empty,
+.ui-page-toolbar-slot:has(.ui-page-toolbar--hidden),
+.ui-page-toolbar-slot:has(.ui-page-toolbar:empty) {
+  display: none !important;
+}
+
+/* Neutralize nested table cards inside DataTableSurface to eliminate double borders & extra spacing */
+.ui-table-surface :where(.misa-table-card, .misa-table-card-flex, .misa-table-card-auto, .misa-table-wrapper, .misa-grid-wrapper) {
+  border: none !important;
+  margin: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+:where(.ui-page-toolbar__leading, .ui-page-toolbar__filters,
+  .ui-page-toolbar__actions, .cash-toolbar-left, .cash-toolbar-right,
+  .misa-toolbar-left, .misa-toolbar-right, .misa-toolbar-group,
+  .misa-toolbar-group-right, .misa-toolbar-filter-group,
+  .misa-toolbar-actions, .misa-action-bar-left, .misa-action-bar-right) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--ui-compact-control-gap);
+  min-width: 0;
+}
+
+:where(.ui-page-toolbar__filters, .misa-toolbar-filter-group,
+  .misa-action-bar-left) {
+  flex: 1 1 280px;
+}
+
+:where(.ui-page-toolbar__actions, .cash-toolbar-right, .misa-toolbar-right,
+  .misa-toolbar-actions, .misa-action-bar-right) {
+  justify-content: flex-end;
+}
+
+.cash-audit-toolbar .ui-page-toolbar__filters {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+.cash-audit-toolbar .ui-page-toolbar__actions {
+  flex: 0 1 auto;
+  min-width: 220px;
+  white-space: nowrap;
+}
+
+.cash-audit-search {
+  width: min(420px, 100%);
+  min-width: 0;
+}
+
+
+.cash-audit-toolbar .misa-search-box,
+.cash-audit-toolbar .misa-search-box .ant-input-search,
+.cash-audit-toolbar .misa-search-box .ant-input-group-wrapper {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .cash-audit-toolbar .ui-page-toolbar__actions {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* Report export controls must remain a real flex row inside the responsive
+ * toolbar.  The width contract prevents utility-class children from shrinking
+ * to one button and clipping the second action at narrow viewports. */
+.stock-report-actions {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--ui-compact-control-gap);
+}
+
+.stock-report-actions .misa-btn-tool {
+  width: auto;
+  min-width: var(--ui-control-height, 36px);
+  padding-inline: 12px !important;
+  white-space: nowrap;
+}
+
+/* Cash reports use explicit content sections so filters, catalog, summary,
+ * and voucher details remain visually distinct without changing data flow. */
+.cash-reports-page > .ui-page-body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cash-report-section {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--ui-compact-border);
+  border-radius: var(--ui-compact-radius);
+  background: var(--ui-compact-surface);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.035);
+}
+
+.cash-report-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.cash-report-section-header h2 {
+  margin: 0;
+  color: var(--ui-text);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.cash-report-section-header p {
+  margin: 4px 0 0;
+  color: var(--ui-text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.cash-report-catalog-header {
+  align-items: center;
+}
+
+.cash-report-catalog-tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cash-report-catalog-search {
+  width: min(280px, 100%);
+}
+
+.cash-reports-page .misa-report-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+}
+
+.cash-reports-page .misa-report-card {
+  min-height: 132px;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--ui-compact-radius);
+  box-shadow: none;
+  transform: none;
+}
+
+.cash-reports-page .misa-report-card:hover {
+  border-color: var(--ui-primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.09);
+  transform: none;
+}
+
+.cash-report-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cash-report-card-status {
+  color: var(--ui-text-muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.cash-reports-page .misa-report-card-title {
+  margin: 0;
+  font-size: 14px;
+}
+
+.cash-reports-page .misa-report-card-sub {
+  margin: 4px 0 0;
+  font-style: normal;
+  line-height: 1.45;
+}
+
+.cash-reports-page .misa-report-card-footer {
+  min-width: 0;
+  gap: 8px;
+  margin: 0;
+  padding-top: 9px;
+  color: var(--ui-text-muted);
+  font-size: 11px;
+}
+
+.cash-reports-page .misa-report-card-footer .ant-btn {
+  flex: 0 0 auto;
+  height: auto;
+  padding: 0;
+}
+
+.cash-report-summary-grid {
+  margin: 0;
+}
+
+.cash-report-record-count {
+  flex: 0 0 auto;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--ui-surface-muted, #f4f6f8);
+  color: var(--ui-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cash-report-details-section > .ui-table-surface {
+  margin-bottom: 0 !important;
+}
+
+/* Tables scroll inside their own surface; empty state stays compact. */
+:where(.ui-table-surface, .misa-table-wrapper, .misa-table-card,
+  .misa-table-card-flex, .misa-grid-wrapper, .misa-table-container,
+  .misa-grid-scroll-box, .misa-table-scroll-box) {
+  max-width: 100%;
+  overflow-x: auto !important;
+  overflow-y: hidden;
+}
+
+.ui-table-surface {
+  overflow: hidden !important;
+  background: var(--ui-table-surface-background) !important;
+}
+
+.ui-table-surface__scroll {
+  min-width: 0;
+  max-width: 100%;
+  overflow: auto;
+}
+
+.ui-table-surface__summary {
+  padding: 10px 12px;
+  border-top: 1px solid var(--ui-border-subtle);
+  background: var(--ui-table-summary-background);
+}
+
+:where(.ui-table-surface .ant-table-thead > tr > th,
+  .misa-table-wrapper .ant-table-thead > tr > th,
+  .misa-grid-wrapper .ant-table-thead > tr > th) {
+  padding: 9px 10px !important;
+  background: var(--ui-table-header-background) !important;
+  color: var(--misa-text-label) !important;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+:where(.ui-table-surface .ant-table-tbody > tr > td,
+  .misa-table-wrapper .ant-table-tbody > tr > td,
+  .misa-grid-wrapper .ant-table-tbody > tr > td) {
+  padding: 9px 10px !important;
+  border-bottom-color: rgba(60, 60, 67, 0.09) !important;
+}
+
+:where(.ui-table-surface .ant-table-placeholder > td,
+  .misa-table-wrapper .ant-table-placeholder > td,
+  .misa-grid-wrapper .ant-table-placeholder > td) {
+  height: 112px !important;
+  padding: 20px 12px !important;
+}
+
+:where(.ui-table-surface .ant-empty, .misa-table-wrapper .ant-empty,
+  .misa-grid-wrapper .ant-empty) {
+  margin: 8px 0 !important;
+}
+
+.ui-table-empty,
+.ui-table-loading,
+.ui-state-inline,
+.ui-state-unavailable {
+  min-height: 112px;
+  padding: 20px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+/* Every modal uses a compact header/body/footer stack. */
+:where(.ant-modal-content, .misa-modal-window, .misa-modal-window-xl) {
+  border-radius: 12px !important;
+  border: 1px solid var(--ui-compact-border);
+  overflow: hidden;
+}
+
+:where(.ant-modal-header, .misa-modal-top-bar) {
+  min-height: 54px;
+  margin: 0 !important;
+  padding: 14px 18px !important;
+  border-bottom: 1px solid rgba(60, 60, 67, 0.09) !important;
+  background: var(--ui-compact-surface) !important;
+}
+
+:where(.ant-modal-body, .misa-modal-scroll-body) {
+  padding: 16px 18px !important;
+  background: var(--ui-compact-surface) !important;
+}
+
+:where(.ant-modal-footer, .misa-modal-bottom-bar, .misa-modal-footer-container) {
+  margin: 0 !important;
+  padding: 11px 18px !important;
+  border-top: 1px solid rgba(60, 60, 67, 0.09) !important;
+  background: #fbfbfd !important;
+}
+
+/* Shared modal content keeps simple dialogs compact while leaving voucher
+ * footers owned by their existing Ant Modal workflow. */
+.ui-modal-frame {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.ui-modal-frame__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+  gap: 12px;
+  padding: 18px;
+  box-sizing: border-box;
+  background: var(--ui-modal-background);
+}
+
+.ui-modal-frame__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: 0;
+  padding: 11px 18px;
+  border-top: 1px solid var(--ui-border-subtle);
+  background: var(--ui-modal-footer-background);
+}
+
+/* Simple quick-add dialogs use the same right-aligned command row as voucher
+ * dialogs while keeping the actions outside the independently scrolling body. */
+.ui-modal-frame__footer .misa-modal-footer--simple {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+}
+
+/* Default-account drawer regions follow the same shell contract as modals:
+ * header and commands stay fixed while only the form body scrolls. */
+.misa-reason-drawer .ant-drawer-body {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  padding: 0 !important;
+}
+
+.misa-reason-drawer__header {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--ui-border-subtle);
+  background: var(--ui-surface);
+}
+
+.misa-reason-drawer__header-main {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.misa-reason-drawer__title {
+  overflow: hidden;
+  color: var(--ui-text);
+  font-size: 15px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.misa-reason-drawer__help {
+  flex: 0 0 auto;
+  color: var(--ui-text-muted);
+  cursor: help;
+  font-size: 14px;
+}
+
+.misa-reason-drawer__close {
+  flex: 0 0 auto;
+  min-width: 32px;
+}
+
+.misa-reason-drawer__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 24px;
+}
+
+.misa-reason-drawer__footer {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 24px;
+  border-top: 1px solid var(--ui-border-subtle);
+  background: var(--ui-surface);
+}
+
+.misa-voucher-modal .ant-modal-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 12px;
+}
+
+/* Modal families keep compact dialogs and utility dialogs within their
+ * approved presentation widths without changing their workflows. */
+.misa-quick-bank-modal {
+  width: min(640px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
+}
+
+.misa-collect-multi-customer-modal {
+  width: min(1040px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
+}
+
+.misa-bank-voucher-print-modal {
+  width: min(880px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
+}
+
+.misa-modal__title {
+  min-height: 54px;
+  padding: 8px 0;
+}
+
+.misa-modal__content-body {
+  min-height: 0;
+}
+
+/* MisaModal keeps its legacy content/footer presentation inside the shared
+ * frame. The adapter owns semantics only here: the original body remains the
+ * growing scroll region and the original footer remains the sole separator. */
+.misa-modal .misa-modal__content.ui-modal-frame {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.misa-modal .misa-modal__content > .ui-modal-frame__body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.misa-modal .misa-modal__content > .ui-modal-frame__footer {
+  flex: 0 0 auto;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* All action feedback uses the same top-right toast footprint. */
+:where(.ant-message) {
+  top: 24px !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+  pointer-events: none !important;
+}
+
+:where(.ant-notification) {
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  width: min(420px, calc(100vw - 32px)) !important;
+}
+
+:where(.ant-message-notice) {
+  text-align: center !important;
+}
+
+:where(.ant-message-notice-content, .ant-notification-notice) {
+  border: 1px solid var(--ui-compact-border);
+  border-radius: var(--ui-compact-radius) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+}
+
+/* Remove decorative inline banners requested by the internal UI contract. */
+:where(.misa-report-notice, .cash-inline-note, .apple-page-header, .apple-compact-header,
+  .apple-section-heading, .misa-btn-tool-circle-green) {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  .app-content {
+    padding: 12px !important;
+  }
+
+  /* Process dashboards use a desktop two-column canvas by default. Stack the
+   * report sidebar on narrow screens so the main workflow remains reachable
+   * without forcing the whole workspace wider than the viewport. */
+  .misa-ca-process-container {
+    width: 100% !important;
+    min-width: 0 !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .misa-ca-process-main {
+    min-width: 0 !important;
+  }
+
+  .misa-ca-sidebar {
+    width: 100% !important;
+  }
+
+:where(.ui-page-toolbar, .cash-toolbar, .misa-list-toolbar,
+  .misa-toolbar-header, .misa-toolbar, .misa-action-bar) {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  :where(.ui-page-toolbar__leading, .ui-page-toolbar__filters,
+    .ui-page-toolbar__actions, .cash-toolbar-left, .cash-toolbar-right,
+    .misa-toolbar-left, .misa-toolbar-right, .misa-action-bar-left,
+    .misa-action-bar-right) {
+    flex: 0 0 auto;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .cash-audit-toolbar .ui-page-toolbar__filters,
+  .cash-audit-toolbar .ui-page-toolbar__actions {
+    flex: 0 0 auto;
+  }
+
+  .cash-audit-search {
+    width: 100%;
+  }
+
+  .stock-report-actions {
+    justify-content: flex-start;
+  }
+
+  .cash-report-filter-form,
+  .cash-report-filter-form .ant-form-item {
+    width: 100%;
+    margin-inline-end: 0;
+  }
+
+  .cash-report-filter-form .ant-picker,
+  .cash-report-filter-form .ant-input,
+  .cash-report-filter-form .ant-select {
+    width: 100% !important;
+  }
+
+  .cash-report-catalog-header,
+  .cash-report-section-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .cash-report-catalog-tools {
+    justify-content: flex-start;
+  }
+
+  .cash-report-catalog-search {
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .cash-report-section {
+    padding: 12px;
+  }
+
+  .cash-reports-page .misa-report-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cash-report-catalog-tools > * {
+    width: 100% !important;
+  }
+}
+
+/* Embedded workspace tabs keep filters visible without introducing a second
+ * semantic toolbar inside the parent's page body. */
+.ui-embedded-filter-row {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--ui-border, #e5e7eb);
+  border-radius: 8px;
+  background: var(--ui-surface-muted, #f8fafc);
+}
+
+@media (max-width: 768px) {
+  .ui-modal-frame__body {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 18px;
+  }
+
+  .ui-modal-frame__footer,
+  .misa-modal-footer,
+  .misa-modal-footer-custom {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .ui-modal-form-grid--responsive .ant-row,
+  .misa-quick-contact-modal__frame .ant-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .ui-modal-form-grid--responsive .ant-col,
+  .misa-quick-contact-modal__frame .ant-col {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+
+  .ui-modal-frame--simple .misa-form-grid,
+  .misa-collect-by-invoice-modal__frame .misa-form-grid,
+  .misa-insurance-payment-modal__frame .misa-form-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .ui-modal-frame--simple .misa-form-grid > [class*='misa-col-'],
+  .misa-collect-by-invoice-modal__frame .misa-form-grid > [class*='misa-col-'],
+  .misa-insurance-payment-modal__frame .misa-form-grid > [class*='misa-col-'] {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+/* Nested Ant rows are used by the quick-add bank form and must follow the
+ * same compact single-column contract as the outer modal grid. */
+@media (max-width: 900px) {
+  :where(.misa-quick-bank-modal__frame, .misa-quick-contact-modal__frame,
+    .misa-collect-by-invoice-modal__frame, .misa-insurance-payment-modal__frame)
+    .ant-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  :where(.misa-quick-bank-modal__frame, .misa-quick-contact-modal__frame,
+    .misa-collect-by-invoice-modal__frame, .misa-insurance-payment-modal__frame)
+    .ant-col {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+}
