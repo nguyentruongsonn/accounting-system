@@ -618,12 +618,14 @@ body {
 .misa-voucher-table td .ant-select,
 .misa-voucher-table td .ant-select-single,
 .misa-voucher-table td .ant-input-number,
+.misa-voucher-table td .ant-picker,
 .misa-grid-table td input,
 .misa-grid-table td .misa-table-input,
 .misa-grid-table td .ant-input,
 .misa-grid-table td .ant-select,
 .misa-grid-table td .ant-select-single,
-.misa-grid-table td .ant-input-number {
+.misa-grid-table td .ant-input-number,
+.misa-grid-table td .ant-picker {
   width: 100% !important;
   min-width: 100% !important;
   max-width: 100% !important;
@@ -731,7 +733,7 @@ body {
 .misa-grid-table td .ant-input-number {
   width: 100% !important;
   background: #ffffff !important;
-  border: 1.2px solid #8c9ba5 !important;
+  border: 1px solid #d9d9d9 !important;
   border-radius: 6px !important;
   height: 32px !important;
   min-height: 32px !important;
@@ -740,6 +742,50 @@ body {
   align-items: center !important;
   padding: 0 !important;
   transition: all 0.15s ease !important;
+}
+
+/* Standard outlined date picker style for all editable table cells. */
+.misa-voucher-table td .ant-picker,
+.misa-grid-table td .ant-picker {
+  width: 100% !important;
+  min-width: 100% !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  box-sizing: border-box !important;
+  border: 1px solid #d9d9d9 !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  padding: 0 8px !important;
+  transition: all 0.15s ease !important;
+}
+
+.misa-voucher-table td .ant-picker:hover,
+.misa-grid-table td .ant-picker:hover {
+  border-color: #4096ff !important;
+}
+
+.misa-voucher-table td .ant-picker-focused,
+.misa-grid-table td .ant-picker-focused {
+  border-color: #1677ff !important;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+}
+
+/* Keep the date text flexible so the calendar suffix stays inside the field.
+ * The table-wide input rule must not give the nested text input 100% of the
+ * picker before the suffix gets its own flex space. */
+.misa-voucher-table td .ant-picker .ant-picker-input,
+.misa-grid-table td .ant-picker .ant-picker-input {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: auto !important;
+}
+
+.misa-voucher-table td .ant-picker .ant-picker-input > input,
+.misa-grid-table td .ant-picker .ant-picker-input > input {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
 }
 
 .misa-voucher-table td .ant-input-number-input-wrap,
@@ -3099,6 +3145,30 @@ table.misa-voucher-table td {
   white-space: nowrap !important;
 }
 
+/* Contract goods and payment schedule share one scroll/border contract. */
+.misa-contract-table-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+}
+
+.misa-contract-table-scroll > table.misa-voucher-table {
+  min-width: max-content;
+}
+
+.misa-contract-table-scroll .misa-voucher-table th,
+.misa-contract-table-scroll .misa-voucher-table td {
+  white-space: nowrap !important;
+}
+
+.misa-contract-schedule-actions {
+  margin-top: 0 !important;
+}
+
 .misa-min-w-1000 {
   min-width: 1000px !important;
 }
@@ -3149,20 +3219,24 @@ table.misa-voucher-table td {
   min-width: 900px;
 }
 
-.misa-col-w-36 { width: 36px; }
-.misa-col-w-45 { width: 45px; }
-.misa-col-w-85 { width: 85px; }
-.misa-col-w-90 { width: 90px; }
-.misa-col-w-100 { width: 100px; }
-.misa-col-w-110 { width: 110px; }
-.misa-col-w-120 { width: 120px; }
-.misa-col-w-130 { width: 130px; }
-.misa-col-w-140 { width: 140px; }
-.misa-col-w-150 { width: 150px; }
-.misa-col-w-160 { width: 160px; }
-.misa-col-w-175 { width: 175px; }
-.misa-col-w-200 { width: 200px; }
+.misa-col-w-36 { width: 36px; min-width: 36px; }
+.misa-col-w-45 { width: 45px; min-width: 45px; }
+.misa-col-w-65 { width: 65px; min-width: 65px; }
+.misa-col-w-80 { width: 80px; min-width: 80px; }
+.misa-col-w-85 { width: 85px; min-width: 85px; }
+.misa-col-w-90 { width: 90px; min-width: 90px; }
+.misa-col-w-95 { width: 95px; min-width: 95px; }
+.misa-col-w-100 { width: 100px; min-width: 100px; }
+.misa-col-w-110 { width: 110px; min-width: 110px; }
+.misa-col-w-120 { width: 120px; min-width: 120px; }
+.misa-col-w-130 { width: 130px; min-width: 130px; }
+.misa-col-w-140 { width: 140px; min-width: 140px; }
+.misa-col-w-150 { width: 150px; min-width: 150px; }
+.misa-col-w-160 { width: 160px; min-width: 160px; }
+.misa-col-w-175 { width: 175px; min-width: 175px; }
+.misa-col-w-200 { width: 200px; min-width: 200px; }
 .misa-col-min-w-200 { min-width: 200px; }
+.misa-col-min-w-220 { min-width: 220px; }
 .misa-col-min-w-260 { min-width: 260px; }
 .misa-col-min-w-280 { min-width: 280px; }
 .misa-col-min-w-320 { min-width: 320px; }
@@ -3199,6 +3273,20 @@ table.misa-voucher-table td {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.misa-footer-attachment {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.misa-footer-attachment .misa-upload-box-dashed {
+  width: 100%;
+  min-height: 112px;
+  box-sizing: border-box;
 }
 
 .misa-footer-einvoice-box {
@@ -7732,6 +7820,65 @@ button:active,
 .misa-ca-spacer-170 {
   width: 170px;
   flex-shrink: 0;
+}
+
+.misa-inline-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #d9e2ef;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 13px;
+}
+
+.misa-inline-status-error {
+  border-color: #fecaca;
+  background: #fff7f7;
+  color: #991b1b;
+}
+
+.login-brand-mark {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: #172033;
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  box-shadow: 0 10px 24px rgba(23, 32, 51, 0.18);
+}
+
+@media (max-width: 640px) {
+  .misa-inline-status { align-items: flex-start; flex-direction: column; }
+}
+
+@media (max-width: 700px) {
+  .misa-footer-layout {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .misa-footer-left,
+  .misa-footer-attachment,
+  .misa-footer-right {
+    width: 100%;
+    max-width: none !important;
+    min-width: 0;
+  }
+
+  .misa-footer-right {
+    margin-left: 0;
+  }
 }
 
 

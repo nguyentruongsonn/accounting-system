@@ -2389,8 +2389,8 @@ export const PurchaseVoucherDetailModal: React.FC<PurchaseVoucherDetailModalProp
                 {/* 4. FOOTER: E-INVOICE LOOKUP + 7-ROW MisaVoucherSummaryCard */}
                 <div className="misa-footer-layout">
                     {/* Left: E-Invoice lookup fields */}
-                    <div className="misa-footer-left" style={{ flex: 1, maxWidth: 520 }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '8px' }}>
+                    <div className="misa-footer-left">
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                             <div>
                                 <div className="misa-field-label">Mã tra cứu HĐĐT</div>
                                 <Form.Item name="einvoice_lookup_code" noStyle>
@@ -2404,8 +2404,10 @@ export const PurchaseVoucherDetailModal: React.FC<PurchaseVoucherDetailModalProp
                                 </Form.Item>
                             </div>
                         </div>
+                    </div>
 
-                        {/* Dashed attachment box matching screenshot */}
+                    {/* Middle: Attachment box */}
+                    <div className="misa-footer-attachment">
                         <div 
                             className="misa-upload-box-dashed"
                             style={{ 

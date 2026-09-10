@@ -26,6 +26,18 @@ class AccountController extends Controller
     public function index(Request $request)
     {
         $companyId = TenantContext::companyId($request);
+        if ($request->has('include_inactive') && is_string($request->input('include_inactive'))) {
+            $normalizedIncludeInactive = filter_var(
+                $request->input('include_inactive'),
+                FILTER_VALIDATE_BOOLEAN,
+                FILTER_NULL_ON_FAILURE,
+            );
+            // Keep invalid strings invalid so Laravel's boolean rule still
+            // rejects them instead of silently converting them to null.
+            if ($normalizedIncludeInactive !== null) {
+                $request->merge(['include_inactive' => $normalizedIncludeInactive]);
+            }
+        }
         $filters = $request->validate([
             'search' => 'nullable|string|max:255',
             'include_inactive' => 'nullable|boolean',

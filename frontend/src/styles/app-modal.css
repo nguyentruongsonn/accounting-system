@@ -393,3 +393,240 @@
     grid-column: span 12 !important;
   }
 }
+
+/* Supplier-payment modal: one responsive shell for filters, search and the
+ * invoice allocation table.  The workflow stays owned by the feature; these
+ * rules only control its presentation at desktop, tablet and phone widths. */
+.ant-modal.app-modal.misa-pay-vendor-modal.app-modal--fixed-width {
+  width: min(1180px, calc(100vw - 24px)) !important;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal.app-modal--voucher :is(.ant-modal-container, .ant-modal-content) {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: calc(100dvh - 24px) !important;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .ant-modal-body {
+  padding: 16px !important;
+  background: var(--ui-surface-subtle) !important;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__filters {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--ui-border);
+  border-radius: 10px;
+  background: var(--ui-surface);
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__filter-grid {
+  display: grid;
+  grid-template-columns: minmax(240px, 1.7fr) repeat(3, minmax(145px, 1fr)) auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__field > span,
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__auto-allocate > span {
+  overflow: hidden;
+  color: var(--ui-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__control {
+  width: 100% !important;
+  min-width: 0;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__filter-action {
+  display: flex;
+  min-width: 112px;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__filter-action .ant-btn {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__summary {
+  display: inline-flex;
+  min-width: 176px;
+  flex-direction: column;
+  gap: 2px;
+  align-self: flex-start;
+  padding: 8px 12px;
+  border: 1px solid var(--ui-border);
+  border-radius: 8px;
+  background: var(--ui-surface-subtle);
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__summary span {
+  color: var(--ui-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__summary strong {
+  color: var(--ui-text);
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__toolbar {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--ui-border);
+  border-radius: 10px;
+  background: var(--ui-surface);
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__search {
+  width: 100% !important;
+  min-width: 0;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__auto-allocate {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 0;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__auto-allocate > span {
+  color: var(--ui-primary);
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__auto-input {
+  width: 210px !important;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__table-shell {
+  max-width: 100%;
+  margin-top: 12px;
+  overflow: hidden;
+  border: 1px solid var(--ui-border);
+  border-radius: 10px;
+  background: var(--ui-surface);
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__table-shell .ant-table {
+  font-size: 12px;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__catalogue-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border: 1px solid #f5d08a;
+  border-radius: 8px;
+  background: #fffaf0;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__footer-summary {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__footer-divider {
+  margin: 0 4px;
+  color: var(--ui-text-muted);
+}
+
+.ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__footer-actions {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 1020px) {
+  .ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__filter-action {
+    grid-column: 1 / -1;
+    max-width: 180px;
+  }
+}
+
+@media (max-width: 700px) {
+  .ant-modal.app-modal.misa-pay-vendor-modal .ant-modal-body {
+    padding: 12px !important;
+  }
+
+  .ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__filter-grid,
+  .ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__filter-action {
+    max-width: none;
+  }
+
+  .ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__auto-allocate {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__auto-input {
+    width: 100% !important;
+  }
+
+  .ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__catalogue-status {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__catalogue-status .ant-btn {
+    width: 100%;
+  }
+
+  .ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__footer {
+    align-items: stretch !important;
+    flex-direction: column;
+  }
+
+  .ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__footer-actions {
+    width: 100%;
+  }
+
+  .ant-modal.app-modal.misa-pay-vendor-modal .misa-pay-vendor-modal__footer-actions .ant-btn {
+    flex: 1 1 0;
+  }
+}

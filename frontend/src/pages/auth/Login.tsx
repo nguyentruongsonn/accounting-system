@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Typography } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
 import api from '../../api/axios';
 import { toast } from '../../components/feedback/toast';
-
-const { Text } = Typography;
 
 const Login: React.FC = () => {
     const [loading, setLoading] = useState(false);
@@ -51,14 +49,13 @@ const Login: React.FC = () => {
         <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
             <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg border border-gray-100">
                 <div className="text-center mb-8">
-                    <div className="misa-font-18-bold text-2xl mb-2">HỆ THỐNG KẾ TOÁN NỘI BỘ</div>
-                    <Text type="secondary">Phần mềm quản trị kế toán doanh nghiệp</Text>
+                    <div className="login-brand-mark" aria-label="Logo hệ thống kế toán">A</div>
+                    <div className="misa-font-18-bold text-2xl mb-2">HỆ THỐNG KẾ TOÁN</div>
                 </div>
 
                 <Form
                     form={form}
                     name="login"
-                    initialValues={{ email: 'admin@admin.com', password: 'password', remember: true }}
                     onFinish={onFinish}
                     layout="vertical"
                     size="large"
@@ -74,7 +71,11 @@ const Login: React.FC = () => {
                         name="password"
                         rules={[{ required: true, message: 'Vui lòng nhập Mật khẩu!' }]}
                     >
-                        <Input.Password autoComplete="current-password" prefix={<LockOutlined className="text-gray-400" />} placeholder="Mật khẩu" />
+                        <Input.Password
+                            autoComplete="current-password"
+                            prefix={<LockOutlined className="text-gray-400" />}
+                            placeholder="Mật khẩu"
+                        />
                     </Form.Item>
 
                     <Form.Item>
@@ -84,43 +85,6 @@ const Login: React.FC = () => {
                     </Form.Item>
                 </Form>
 
-                <div className="mt-6 pt-4 border-t border-gray-100">
-                    <div className="text-xs font-semibold text-gray-500 mb-2">Tài khoản mẫu:</div>
-                    <div className="space-y-2">
-                        <div className="flex items-center justify-between text-xs bg-gray-50 p-2 rounded border border-gray-200">
-                            <div>
-                                <span className="font-medium text-gray-700">Admin: </span>
-                                <code className="text-blue-600 font-mono">admin@admin.com</code>
-                                <span className="text-gray-400 mx-1">/</span>
-                                <code className="text-gray-600 font-mono">password</code>
-                            </div>
-                            <Button
-                                size="small"
-                                type="link"
-                                className="p-0 h-auto text-xs"
-                                onClick={() => form.setFieldsValue({ email: 'admin@admin.com', password: 'password' })}
-                            >
-                                Điền nhanh
-                            </Button>
-                        </div>
-                        <div className="flex items-center justify-between text-xs bg-gray-50 p-2 rounded border border-gray-200">
-                            <div>
-                                <span className="font-medium text-gray-700">Kế toán: </span>
-                                <code className="text-blue-600 font-mono">accountant@accounting.local</code>
-                                <span className="text-gray-400 mx-1">/</span>
-                                <code className="text-gray-600 font-mono">password</code>
-                            </div>
-                            <Button
-                                size="small"
-                                type="link"
-                                className="p-0 h-auto text-xs"
-                                onClick={() => form.setFieldsValue({ email: 'accountant@accounting.local', password: 'password' })}
-                            >
-                                Điền nhanh
-                            </Button>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     );

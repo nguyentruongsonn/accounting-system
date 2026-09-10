@@ -128,6 +128,24 @@ class ChartOfAccountsWorkflowTest extends TestCase
             ->assertJsonPath('0.code', '111');
     }
 
+    public function test_string_false_query_is_accepted_for_account_catalogue_clients(): void
+    {
+        $this->account('111', ['is_active' => true]);
+        $this->account('112', ['is_active' => false]);
+
+        $this->getJson('/api/v1/master/accounts?include_inactive=false')
+            ->assertOk()
+            ->assertJsonCount(1)
+            ->assertJsonPath('0.code', '111');
+    }
+
+    public function test_invalid_include_inactive_query_is_rejected(): void
+    {
+        $this->getJson('/api/v1/master/accounts?include_inactive=maybe')
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['include_inactive']);
+    }
+
     public function test_search_keeps_an_inactive_ancestor_when_inactive_rows_are_filtered(): void
     {
         $this->account('111', ['name' => 'Tiền mặt', 'is_active' => false, 'is_parent' => true]);

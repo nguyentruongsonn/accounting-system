@@ -63,6 +63,9 @@ frontend/direct_purchase_audit.mjs
 .agents/
 agents/
 AGENTS.md
+docs/
+.github/
+*.md
 
 # Local baseline archives, outputs, and database dumps
 output/

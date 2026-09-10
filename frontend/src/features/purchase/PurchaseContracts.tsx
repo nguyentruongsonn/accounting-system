@@ -1086,7 +1086,7 @@ export const PurchaseContracts: React.FC = () => {
                                     {/* Tab 1: Hàng hóa / Dịch vụ */}
                                     {modalActiveTab === 'goods' && (
                                         <div className="misa-grid-container">
-                                            <div className="misa-grid-scroll-box-240" style={{ maxHeight: 300 }}>
+                                            <div className="misa-table-container misa-contract-table-scroll" style={{ maxHeight: 300 }}>
                                                 <Form.List name="lines">
                                                     {(fields, { remove }) => (
                                                         <table className="misa-voucher-table">
@@ -1399,29 +1399,6 @@ export const PurchaseContracts: React.FC = () => {
                                                 </button>
                                             </div>
 
-                                            {/* Financial Summary Card */}
-                                            <div className="misa-flex-end misa-top-12">
-                                                <div className="misa-summary-financial-card" style={{ width: 340 }}>
-                                                    <div className="misa-summary-row-line">
-                                                        <span>Tổng tiền hàng:</span>
-                                                        <span className="misa-table-amount-dark">{new Intl.NumberFormat('vi-VN').format(totalAmount)} ₫</span>
-                                                    </div>
-                                                    <div className="misa-summary-row-line">
-                                                        <span>Tiền chiết khấu:</span>
-                                                        <span className="misa-table-amount-dark">{new Intl.NumberFormat('vi-VN').format(totalDiscount)} ₫</span>
-                                                    </div>
-                                                    <div className="misa-summary-row-line">
-                                                        <span>Thuế GTGT:</span>
-                                                        <span className="misa-table-amount-dark">{new Intl.NumberFormat('vi-VN').format(totalTax)} ₫</span>
-                                                    </div>
-                                                    <div className="misa-summary-grand-total">
-                                                        <span className="misa-field-label misa-text-bold">TỔNG TIỀN THANH TOÁN:</span>
-                                                        <span className="misa-summary-grand-value-green">
-                                                            {new Intl.NumberFormat('vi-VN').format(grandTotalAmount)} ₫
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
                                     )}
 
@@ -1458,6 +1435,7 @@ export const PurchaseContracts: React.FC = () => {
 
                                                     return (
                                                         <>
+                                                            <div className="misa-table-container misa-contract-table-scroll" style={{ maxHeight: 300 }}>
                                                             <table className="misa-voucher-table">
                                                                 <thead>
                                                                     <tr>
@@ -1465,8 +1443,8 @@ export const PurchaseContracts: React.FC = () => {
                                                                         <th className="misa-col-w-140">Đợt thanh toán</th>
                                                                         <th className="misa-col-w-120 misa-text-right">Tỷ lệ TT (%)</th>
                                                                         <th className="misa-col-w-140 misa-text-right">Giá trị thanh toán</th>
-                                                                        <th className="misa-col-w-120 misa-text-center">Hạn thanh toán</th>
-                                                                        <th className="misa-col-w-120 misa-text-center">Ngày thanh toán</th>
+                                                                        <th className="misa-col-w-150 misa-text-center">Hạn thanh toán</th>
+                                                                        <th className="misa-col-w-150 misa-text-center">Ngày thanh toán</th>
                                                                         <th className="misa-col-w-120 misa-text-right">Số đã trả</th>
                                                                         <th className="misa-col-w-130 misa-text-right">Số đã trả năm trước</th>
                                                                         <th className="misa-col-w-130 misa-text-right">Số còn phải trả</th>
@@ -1570,23 +1548,25 @@ export const PurchaseContracts: React.FC = () => {
                                                                     </tr>
                                                                 </tbody>
                                                             </table>
-                                                            <div className="misa-flex-center misa-gap-12 misa-top-8">
-                                                                <Button 
-                                                                    type="dashed" 
-                                                                    size="small" 
-                                                                    icon={<PlusOutlined />} 
-                                                                    onClick={() => add({ stage_name: `Đợt ${fields.length + 1}`, payment_rate: 0, payment_amount: 0, paid_amount: 0, prev_year_paid: 0 })}
-                                                                >
-                                                                    Thêm dòng
-                                                                </Button>
-                                                                <Button 
-                                                                    type="text" 
-                                                                    size="small" 
-                                                                    danger
-                                                                    onClick={() => form.setFieldsValue({ payments: [] })}
-                                                                >
-                                                                    Xóa hết dòng
-                                                                </Button>
+                                                            </div>
+                                                            <div className="misa-grid-footer-bar misa-contract-schedule-actions">
+                                                                <div className="misa-flex-center misa-gap-16">
+                                                                    <span className="misa-cell-sub-title">Tổng số: <strong>{fields.length}</strong> dòng</span>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="misa-btn-tool"
+                                                                        onClick={() => add({ stage_name: `Đợt ${fields.length + 1}`, payment_rate: 0, payment_amount: 0, paid_amount: 0, prev_year_paid: 0 })}
+                                                                    >
+                                                                        <PlusOutlined className="misa-icon-green" /> <span>Thêm dòng</span>
+                                                                    </button>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="misa-btn-tool misa-text-danger"
+                                                                        onClick={() => form.setFieldsValue({ payments: [] })}
+                                                                    >
+                                                                        <span>Xóa hết dòng</span>
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         </>
                                                     );
@@ -1602,13 +1582,6 @@ export const PurchaseContracts: React.FC = () => {
                                                 <div className="misa-field-label">Trích yếu</div>
                                                 <Form.Item name="summary" noStyle>
                                                     <Input.TextArea rows={2} className="misa-input" placeholder="Tóm tắt nội dung hợp đồng..." />
-                                                </Form.Item>
-                                            </div>
-
-                                            <div className="misa-col-6">
-                                                <div className="misa-field-label">Địa chỉ giao hàng</div>
-                                                <Form.Item name="shipping_address" noStyle>
-                                                    <Input.TextArea rows={2} className="misa-input" placeholder="Địa điểm kho/công trình giao nhận..." />
                                                 </Form.Item>
                                             </div>
 
@@ -1673,26 +1646,64 @@ export const PurchaseContracts: React.FC = () => {
                                                 </Form.Item>
                                             </div>
 
-                                            <div className="misa-col-12">
-                                                <div className="misa-field-label">Điều khoản khác</div>
-                                                <Form.Item name="other_terms" noStyle>
-                                                    <Input.TextArea rows={2} className="misa-input" placeholder="Ghi chú điều khoản bảo hành, phạt hợp đồng, cam kết chất lượng..." />
-                                                </Form.Item>
-                                            </div>
-
-                                            <div className="misa-col-12 misa-top-8">
-                                                <div className="misa-dropzone-box">
-                                                    <InboxOutlined className="misa-footer-upload-icon misa-icon-muted" />
-                                                    <div className="misa-field-label misa-text-bold misa-top-8">
-                                                        Đính kèm (Dung lượng tối đa 5MB)
-                                                    </div>
-                                                    <div className="misa-cell-sub-title">
-                                                        Chọn tệp hoặc kéo và thả tệp vào đây
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
                                     )}
+                                </div>
+
+                                {/* 3. Footer Information, Attachments & Financial Summary Box */}
+                                <div className="misa-form-grid misa-mt-12 misa-contract-footer-grid">
+                                    {/* Left 4 cols: Contract delivery and terms */}
+                                    <div className="misa-col-4 misa-flex-col misa-gap-8">
+                                        <div>
+                                            <div className="misa-field-label">Địa chỉ giao hàng</div>
+                                            <Form.Item name="shipping_address" noStyle>
+                                                <Input.TextArea rows={2} className="misa-input" placeholder="Địa điểm kho/công trình giao nhận..." />
+                                            </Form.Item>
+                                        </div>
+                                        <div>
+                                            <div className="misa-field-label">Điều khoản khác</div>
+                                            <Form.Item name="other_terms" noStyle>
+                                                <Input.TextArea rows={2} className="misa-input" placeholder="Ghi chú điều khoản bảo hành, phạt hợp đồng, cam kết chất lượng..." />
+                                            </Form.Item>
+                                        </div>
+                                    </div>
+
+                                    {/* Middle 4 cols: Attachment box */}
+                                    <div className="misa-col-4">
+                                        <div className="misa-field-label">Đính kèm tệp</div>
+                                        <div className="misa-dropzone-box">
+                                            <InboxOutlined className="misa-footer-upload-icon misa-icon-muted" />
+                                            <span className="misa-field-label">
+                                                Chọn tệp hoặc kéo, thả tệp vào đây
+                                            </span>
+                                            <span className="misa-cell-sub-title">Dung lượng tối đa 5MB.</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Right 4 cols: Canonical financial summary block */}
+                                    <div className="misa-col-4 misa-summary-financial-card">
+                                        <div className="misa-flex-col misa-gap-6">
+                                            <div className="misa-summary-row-line">
+                                                <span>Tổng tiền hàng:</span>
+                                                <span className="misa-table-amount-dark">{new Intl.NumberFormat('vi-VN').format(totalAmount)} ₫</span>
+                                            </div>
+                                            <div className="misa-summary-row-line">
+                                                <span>Tiền chiết khấu:</span>
+                                                <span className="misa-text-bold misa-text-danger">-{new Intl.NumberFormat('vi-VN').format(totalDiscount)} ₫</span>
+                                            </div>
+                                            <div className="misa-summary-row-line">
+                                                <span>Thuế GTGT:</span>
+                                                <span className="misa-text-bold misa-text-green">{new Intl.NumberFormat('vi-VN').format(totalTax)} ₫</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="misa-summary-grand-total">
+                                            <span className="misa-field-label misa-text-bold">TỔNG THANH TOÁN:</span>
+                                            <span className="misa-summary-grand-value">
+                                                {new Intl.NumberFormat('vi-VN').format(grandTotalAmount)} ₫
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </Form>
                 </ModalFrame>

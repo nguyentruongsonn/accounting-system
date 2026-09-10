@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Alert, Button, DatePicker, Input, InputNumber, Select, Space, Table } from 'antd';
+import { Button, DatePicker, Input, InputNumber, Select, Space, Table } from 'antd';
 import { toast as message } from '../../../components/feedback/toast';
 import Modal from '../../../components/layout/AppModal';
 import { DollarOutlined, FilterOutlined, SearchOutlined } from '@ant-design/icons';
@@ -81,7 +81,7 @@ export const PayVendorByInvoiceModal: React.FC<PayVendorByInvoiceModalProps> = (
     });
     const accountsQuery = useQuery({
         queryKey: ['purchase-payment-accounts'],
-        queryFn: async () => asArray<AccountOption>((await api.get('/master/accounts', { params: { include_inactive: false } })).data, 'account catalogue'),
+        queryFn: async () => asArray<AccountOption>((await api.get('/master/accounts', { params: { include_inactive: 0 } })).data, 'account catalogue'),
         enabled: open,
     });
     const outstandingQuery = useQuery({
@@ -171,6 +171,25 @@ export const PayVendorByInvoiceModal: React.FC<PayVendorByInvoiceModalProps> = (
         return invoices.filter((invoice) => [invoice.voucher_number, invoice.invoice_number, invoice.description].some((value) => String(value || '').toLowerCase().includes(keyword)));
     }, [filterText, invoices]);
 
+    const catalogueUnavailable = suppliersQuery.isError || accountsQuery.isError;
+    const catalogueErrorKey = suppliersQuery.isError ? 'suppliers' : accountsQuery.isError ? 'accounts' : '';
+    useEffect(() => {
+        if (!open || !catalogueErrorKey) return;
+        const queryError = suppliersQuery.error || accountsQuery.error;
+        const status = (queryError as { response?: { status?: number } } | undefined)?.response?.status;
+        const detail = status === 403
+            ? 'Bạn không có quyền xem danh mục thanh toán.'
+            : status === 422
+                ? 'Danh mục thanh toán không đúng định dạng máy chủ yêu cầu.'
+                : 'Không tải được danh mục thanh toán. Kiểm tra quyền truy cập rồi thử lại.';
+        message.error(detail);
+    }, [accountsQuery.error, catalogueErrorKey, open, suppliersQuery.error]);
+
+    const retryCatalogue = () => {
+        void suppliersQuery.refetch();
+        void accountsQuery.refetch();
+    };
+
     const handleConfirmPayment = async () => {
         if (selectedInvoices.length === 0) return message.warning('Chọn ít nhất một hóa đơn và nhập số tiền thanh toán.');
         if (!debitAccount || !creditAccount) return message.warning('Chọn đầy đủ tài khoản Nợ và Có từ hệ thống tài khoản.');
@@ -229,17 +248,82 @@ export const PayVendorByInvoiceModal: React.FC<PayVendorByInvoiceModalProps> = (
     ];
 
     return (
-        <Modal title={<div className="misa-modal-title"><DollarOutlined className="misa-text-primary-bold" /><span>Trả tiền theo hóa đơn</span></div>} open={open} onCancel={onCancel} width={1180} className="misa-modal-top-20" footer={<div className="misa-modal-footer"><div className="misa-font-13-muted">Đã chọn: <strong className="misa-text-green-bold">{selectedInvoices.length}</strong> hóa đơn | Tổng tiền trả: <strong className="misa-text-blue-bold">{formatMoney(totalSelectedPayment)} ₫</strong></div><Space><Button onClick={onCancel} className="misa-btn-secondary">Hủy (Esc)</Button><Button type="primary" onClick={handleConfirmPayment} className="misa-btn-primary" loading={isSubmitting}>Trả tiền</Button></Space></div>}>
-            {(suppliersQuery.isError || accountsQuery.isError) && <Alert type="error" showIcon message="Không tải được danh mục thanh toán" description="Kiểm tra quyền truy cập rồi thử lại." action={<Button size="small" onClick={() => { suppliersQuery.refetch(); accountsQuery.refetch(); }}>Thử lại</Button>} className="mb-3" />}
-            <div className="misa-filter-box"><div className="misa-flex-center-gap-12 flex-wrap">
-                <div className="misa-flex-center-gap-6"><span className="misa-font-12-muted">Nhà cung cấp:</span><Select value={selectedSupplierId} onChange={handleSupplierChange} allowClear showSearch optionFilterProp="label" className="misa-input misa-w-280" placeholder="Tất cả nhà cung cấp" options={supplierList.map((supplier: any) => ({ value: supplier.id, label: `${supplier.code ? `${supplier.code} - ` : ''}${supplier.name}` }))} /></div>
-                <div className="misa-flex-center-gap-6"><span className="misa-font-12-muted">Ngày trả tiền:</span><DatePicker value={paymentDate} onChange={(date) => setPaymentDate(date || dayjs())} format="DD/MM/YYYY" className="misa-input misa-w-130" /></div>
-                <div className="misa-flex-center-gap-6"><span className="misa-font-12-muted">TK Nợ:</span><Select value={debitAccount} onChange={setDebitAccount} showSearch optionFilterProp="label" className="misa-input misa-w-190" placeholder="Chọn tài khoản" options={accountOptions} /></div>
-                <div className="misa-flex-center-gap-6"><span className="misa-font-12-muted">TK Có:</span><Select value={creditAccount} onChange={setCreditAccount} showSearch optionFilterProp="label" className="misa-input misa-w-190" placeholder="Chọn tài khoản" options={accountOptions} /></div>
-                <Button type="primary" icon={<FilterOutlined />} className="misa-btn-modal-action" onClick={handleLoadInvoices} loading={outstandingQuery.isFetching}>Lấy dữ liệu</Button>
-            </div><div className="misa-kpi-summary-box"><div className="misa-font-11-muted">Tổng tiền trả</div><div className="misa-validation-val-dark">{formatMoney(totalSelectedPayment)} ₫</div></div></div>
-            <div className="misa-quick-bar"><Input placeholder="Tìm theo số chứng từ, hóa đơn, diễn giải..." prefix={<SearchOutlined className="apple-muted-text" />} value={filterText} onChange={(event) => setFilterText(event.target.value)} allowClear className="misa-input misa-w-320" /><div className="misa-flex-center-gap-8"><span className="misa-font-12-blue misa-text-bold">Tự động phân bổ số tiền:</span><InputNumber placeholder="Nhập số tiền muốn trả..." value={autoAllocateAmount} onChange={handleAutoAllocate} precision={0} formatter={(value) => `${value ?? ''}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} parser={(value: any) => value?.replace(/\$\s?|(,*)/g, '') || ''} className="misa-input misa-w-200" /></div></div>
-            <div className="misa-table-wrapper"><Table rowKey="id" columns={columns} dataSource={filteredInvoices} size="small" pagination={false} locale={{ emptyText: hasLoaded ? 'Không có hóa đơn còn phải trả trong phạm vi đã chọn.' : 'Chọn bộ lọc rồi bấm Lấy dữ liệu.' }} rowSelection={{ selectedRowKeys, onChange: (keys) => { setSelectedRowKeys(keys); setInvoices((current) => current.map((invoice) => keys.includes(invoice.id) && invoice.pay_amount === 0 ? { ...invoice, pay_amount: asNumber(invoice.remaining_debt) } : invoice)); } }} scroll={{ x: 1160, y: 300 }} /></div>
+        <Modal
+            title={<div className="misa-modal-title misa-pay-vendor-modal__title"><DollarOutlined className="misa-text-primary-bold" /><span>Trả tiền theo hóa đơn</span></div>}
+            open={open}
+            onCancel={onCancel}
+            width={1180}
+            className="misa-modal-top-20 misa-pay-vendor-modal"
+            footer={(
+                <div className="misa-modal-footer misa-pay-vendor-modal__footer">
+                    <div className="misa-pay-vendor-modal__footer-summary">
+                        Đã chọn: <strong className="misa-text-green-bold">{selectedInvoices.length}</strong> hóa đơn
+                        <span className="misa-pay-vendor-modal__footer-divider">|</span>
+                        Tổng tiền trả: <strong className="misa-text-blue-bold">{formatMoney(totalSelectedPayment)} ₫</strong>
+                    </div>
+                    <Space className="misa-pay-vendor-modal__footer-actions">
+                        <Button onClick={onCancel} className="misa-btn-secondary">Hủy (Esc)</Button>
+                        <Button type="primary" onClick={handleConfirmPayment} className="misa-btn-primary" loading={isSubmitting} disabled={catalogueUnavailable}>Trả tiền</Button>
+                    </Space>
+                </div>
+            )}
+        >
+            {catalogueUnavailable && (
+                <div className="misa-modal-inline-actions misa-pay-vendor-modal__catalogue-status">
+                    <span className="misa-font-12-muted">Danh mục chưa sẵn sàng; thao tác trả tiền đang tạm khóa.</span>
+                    <Button size="small" className="misa-btn-secondary" onClick={retryCatalogue}>Thử lại danh mục</Button>
+                </div>
+            )}
+
+            <section className="misa-pay-vendor-modal__filters" aria-label="Bộ lọc thanh toán">
+                <div className="misa-pay-vendor-modal__filter-grid">
+                    <label className="misa-pay-vendor-modal__field">
+                        <span>Nhà cung cấp</span>
+                        <Select value={selectedSupplierId} onChange={handleSupplierChange} allowClear showSearch optionFilterProp="label" className="misa-pay-vendor-modal__control" placeholder="Tất cả nhà cung cấp" options={supplierList.map((supplier: any) => ({ value: supplier.id, label: `${supplier.code ? `${supplier.code} - ` : ''}${supplier.name}` }))} getPopupContainer={() => document.body} />
+                    </label>
+                    <label className="misa-pay-vendor-modal__field misa-pay-vendor-modal__field-date">
+                        <span>Ngày trả tiền</span>
+                        <DatePicker value={paymentDate} onChange={(date) => setPaymentDate(date || dayjs())} format="DD/MM/YYYY" className="misa-pay-vendor-modal__control" getPopupContainer={() => document.body} />
+                    </label>
+                    <label className="misa-pay-vendor-modal__field">
+                        <span>TK Nợ</span>
+                        <Select value={debitAccount} onChange={setDebitAccount} showSearch optionFilterProp="label" className="misa-pay-vendor-modal__control" placeholder="Chọn tài khoản" options={accountOptions} getPopupContainer={() => document.body} />
+                    </label>
+                    <label className="misa-pay-vendor-modal__field">
+                        <span>TK Có</span>
+                        <Select value={creditAccount} onChange={setCreditAccount} showSearch optionFilterProp="label" className="misa-pay-vendor-modal__control" placeholder="Chọn tài khoản" options={accountOptions} getPopupContainer={() => document.body} />
+                    </label>
+                    <div className="misa-pay-vendor-modal__filter-action">
+                        <Button type="primary" icon={<FilterOutlined />} className="misa-btn-modal-action" onClick={handleLoadInvoices} loading={outstandingQuery.isFetching}>Lấy dữ liệu</Button>
+                    </div>
+                </div>
+                <div className="misa-pay-vendor-modal__summary" aria-live="polite">
+                    <span>Tổng tiền trả</span>
+                    <strong>{formatMoney(totalSelectedPayment)} ₫</strong>
+                </div>
+            </section>
+
+            <div className="misa-pay-vendor-modal__toolbar">
+                <Input placeholder="Tìm theo số chứng từ, hóa đơn, diễn giải..." prefix={<SearchOutlined className="apple-muted-text" />} value={filterText} onChange={(event) => setFilterText(event.target.value)} allowClear className="misa-pay-vendor-modal__search" />
+                <label className="misa-pay-vendor-modal__auto-allocate">
+                    <span>Tự động phân bổ số tiền</span>
+                    <InputNumber placeholder="Nhập số tiền muốn trả..." value={autoAllocateAmount} onChange={handleAutoAllocate} precision={0} formatter={(value) => `${value ?? ''}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} parser={(value: any) => value?.replace(/\$\s?|(,*)/g, '') || ''} className="misa-pay-vendor-modal__control misa-pay-vendor-modal__auto-input" />
+                </label>
+            </div>
+
+            <div className="misa-pay-vendor-modal__table-shell">
+                <Table
+                    rowKey="id"
+                    columns={columns}
+                    dataSource={filteredInvoices}
+                    loading={outstandingQuery.isFetching}
+                    size="small"
+                    pagination={false}
+                    locale={{ emptyText: hasLoaded ? 'Không có hóa đơn còn phải trả trong phạm vi đã chọn.' : 'Chọn bộ lọc rồi bấm Lấy dữ liệu.' }}
+                    rowSelection={{ selectedRowKeys, onChange: (keys) => { setSelectedRowKeys(keys); setInvoices((current) => current.map((invoice) => keys.includes(invoice.id) && invoice.pay_amount === 0 ? { ...invoice, pay_amount: asNumber(invoice.remaining_debt) } : invoice)); } }}
+                    scroll={{ x: 1160, y: 300 }}
+                />
+            </div>
         </Modal>
     );
 };
