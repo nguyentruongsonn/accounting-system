@@ -1,12 +1,13 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import RoleManagement from './RoleManagement';
 import api from '../../api/axios';
 import { useAuthStore } from '../../store/useAuthStore';
 
-vi.mock('../../api/axios', () => ({ default: { get: vi.fn(), post: vi.fn(), put: vi.fn() } }));
+vi.mock('../../api/axios', () => ({ default: { get: vi.fn(), post: vi.fn(), put: vi.fn(), delete: vi.fn() } }));
 
 describe('fixed roles and safe user administration', () => {
+  afterEach(() => { cleanup(); });
   beforeEach(() => {
     vi.clearAllMocks();
     useAuthStore.setState({ user: { id: 1, name: 'Admin', email: 'admin@example.test', roles: ['admin'] } });
@@ -17,6 +18,8 @@ describe('fixed roles and safe user administration', () => {
     render(<RoleManagement />);
     expect(screen.getByText('Ma trận quyền cố định')).toBeInTheDocument();
     expect(await screen.findByText('books@example.test')).toBeInTheDocument();
+    expect(document.querySelector('.role-permission-matrix')).toHaveClass('role-permission-matrix');
+    expect(document.querySelector('.ant-alert-info')).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Thêm vai trò/ })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Thêm người dùng' })).toHaveClass('misa-btn-primary');
     expect(screen.getByRole('button', { name: 'Sửa Books' })).toHaveClass('misa-btn-secondary');
@@ -44,7 +47,7 @@ describe('fixed roles and safe user administration', () => {
 
     expect(screen.getByLabelText('Vai trò')).toHaveValue('');
     fireEvent.submit(screen.getByRole('form', { name: 'Thông tin người dùng' }));
-    expect(await screen.findByText(/Chọn admin hoặc accountant trước khi lưu/)).toBeInTheDocument();
+    expect((await screen.findAllByText(/Chọn admin hoặc accountant trước khi lưu/)).length).toBeGreaterThan(0);
     expect(api.put).not.toHaveBeenCalled();
   });
 
@@ -74,7 +77,7 @@ describe('fixed roles and safe user administration', () => {
     render(<RoleManagement />);
     fireEvent.click(await screen.findByRole('button', { name: 'Sửa Books' }));
     fireEvent.click(screen.getByRole('button', { name: 'Lưu người dùng' }));
-    expect(await screen.findByText('Last active admin cannot be removed.')).toBeInTheDocument();
+    expect((await screen.findAllByText('Last active admin cannot be removed.')).length).toBeGreaterThan(0);
   });
 
   it('reports malformed directory data without rendering it as a successful empty list', async () => {
@@ -92,5 +95,28 @@ describe('fixed roles and safe user administration', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Thử lại danh sách người dùng' }));
     expect(await screen.findByText('books@example.test')).toBeInTheDocument();
     expect(api.get).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps directory loading inside the standard data table surface', async () => {
+    let resolveUsers!: (value: unknown) => void;
+    vi.mocked(api.get).mockReturnValueOnce(new Promise(resolve => { resolveUsers = resolve; }));
+
+    render(<RoleManagement />);
+
+    expect(screen.getByTestId('user-directory-table')).toHaveAttribute('aria-busy', 'true');
+    expect(screen.getByTestId('ui-table-surface')).toBeInTheDocument();
+
+    resolveUsers({ data: { data: [] } });
+    await waitFor(() => expect(screen.getByTestId('user-directory-table')).toHaveAttribute('aria-busy', 'false'));
+  });
+
+  it('opens the user form in a modal and supports deleting another user', async () => {
+    vi.mocked(api.delete).mockResolvedValue({ data: { message: 'User deleted.' } });
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    render(<RoleManagement />);
+    fireEvent.click(await screen.findByRole('button', { name: 'Sửa Books' }));
+    expect(screen.getByRole('dialog', { name: 'Thông tin người dùng' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Xóa người dùng' }));
+    await waitFor(() => expect(api.delete).toHaveBeenCalledWith('/users/2'));
   });
 });

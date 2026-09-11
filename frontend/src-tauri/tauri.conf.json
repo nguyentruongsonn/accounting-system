@@ -29,7 +29,7 @@
         "frame-src": ["'none'"],
         "form-action": ["'self'"],
         "script-src": ["'self'"],
-        "style-src": ["'self'", "'unsafe-inline'"],
+        "style-src": ["'self'"],
         "img-src": ["'self'", "blob:", "https://img.mservice.com.vn"],
         "font-src": ["'self'", "data:"],
         "connect-src": ["'self'"]
@@ -41,7 +41,7 @@
         "frame-src": ["'none'"],
         "form-action": ["'self'"],
         "script-src": ["'self'"],
-        "style-src": ["'self'", "'unsafe-inline'"],
+        "style-src": ["'self'"],
         "img-src": ["'self'", "blob:", "https://img.mservice.com.vn"],
         "font-src": ["'self'", "data:"],
         "connect-src": ["'self'", "http://localhost:8000", "http://127.0.0.1:8000", "ws://localhost:8080", "ws://127.0.0.1:8080"]

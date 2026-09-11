@@ -46,4 +46,21 @@ describe('opening balance workbench', () => {
     expect(await screen.findByText('Phản hồi danh mục tài khoản không hợp lệ.')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Thử lại số dư đầu kỳ' })).toBeInTheDocument();
   });
+
+  it('reloads the opening balance package for the selected date', async () => {
+    render(<OpeningBalances />);
+    await screen.findByRole('tab', { name: 'Tài khoản' });
+
+    fireEvent.change(screen.getByLabelText('Ngày bắt đầu dữ liệu'), { target: { value: '2026-02-01' } });
+    fireEvent.click(screen.getByRole('button', { name: /Tải dữ liệu/ }));
+
+    await waitFor(() => expect(api.get).toHaveBeenCalledWith('/opening-balances', { params: { effective_date: '2026-02-01' } }));
+  });
+
+  it('does not show a success alert for an empty zero balance', async () => {
+    render(<OpeningBalances />);
+    await screen.findByRole('tab', { name: 'Tài khoản' });
+
+    expect(screen.queryByText('Tổng số dư đang cân bằng')).not.toBeInTheDocument();
+  });
 });

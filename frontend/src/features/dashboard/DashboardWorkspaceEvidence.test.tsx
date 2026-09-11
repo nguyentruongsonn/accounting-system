@@ -9,7 +9,6 @@ describe('dashboard internal workspace navigation boundary', () => {
     expect(source).toContain("route: '/inventory'");
     expect(source).toContain("route: '/gl'");
     expect(source).toContain("route: '/settings/account-catalogues'");
-    expect(source).toContain("route: '/settings/onboarding'");
     expect(source).toContain('Bàn làm việc nội bộ');
     expect(source).toContain('Phạm vi đang khóa');
     expect(source).not.toContain('Quy trình Bàn làm việc đang được cập nhật');

@@ -35,6 +35,7 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'active_account'])->group(funct
         Route::get('/users', [\App\Http\Controllers\Api\V1\UserManagementController::class, 'index']);
         Route::post('/users', [\App\Http\Controllers\Api\V1\UserManagementController::class, 'store']);
         Route::put('/users/{id}', [\App\Http\Controllers\Api\V1\UserManagementController::class, 'update']);
+        Route::delete('/users/{id}', [\App\Http\Controllers\Api\V1\UserManagementController::class, 'destroy']);
     });
     // Auth
     Route::get('/auth/user', 'App\Http\Controllers\Api\V1\AuthController@user');

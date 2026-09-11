@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { handleSessionExpired } from '../auth/session';
+import { useAuthStore } from '../store/useAuthStore';
 
 const configuredApiUrl = String(import.meta.env.VITE_API_URL || '').trim();
 // Never ship the developer's localhost API fallback in a production bundle.
@@ -20,7 +21,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
+    const token = useAuthStore.getState().token;
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }

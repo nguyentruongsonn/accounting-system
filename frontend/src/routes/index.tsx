@@ -19,7 +19,6 @@ const CashPayments = lazy(() => import('../features/cash/CashPayments'));
 const JournalEntries = lazy(() => import('../features/gl/JournalEntries'));
 const Dashboard = lazy(() => import('../features/dashboard/Dashboard'));
 const CompanySettings = lazy(() => import('../features/settings/CompanySettings'));
-const OnboardingReadiness = lazy(() => import('../features/settings/OnboardingReadiness'));
 const Periods = lazy(() => import('../features/gl/Periods'));
 const BankCompatibilityBoundary = lazy(() => import('../features/bank/BankCompatibilityBoundary'));
 const PurchaseWorkspace = lazy(() => import('../features/purchase/PurchaseWorkspace'));
@@ -153,7 +152,6 @@ export const AppRoutes = () => {
 
                     {/* Settings */}
                     <Route path="settings/company" element={<CompanySettings />} />
-                    <Route path="settings/onboarding" element={<OnboardingReadiness />} />
                     <Route path="settings/opening-balances" element={<OpeningBalances />} />
                     <Route path="settings/options" element={<SystemOptions />} />
                     <Route path="settings/roles" element={<RoleManagement />} />

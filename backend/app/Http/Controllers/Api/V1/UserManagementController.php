@@ -81,6 +81,26 @@ final class UserManagementController extends Controller
         return response()->json(['data' => $this->present($user)]);
     }
 
+    public function destroy(Request $request, int $id)
+    {
+        $this->requireAccountSchema();
+        if ((int) $request->user()->id === $id) {
+            throw ValidationException::withMessages(['user' => 'Không thể xóa tài khoản đang đăng nhập.']);
+        }
+        $company = TenantContext::companyId($request);
+        $user = User::where('company_id', $company)->findOrFail($id);
+        if ($user->hasRole('admin') && $user->is_active
+            && User::where('company_id', $company)->where('is_active', true)->get()->filter(fn (User $candidate) => $candidate->hasRole('admin'))->count() <= 1) {
+            throw ValidationException::withMessages(['role' => 'At least one active admin must remain in this company.']);
+        }
+        DB::transaction(function () use ($user): void {
+            app(AccountAccessRevoker::class)->revoke($user);
+            $user->forceFill(['is_active' => false])->save();
+        });
+
+        return response()->json(['message' => 'User disabled.']);
+    }
+
     private function validated(Request $request, ?int $id = null): array
     {
         $required = $id === null ? 'required' : 'sometimes';

@@ -56,3 +56,21 @@ export function multiplyOpeningBalanceValue(quantity: OpeningBalanceDecimal, uni
 
   return formatMoneyMinorUnits(negative ? -minorUnits : minorUnits);
 }
+
+export function summarizeOpeningBalanceLines(lines: Array<{ debit_amount?: OpeningBalanceDecimal; credit_amount?: OpeningBalanceDecimal }>): { totalDebit: string; totalCredit: string; balanced: boolean } {
+  const sum = (key: 'debit_amount' | 'credit_amount') => lines.reduce((total, line) => {
+    const value = parseDecimal(line[key]);
+    if (!value) return total;
+    const scaled = value.scale <= 2
+      ? value.digits * 10n ** BigInt(2 - value.scale)
+      : (() => {
+          const divisor = 10n ** BigInt(value.scale - 2);
+          const quotient = value.digits / divisor;
+          return quotient + (value.digits % divisor * 2n >= divisor ? 1n : 0n);
+        })();
+    return total + (value.negative ? -scaled : scaled);
+  }, 0n);
+  const totalDebit = formatMoneyMinorUnits(sum('debit_amount'));
+  const totalCredit = formatMoneyMinorUnits(sum('credit_amount'));
+  return { totalDebit, totalCredit, balanced: totalDebit === totalCredit };
+}

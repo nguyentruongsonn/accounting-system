@@ -303,7 +303,6 @@ const Dashboard: React.FC = () => {
         { title: 'Sổ cái & Tổng hợp', description: 'Phiếu kế toán, kết chuyển lãi lỗ, khóa sổ kỳ kế toán.', route: '/gl', tag: 'GL' },
         { title: 'Báo cáo nội bộ', description: 'Bảng cân đối, kết quả kinh doanh, cân đối tài khoản và sổ chi tiết.', route: '/reports', tag: 'Báo cáo' },
         { title: 'Danh mục tài khoản', description: 'Hệ thống tài khoản và cấu hình hạch toán được máy chủ phê duyệt.', route: '/settings/account-catalogues', tag: 'COA' },
-        { title: 'Checklist thiết lập', description: 'Kiểm tra thông tin công ty, kỳ kế toán và điều kiện vận hành.', route: '/settings/onboarding', tag: 'Setup' },
     ];
 
     const workspaceTabContent = (

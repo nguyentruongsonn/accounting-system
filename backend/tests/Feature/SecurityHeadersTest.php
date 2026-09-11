@@ -27,10 +27,14 @@ class SecurityHeadersTest extends TestCase
         $response = $this->get('/up');
 
         $response->assertSuccessful();
+        $response->assertHeader('Content-Type', 'application/json');
+        $response->assertJsonStructure(['status']);
         $response->assertHeader('X-Content-Type-Options', 'nosniff');
         $response->assertHeader('X-Frame-Options', 'DENY');
         $response->assertHeader('Referrer-Policy', 'no-referrer');
         $response->assertHeader('Permissions-Policy', 'camera=(), geolocation=(), microphone=(), payment=(), usb=()');
         $this->assertNull($response->headers->get('Content-Security-Policy'));
+        $this->assertStringNotContainsString('fonts.bunny.net', $response->getContent());
+        $this->assertStringNotContainsString('cdn.tailwindcss.com', $response->getContent());
     }
 }

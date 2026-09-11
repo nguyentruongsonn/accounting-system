@@ -180,7 +180,6 @@ const routePolicies: Readonly<Record<string, RoutePolicy>> = {
   '/master/suppliers': sourceConformant(4),
   '/master/employees': sourceConformant(4, 'modal-frame'),
   '/settings/company': sourceConformant(4),
-  '/settings/onboarding': sourceConformant(4),
   '/settings/opening-balances': sourceConformant(4),
   '/settings/options': sourceConformant(4),
   '/settings/roles': sourceConformant(4),
@@ -200,7 +199,7 @@ const componentOwnership: Readonly<Record<string, MigrationBatch>> = {
   ApArReconciliationInputBoundary: 7, InventorySubledgerGlReconciliation: 7,
   FixedAssets: 4, Tools: 4, JournalEntries: 7, Periods: 7,
   ChartOfAccounts: 4, Customers: 4, Suppliers: 4, Employees: 4,
-  CompanySettings: 4, OnboardingReadiness: 4, OpeningBalances: 4, SystemOptions: 4, RoleManagement: 4,
+  CompanySettings: 4, OpeningBalances: 4, SystemOptions: 4, RoleManagement: 4,
   ApprovedAccountMappings: 4, AccountingAccountCatalogues: 4, AccountingAuditTrailExplorer: 4,
   InvoicesManagement: 5, Login: 4, Register: 4,
 };
@@ -212,7 +211,6 @@ const componentOwnership: Readonly<Record<string, MigrationBatch>> = {
 // PageToolbar would create a blank band and violate the shared shell contract.
 const toolbarOptionalComponents = new Set([
   'Dashboard',
-  'OnboardingReadiness',
   'ReportsWorkspace',
   'PeriodLock',
   'CashWorkspace',

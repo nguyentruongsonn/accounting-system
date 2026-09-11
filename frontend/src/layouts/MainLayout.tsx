@@ -19,7 +19,6 @@ import {
   PlusOutlined,
   SettingOutlined,
   LogoutOutlined,
-  CheckCircleOutlined,
   AuditOutlined
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
@@ -293,12 +292,6 @@ export const MainLayout: React.FC = () => {
     },
     { type: 'divider' as const },
     {
-      key: 'onboarding',
-      icon: <CheckCircleOutlined />,
-      label: 'Thiết lập ban đầu',
-      onClick: () => navigate('/settings/onboarding'),
-    },
-    {
       key: 'opening-balances',
       icon: <BookOutlined />,
       label: 'Số dư đầu kỳ',
@@ -439,7 +432,7 @@ export const MainLayout: React.FC = () => {
                   e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
                 }}
               >
-                + Tạo mới chứng từ
+                Tạo mới chứng từ
               </Button>
             </Dropdown>
           </div>

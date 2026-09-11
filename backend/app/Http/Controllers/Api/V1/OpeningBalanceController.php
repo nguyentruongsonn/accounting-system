@@ -15,7 +15,12 @@ final class OpeningBalanceController extends Controller
 
     public function index(Request $request)
     {
-        return response()->json(['data' => $this->service->list(TenantContext::companyId($request))]);
+        $date = $request->query('effective_date');
+        if ($date !== null) {
+            $request->validate(['effective_date' => ['date_format:Y-m-d']]);
+        }
+
+        return response()->json(['data' => $this->service->list(TenantContext::companyId($request), $date)]);
     }
 
     public function show(Request $request, int $id)

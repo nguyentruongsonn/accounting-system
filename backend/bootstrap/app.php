@@ -17,7 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
-        health: '/up',
+        // The default Laravel health page is HTML and loads third-party
+        // assets. The explicit JSON health route lives in routes/web.php so
+        // monitoring receives only a minimal deployment signal.
+        health: null,
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(SecurityHeaders::class);
@@ -66,8 +69,13 @@ return Application::configure(basePath: dirname(__DIR__))
             // the same correlated, non-leaking envelope for tenant, RBAC and
             // lifecycle failures as for successful audit correlation.
             $isAccountMappingSurface = $request->is('api/v1/approved-account-mappings*');
+            // Every API failure must use the safe JSON envelope. Previously
+            // only selected accounting surfaces were handled here, so an
+            // unknown route could fall through to Laravel's debug renderer
+            // and disclose exception traces and filesystem paths.
+            $isApiSurface = $request->is('api/*');
 
-            if (! $isReconciliationSurface && ! $isManagementCapabilitySurface && ! $isSettlementAllocationSurface && ! $isAccountMappingSurface) {
+            if (! $isApiSurface && ! $isReconciliationSurface && ! $isManagementCapabilitySurface && ! $isSettlementAllocationSurface && ! $isAccountMappingSurface) {
                 return null;
             }
 

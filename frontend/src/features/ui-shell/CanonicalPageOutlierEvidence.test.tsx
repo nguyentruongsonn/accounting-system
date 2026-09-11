@@ -16,7 +16,6 @@ import payrollListSource from '../payroll/PayrollList.tsx?raw';
 import apArBoundarySource from '../reports/ApArReconciliationInputBoundary.tsx?raw';
 import statutoryReadinessSource from '../reports/StatutoryFinancialStatementReadiness.tsx?raw';
 import approvedMappingsSource from '../settings/ApprovedAccountMappings.tsx?raw';
-import onboardingReadinessSource from '../settings/OnboardingReadiness.tsx?raw';
 import fixedAssetDepreciationsSource from '../fixed-asset/FixedAssetDepreciations.tsx?raw';
 import fixedAssetRevaluationsSource from '../fixed-asset/FixedAssetRevaluations.tsx?raw';
 import fixedAssetDisposalsSource from '../fixed-asset/FixedAssetDisposals.tsx?raw';
@@ -155,12 +154,6 @@ describe('canonical page structure for migrated outliers', () => {
     for (const source of [apArBoundarySource, statutoryReadinessSource]) {
       expect(source).not.toContain('<PageToolbar />');
     }
-    expect(onboardingReadinessSource).toContain("from '../../components/layout/PageShell'");
-    expect(onboardingReadinessSource).toContain("from '../../components/layout/PageHeader'");
-    expect(onboardingReadinessSource).toContain('<PageShell');
-    expect(onboardingReadinessSource).toContain('<PageHeader');
-    expect(onboardingReadinessSource).not.toContain("from '../../components/layout/PageToolbar'");
-    expect(onboardingReadinessSource).not.toContain('<PageToolbar');
   });
 
   it('migrates fixed-asset and payroll voucher list roots to the shared table contract', () => {
@@ -220,7 +213,7 @@ describe('canonical page structure for migrated outliers', () => {
   });
 
   it('removes empty read-only toolbars while preserving authorized actions', () => {
-    for (const source of [dashboardSource, onboardingReadinessSource, accountingAccountCataloguesSource]) {
+    for (const source of [dashboardSource, accountingAccountCataloguesSource]) {
       expect(source).not.toContain("from '../../components/layout/PageToolbar'");
       expect(source).not.toContain('<PageToolbar />');
     }

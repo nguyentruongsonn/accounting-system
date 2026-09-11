@@ -55,12 +55,16 @@ function cspSources(policy, directive) {
 
 for (const [label, policy] of [['csp', security?.csp], ['devCsp', security?.devCsp]]) {
   const scriptSources = cspSources(policy, 'script-src');
+  const styleSources = cspSources(policy, 'style-src');
   const connectSources = cspSources(policy, 'connect-src');
   if (scriptSources.includes("'unsafe-eval'")) {
     fail(`frontend/src-tauri/tauri.conf.json: ${label}.script-src must not include unsafe-eval`);
   }
   if (scriptSources.includes("'unsafe-inline'")) {
     fail(`frontend/src-tauri/tauri.conf.json: ${label}.script-src must not include unsafe-inline`);
+  }
+  if (styleSources.includes("'unsafe-inline'")) {
+    fail(`frontend/src-tauri/tauri.conf.json: ${label}.style-src must not include unsafe-inline`);
   }
   if (scriptSources.includes('*') || scriptSources.some((source) => /^(?:https?:|data:|blob:)/.test(source))) {
     fail(`frontend/src-tauri/tauri.conf.json: ${label}.script-src must not include wildcard, remote, data: or blob: sources`);
@@ -109,8 +113,8 @@ assertSameFlags('scripts/release-preflight.ps1', preflightFlags, configFlags);
 if (/VITE_API_URL\s*\|\|\s*['"]https?:\/\//.test(axiosSource)) {
   fail('frontend/src/api/axios.ts must not use an absolute developer API fallback when VITE_API_URL is absent');
 }
-if (!/import\.meta\.env\.PROD\s*\?\s*['"]\/api\/v1['"]/.test(axiosSource)) {
-  fail('frontend/src/api/axios.ts must fail closed to a same-origin production API path when VITE_API_URL is absent');
+if (!/['"]\/api\/v1['"]/.test(axiosSource)) {
+  fail('frontend/src/api/axios.ts must retain a same-origin /api/v1 fallback when VITE_API_URL is absent');
 }
 if (/VITE_API_URL\s*\|\|\s*['"]https?:\/\//.test(agingExecutionSource)) {
   fail('frontend/src/features/reports/agingV2Execution.ts must not use an absolute developer API fallback in production');

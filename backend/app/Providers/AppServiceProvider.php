@@ -80,7 +80,13 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('login', function (Request $request) {
             $email = strtolower((string) $request->input('email', ''));
 
-            return Limit::perMinute(5)->by($email.'|'.$request->ip());
+            return [
+                // Keep the per-account/IP bucket for targeted brute-force
+                // protection and add an IP-wide bucket so an attacker cannot
+                // evade throttling by rotating email addresses.
+                Limit::perMinute(5)->by('account|'.$email.'|'.$request->ip()),
+                Limit::perMinute(30)->by('ip|'.$request->ip()),
+            ];
         });
 
         // Commercial sources have a single, append-only audit policy regardless

@@ -9,7 +9,7 @@ const RouteLoadingFallback = ({ fullScreen = false }: RouteLoadingFallbackProps)
     role="status"
     aria-live="polite"
     aria-label="Đang tải màn hình"
-    className={`flex w-full items-center justify-center gap-3 text-slate-600 ${
+    className={`route-loading-fallback flex w-full items-center justify-center gap-3 text-slate-600 ${
       fullScreen ? 'min-h-screen bg-slate-50' : 'min-h-60'
     }`}
   >

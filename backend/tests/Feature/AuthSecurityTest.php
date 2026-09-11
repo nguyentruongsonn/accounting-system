@@ -55,6 +55,23 @@ class AuthSecurityTest extends TestCase
         ])->assertStatus(429);
     }
 
+    public function test_login_is_also_rate_limited_per_ip_across_distinct_emails(): void
+    {
+        for ($attempt = 0; $attempt < 30; $attempt++) {
+            $this->withServerVariables(['REMOTE_ADDR' => '198.51.100.25'])
+                ->postJson('/api/v1/auth/login', [
+                    'email' => "rate-limit-{$attempt}@example.test",
+                    'password' => 'wrong-password',
+                ])->assertUnauthorized();
+        }
+
+        $this->withServerVariables(['REMOTE_ADDR' => '198.51.100.25'])
+            ->postJson('/api/v1/auth/login', [
+                'email' => 'rate-limit-sixth@example.test',
+                'password' => 'wrong-password',
+            ])->assertStatus(429);
+    }
+
     public function test_issued_token_is_scoped_expires_and_logout_revokes_only_current_token(): void
     {
         $user = User::factory()->create([

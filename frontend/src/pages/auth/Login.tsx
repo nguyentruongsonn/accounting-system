@@ -24,7 +24,7 @@ const Login: React.FC = () => {
             const token = response.data?.token;
 
             // A 2xx response is not proof that an authenticated session was
-            // issued. Do not persist an empty/undefined bearer token or open
+            // issued. Do not accept an empty/undefined bearer token or open
             // protected routes when a proxy returns a malformed envelope.
             if (typeof token !== 'string' || token.trim() === '' || !user || user.id == null) {
                 throw new Error('Login response did not contain a valid session');

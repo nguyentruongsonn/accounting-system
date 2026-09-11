@@ -22,10 +22,15 @@ final class OpeningBalanceService
         private readonly AuditService $auditService,
     ) {}
 
-    public function list(int $companyId): Collection
+    public function list(int $companyId, ?string $effectiveDate = null): Collection
     {
-        return OpeningBalancePackage::withoutGlobalScope('company')
-            ->where('company_id', $companyId)->with(['accountLines', 'partyLines', 'inventoryLines'])
+        $query = OpeningBalancePackage::withoutGlobalScope('company')
+            ->where('company_id', $companyId)->with(['accountLines', 'partyLines', 'inventoryLines']);
+        if ($effectiveDate !== null) {
+            $query->whereDate('effective_date', $effectiveDate);
+        }
+
+        return $query
             ->orderByDesc('effective_date')->get();
     }
 

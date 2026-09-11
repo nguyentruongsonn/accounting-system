@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, Button, Input, InputNumber, Select, Space, Spin, Table, Tabs, Tag, Typography } from 'antd';
-import { CheckOutlined, DeleteOutlined, PlusOutlined, SaveOutlined } from '@ant-design/icons';
+import { CheckOutlined, DeleteOutlined, PlusOutlined, ReloadOutlined, SaveOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
 import PageShell from '../../components/layout/PageShell';
 import PageHeader from '../../components/layout/PageHeader';
 import PageToolbar from '../../components/layout/PageToolbar';
-import { multiplyOpeningBalanceValue } from './openingBalanceMath';
+import DataTableSurface from '../../components/layout/DataTableSurface';
+import { multiplyOpeningBalanceValue, summarizeOpeningBalanceLines } from './openingBalanceMath';
 
 type Catalogue = { id: number; code?: string; name?: string; is_parent?: boolean; is_active?: boolean };
 type AccountLine = { _key: string; account_code: string; debit_amount: string; credit_amount: string };
@@ -53,6 +54,7 @@ const OpeningBalances: React.FC = () => {
   const [inventoryLines, setInventoryLines] = useState<InventoryLine[]>([]);
   const [reconciliation, setReconciliation] = useState<Reconciliation>();
   const disabled = status === 'confirmed' || busy;
+  const totals = useMemo(() => summarizeOpeningBalanceLines(accountLines), [accountLines]);
 
   const applyPackage = (value: OpeningPackage) => {
     setPackageId(value.id); setStatus(value.status); setEffectiveDate(value.effective_date.slice(0, 10));
@@ -62,17 +64,21 @@ const OpeningBalances: React.FC = () => {
     setReconciliation(value.reconciliation);
   };
 
-  const load = async () => {
+  const clearPackage = () => {
+    setPackageId(undefined); setStatus('draft'); setAccountLines([]); setPartyLines([]); setInventoryLines([]); setReconciliation(undefined);
+  };
+  const load = async (requestedDate = '') => {
     setLoading(true); setError('');
     try {
       const [packages, coa, customerData, supplierData, itemData, warehouseData] = await Promise.all([
-        api.get('/opening-balances'), api.get('/master/accounts'), api.get('/master/customers'),
+        requestedDate ? api.get('/opening-balances', { params: { effective_date: requestedDate } }) : api.get('/opening-balances'), api.get('/master/accounts'), api.get('/master/customers'),
         api.get('/master/suppliers'), api.get('/inventory/items'), api.get('/master/warehouses'),
       ]);
       const packageRows = rows(packages.data?.data ?? packages.data, 'số dư đầu kỳ') as unknown as OpeningPackage[];
       setAccounts(rows(coa.data, 'danh mục tài khoản')); setCustomers(rows(customerData.data, 'danh mục khách hàng')); setSuppliers(rows(supplierData.data, 'danh mục nhà cung cấp'));
       setItems(rows(itemData.data, 'danh mục hàng hóa')); setWarehouses(rows(warehouseData.data, 'danh mục kho'));
       if (packageRows[0]) applyPackage(packageRows[0]);
+      else clearPackage();
     } catch (reason) { setError(messageOf(reason)); }
     finally { setLoading(false); }
   };
@@ -86,6 +92,10 @@ const OpeningBalances: React.FC = () => {
   });
   const save = async () => {
     if (busy) return;
+    if (accountLines.length > 0 && !totals.balanced) {
+      setError(`Tổng Nợ ${totals.totalDebit} không bằng tổng Có ${totals.totalCredit}.`);
+      return;
+    }
     setBusy(true); setError('');
     try {
       const response = packageId ? await api.put(`/opening-balances/${packageId}`, payload()) : await api.post('/opening-balances', payload());
@@ -136,14 +146,17 @@ const OpeningBalances: React.FC = () => {
     title={<PageHeader eyebrow="Thiết lập ban đầu" title="Số dư đầu kỳ" description="Nhập một lần, đối chiếu chi tiết với tổng hợp rồi xác nhận." />}
     toolbar={<PageToolbar
       filters={<label htmlFor="opening-effective-date"><Typography.Text strong>Ngày bắt đầu dữ liệu</Typography.Text><Input id="opening-effective-date" aria-label="Ngày bắt đầu dữ liệu" type="date" value={effectiveDate} disabled={disabled} onChange={event => setEffectiveDate(event.target.value)} style={{ width: 180, marginLeft: 12 }} /></label>}
-      actions={<Space><Tag color={status === 'confirmed' ? 'green' : 'blue'}>{status === 'confirmed' ? 'Đã xác nhận' : 'Bản nháp'}</Tag><Button icon={<SaveOutlined />} loading={busy} disabled={status === 'confirmed'} onClick={() => void save()}>Lưu bản nháp</Button><Button type="primary" icon={<CheckOutlined />} loading={busy} disabled={!packageId || status === 'confirmed'} onClick={() => void confirm()}>Đối chiếu & xác nhận</Button></Space>}
+      actions={<Space><Button icon={<ReloadOutlined />} loading={loading} disabled={!effectiveDate || busy} onClick={() => void load(effectiveDate)}>Tải dữ liệu</Button><Tag color={status === 'confirmed' ? 'green' : 'blue'}>{status === 'confirmed' ? 'Đã xác nhận' : 'Bản nháp'}</Tag><Button icon={<SaveOutlined />} loading={busy} disabled={status === 'confirmed'} onClick={() => void save()}>Lưu bản nháp</Button><Button type="primary" icon={<CheckOutlined />} loading={busy} disabled={!packageId || status === 'confirmed'} onClick={() => void confirm()}>Đối chiếu & xác nhận</Button></Space>}
     />}
   >
-      {loading ? <Spin description="Đang tải số dư đầu kỳ..." /> : <>
+      <DataTableSurface>
+      {loading ? <div className="opening-balance-loading" aria-label="Đang tải số dư đầu kỳ"><Spin description="Đang tải số dư đầu kỳ..." /></div> : <>
       {error && <Alert type="error" showIcon title="Không thể tải hoặc hoàn tất thao tác" description={error} action={<Button size="small" onClick={() => void load()}>Thử lại số dư đầu kỳ</Button>} className="misa-mb-12" />}
+      {accountLines.length > 0 && !totals.balanced && <Alert type="warning" showIcon title="Số dư chưa cân bằng" description={`Tổng Nợ ${totals.totalDebit} · Tổng Có ${totals.totalCredit}`} className="misa-mb-12" />}
       {reconciliation && <Alert type={reconciliation.balanced ? 'success' : 'warning'} showIcon title={reconciliation.balanced ? 'Số dư đã đối chiếu' : 'Số dư chưa khớp'} description={`Tổng Nợ ${reconciliation.total_debit} · Tổng Có ${reconciliation.total_credit}${reconciliation.errors.length ? ` · ${reconciliation.errors.join(' ')}` : ''}`} className="misa-mb-12" />}
       <Tabs items={tabItems} />
     </>}
+      </DataTableSurface>
   </PageShell>;
 };
 
