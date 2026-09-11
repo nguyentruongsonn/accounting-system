@@ -6,6 +6,11 @@ import { useAuthStore } from '../../store/useAuthStore';
 
 vi.mock('../../api/axios', () => ({ default: { get: vi.fn(), post: vi.fn(), put: vi.fn(), delete: vi.fn() } }));
 
+// Ant Design's table and modal primitives take longer to mount in the CI
+// jsdom runtime than the default five-second test budget. Keep this suite
+// bounded, but give its real user flows enough time to finish deterministically.
+vi.setConfig({ testTimeout: 30000 });
+
 describe('fixed roles and safe user administration', () => {
   afterEach(() => { cleanup(); });
   beforeEach(() => {

@@ -156,7 +156,7 @@ class ApiErrorResponder
 
         if ($exception instanceof HttpExceptionInterface) {
             $status = $exception->getStatusCode();
-            if (in_array($status, [400, 401, 403, 404, 405, 409, 422, 429], true)) {
+            if (in_array($status, [400, 401, 403, 404, 405, 409, 422, 429, 503], true)) {
                 return [$status, $this->safeHttpMessage($status, $exception->getMessage()), []];
             }
         }
@@ -191,6 +191,7 @@ class ApiErrorResponder
             409 => $message ?: 'The request conflicts with the current resource state.',
             422 => 'The given data was invalid.',
             429 => 'Too many requests.',
+            503 => $message ?: 'Service unavailable.',
         };
     }
 

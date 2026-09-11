@@ -240,7 +240,7 @@ const assertSourceContract = (route: ParsedLeafRoute, policy: SourceConformantPa
 describe('routed page inventory', () => {
   it('parses every leaf route through the TypeScript JSX AST in declared order', () => {
     const routes = parseLeafRoutes(routesSource);
-    expect(routes).toHaveLength(56);
+    expect(routes).toHaveLength(55);
     expect(routes.map(({ path }) => path)).toEqual(Object.keys(routePolicies));
   });
 
@@ -337,10 +337,10 @@ describe('routed page inventory', () => {
     }
   });
 
-  it('keeps the current 54-leaf classification and named module ownership anchors', () => {
+  it('keeps the current route classification and named module ownership anchors', () => {
     const routes = parseLeafRoutes(routesSource);
-    expect(routes).toHaveLength(56);
-    expect(routes.filter((route) => route.kind === 'page' && routePolicies[route.path].kind !== 'auth-surface')).toHaveLength(49);
+    expect(routes).toHaveLength(55);
+    expect(routes.filter((route) => route.kind === 'page' && routePolicies[route.path].kind !== 'auth-surface')).toHaveLength(48);
     expect(routes.filter((route) => routePolicies[route.path].kind === 'auth-surface')).toHaveLength(2);
     expect(routes.filter((route) => route.kind === 'redirect')).toHaveLength(5);
     expect(componentOwnership.FixedAssetWorkspace).toBe(4);

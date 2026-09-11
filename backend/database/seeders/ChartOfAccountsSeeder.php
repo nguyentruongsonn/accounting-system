@@ -11,6 +11,10 @@ class ChartOfAccountsSeeder extends Seeder
     public function run(): void
     {
         $companies = Company::all();
+
+        if ($companies->count() > 1) {
+            throw new \RuntimeException('Chart of accounts seeder requires exactly one company; refusing an ambiguous company selection.');
+        }
         
         if ($companies->isEmpty()) {
             $companies = collect([Company::create([

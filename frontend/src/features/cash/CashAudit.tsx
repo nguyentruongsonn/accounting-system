@@ -214,9 +214,14 @@ export const CashAudit: React.FC<CashAuditProps> = React.memo(({ active = true }
     return (
         <PageShell title={<PageHeader eyebrow="Tiền mặt" title="Kiểm kê quỹ" description="Đối chiếu tiền mặt thực tế với số dư sổ kế toán." />}>
             <PageToolbar
-                filters={<Input className="misa-input misa-w-280" placeholder="Tìm kiếm theo số biên bản, mục đích..." prefix={<SearchOutlined />} allowClear value={auditSearch} onChange={(event) => setAuditSearch(event.target.value)} />}
+                filters={<Input className="misa-input misa-w-280" placeholder="Tìm kiếm chứng từ kiểm kê..." prefix={<SearchOutlined />} allowClear value={auditSearch} onChange={(event) => setAuditSearch(event.target.value)} />}
                 actions={<><button type="button" className="misa-btn-tool" title="Làm mới" onClick={() => void auditListQuery.refetch()} disabled={auditListQuery.isFetching}><ReloadOutlined /></button><Button type="primary" icon={<CalendarOutlined />} className="misa-btn-primary-green misa-btn-action-h32-b600" onClick={() => setIsPromptOpen(true)}>Kiểm kê quỹ đến ngày...</Button></>}
             />
+
+            {bookBalance === null && <div className="cash-audit-availability" role="status">
+                <span>Đối chiếu sổ sách tiền mặt chưa khả dụng</span>
+                {bookBalanceQuery.isError && <Button size="small" onClick={() => void bookBalanceQuery.refetch()}>Thử lại số dư sổ</Button>}
+            </div>}
 
             {/* List of Audits */}
             <DataTableSurface>
@@ -226,7 +231,8 @@ export const CashAudit: React.FC<CashAuditProps> = React.memo(({ active = true }
                 </div>
             ) : auditListQuery.isError ? (
                 <div className="misa-empty-state misa-cash-audit-empty">
-                    <Empty description="Không thể tải dữ liệu kiểm kê. Hãy thử tải lại." />
+                    <Empty description="Không thể tải danh sách kiểm kê quỹ" />
+                    <Button size="small" onClick={() => void auditListQuery.refetch()}>Thử lại</Button>
                 </div>
             ) : filteredAuditList.length === 0 && !auditSearch ? (
                 <div className="misa-empty-state misa-cash-audit-empty">
@@ -303,6 +309,10 @@ export const CashAudit: React.FC<CashAuditProps> = React.memo(({ active = true }
                 width={400}
             >
                 <div className="misa-p-16">
+                    {cashAccountsQuery.isError && <div className="cash-audit-inline-error" role="alert">
+                        <span>Không thể tải danh mục tài khoản tiền mặt</span>
+                        <Button size="small" onClick={() => void cashAccountsQuery.refetch()}>Thử lại danh mục tài khoản</Button>
+                    </div>}
                     <div className="misa-field-label misa-mb-6">Tài khoản tiền mặt:</div>
                     <AccountSelect
                         accounts={cashAccountsQuery.data ?? []}

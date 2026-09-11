@@ -8,7 +8,6 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { MisaButton } from '../../components/misa/MisaButton';
 import UserFormModal, { type UserFormValues } from './UserFormModal';
 import DataTableSurface from '../../components/layout/DataTableSurface';
-import { toast } from '../../components/feedback/toast';
 
 type CanonicalRole = 'admin' | 'accountant';
 type ManagedUser = { id: number; name: string; email: string; roles: string[]; is_active: boolean };
@@ -62,7 +61,6 @@ const RoleManagement: React.FC = () => {
   };
   useEffect(() => {
     if (isAdmin) {
-      toast.info('Quyền được kiểm tra trên máy chủ. Admin không bỏ qua quy trình kế toán.', { duration: 6 });
       void loadUsers().catch(() => undefined);
     }
     else {
@@ -128,14 +126,23 @@ const RoleManagement: React.FC = () => {
           {roleCards.map(card => <div className="role-permission-card" key={card.role}><span className={`role-permission-card__badge role-permission-card__badge--${card.role}`}>{card.role}</span><strong>{card.label}</strong><span>{card.description}</span></div>)}
         </div>
       </div>
-      <DataTableSurface>
+      <section className="role-permission-matrix-surface" aria-label="Ma trận quyền">
         <table className="misa-table misa-w-full role-permission-matrix">
           <thead><tr><th scope="col">Phạm vi</th><th scope="col">admin</th><th scope="col">accountant</th></tr></thead>
           <tbody>{matrix.map(([scope, admin, accountant]) => <tr key={scope}><th scope="row">{scope}</th><td>{admin}</td><td>{accountant}</td></tr>)}</tbody>
         </table>
-      </DataTableSurface>
-      {isAdmin && legacyUsers.length > 0 && <div className="role-permission-warning" role="status"><strong>{legacyUsers.length} người dùng cần chuẩn hóa vai trò</strong><span>Chọn đúng một vai trò chuẩn trong cửa sổ Sửa. Hệ thống không tự nâng quyền.</span></div>}
-      {loadError && <div className="role-permission-error" role="alert"><span>{loadError}</span><MisaButton onClick={() => void loadUsers().catch(() => undefined)}>Thử lại</MisaButton></div>}
+      </section>
+      {isAdmin && legacyUsers.length > 0 && <div className="role-permission-warning" role="status">
+        <div>
+          <strong>{legacyUsers.length} người dùng cần chuẩn hóa vai trò</strong>
+          <span>Chọn đúng một vai trò chuẩn trong cửa sổ Sửa. Hệ thống không tự nâng quyền.</span>
+        </div>
+        <div className="role-permission-warning__details">
+          {legacyUsers.map(user => <span key={user.id}>role legacy chưa được chuẩn hóa: {user.name}</span>)}
+          <span>identity này không qua được kiểm tra ghi sổ</span>
+        </div>
+      </div>}
+      {loadError && <div className="role-permission-error" role="alert"><span>{loadError}</span><MisaButton onClick={() => void loadUsers().catch(() => undefined)}>Thử lại danh sách người dùng</MisaButton></div>}
       {error && <div className="role-permission-error" role="alert">{error}</div>}
       {isAdmin && <section aria-label="Quản lý người dùng">
         <h2>Người dùng trong công ty</h2>

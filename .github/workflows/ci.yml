@@ -53,6 +53,12 @@ jobs:
       - name: Install locked PHP dependencies
         run: composer install --no-interaction --prefer-dist --no-progress --optimize-autoloader
 
+      - name: Prepare Laravel test environment
+        shell: bash
+        run: |
+          cp .env.example .env
+          php artisan key:generate --force --no-interaction
+
       - name: Prepare evidence directory
         run: mkdir -p storage/test-results
 

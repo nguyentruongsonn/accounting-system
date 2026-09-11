@@ -35,6 +35,7 @@ final class EnsureActiveAccount
         // kept as a test-only seam so existing in-process API tests retain
         // their authorization focus.
         $isTransientTestPrincipal = app()->runningUnitTests()
+            && (config('app.env') === 'testing' || Auth::guard('web')->user() === null)
             && $request->bearerToken() === null
             && ($accessToken instanceof TransientToken || $this->isMockedTestToken($accessToken));
         if (! $isTransientTestPrincipal) {
