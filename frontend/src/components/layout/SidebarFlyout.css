@@ -1,0 +1,278 @@
+/* ==========================================================================
+   APPLE HIG DESIGN SYSTEM - SIDEBAR & MAIN LAYOUT (macOS / iPadOS Style)
+   ========================================================================== */
+
+.misa-sidebar-item-wrapper {
+  position: relative;
+}
+
+/* Translucent Glass Flyout Mega Menu */
+.misa-flyout-menu {
+  position: fixed;
+  left: 220px;
+  background: color-mix(in srgb, var(--ui-surface) 92%, transparent);
+  backdrop-filter: blur(25px) saturate(190%);
+  -webkit-backdrop-filter: blur(25px) saturate(190%);
+  border-radius: var(--misa-border-radius-lg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--ui-border-subtle);
+  width: 520px;
+  z-index: 9999;
+  padding: var(--ui-space-4) var(--ui-space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-3);
+  animation: appleFlyoutFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes appleFlyoutFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.misa-flyout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--ui-border-subtle);
+  padding-bottom: var(--ui-space-2);
+}
+
+.misa-flyout-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--misa-text-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.misa-flyout-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ui-space-6);
+}
+
+.misa-flyout-col-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--misa-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--ui-space-2);
+  padding-bottom: var(--ui-space-1);
+  border-bottom: 1px solid var(--ui-border-subtle);
+}
+
+.misa-flyout-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.misa-flyout-item {
+  padding: 7px 10px;
+  border-radius: var(--ui-radius-compact);
+  font-size: 13px;
+  color: var(--misa-text-heading);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.15s ease;
+  font-weight: 450;
+}
+
+.misa-flyout-item:hover {
+  background: var(--ui-primary-subtle);
+  color: var(--ui-primary);
+  transform: translateX(2px);
+}
+
+.misa-flyout-item-disabled,
+.misa-flyout-item-disabled:hover {
+  background: transparent;
+  color: var(--ui-text-disabled);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.misa-flyout-item-badge {
+  font-size: 10px;
+  background: var(--ui-primary-subtle);
+  color: var(--ui-primary);
+  padding: 2px 7px;
+  border-radius: 9999px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* macOS Sidebar Styling */
+.misa-layout-sider {
+  overflow: auto;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 100;
+  background: #161618 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.misa-logo-container {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  background: #161618;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+}
+
+.misa-logo-icon-box {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #27272a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.5px;
+}
+
+.misa-logo-text-title {
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+}
+
+.misa-logo-text-subtitle {
+  font-size: 10px;
+  color: var(--misa-text-muted);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  margin-top: -2px;
+}
+
+.misa-quick-add-btn-box {
+  padding: 10px 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.misa-quick-add-btn {
+  border-radius: 8px !important;
+  width: 100% !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  transition: all 0.15s ease !important;
+}
+
+.misa-quick-add-btn:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Dark macOS Sidebar Menu */
+.custom-menu.ant-menu-dark {
+  background: transparent !important;
+  padding: 6px 4px;
+}
+
+.custom-menu.ant-menu-dark .ant-menu-item-selected {
+  background-color: rgba(255, 255, 255, 0.14) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  border-radius: 8px !important;
+}
+
+.custom-menu.ant-menu-dark .ant-menu-item, 
+.custom-menu.ant-menu-dark .ant-menu-submenu-title {
+  border-radius: 8px !important;
+  margin: 3px 6px !important;
+  width: calc(100% - 12px) !important;
+  color: #a1a1a6;
+  font-size: 13px;
+  font-weight: 450;
+  letter-spacing: -0.01em;
+  transition: all 0.15s ease;
+}
+
+.custom-menu.ant-menu-dark .ant-menu-item:hover,
+.custom-menu.ant-menu-dark .ant-menu-submenu-title:hover {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.custom-menu.ant-menu-dark .ant-menu-item-active {
+  background-color: transparent !important;
+}
+
+.custom-menu.ant-menu-dark .ant-menu-sub {
+  background: #111113 !important;
+}
+
+/* Frosted Glass Header (macOS Titlebar / Toolbar Style) */
+.misa-header-bar {
+  padding: 0 20px;
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.misa-badge-year {
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--misa-text-label);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.misa-content-area {
+  margin: 0;
+  background: var(--misa-bg-body);
+  min-height: calc(100vh - 56px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.misa-user-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.misa-user-dropdown-trigger:hover {
+  background: rgba(0, 0, 0, 0.04);
+}

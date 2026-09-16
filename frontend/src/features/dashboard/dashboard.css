@@ -1,0 +1,160 @@
+.dashboard-overview {
+  min-width: 0;
+}
+
+.dashboard-trend-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+}
+
+.dashboard-trend-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  min-width: 0;
+}
+
+.dashboard-trend-card {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.dashboard-trend-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.dashboard-trend-card-header h3 {
+  margin: 0;
+  color: #1c1e21;
+  font-size: 15px;
+}
+
+.dashboard-trend-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.dashboard-trend-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.dashboard-trend-legend i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.dashboard-trend-chart {
+  min-height: 210px;
+  overflow: hidden;
+}
+
+.dashboard-trend-chart svg {
+  display: block;
+  width: 100%;
+  height: 210px;
+}
+
+.dashboard-trend-empty {
+  display: grid;
+  min-height: 210px;
+  place-items: center;
+  color: #6b7280;
+  font-size: 13px;
+  text-align: center;
+}
+
+.dashboard-trend-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  overflow: hidden;
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+.dashboard-trend-labels span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-trend-loading {
+  min-height: 270px;
+}
+
+.dashboard-trend-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 768px) {
+  .dashboard-trend-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dashboard-trend-toolbar .ant-picker {
+    width: 100%;
+  }
+
+  .dashboard-trend-toolbar .ant-picker-range {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .dashboard-trend-toolbar .ant-picker-range .ant-picker-input {
+    min-width: 0;
+    width: 0;
+    flex: 1 1 0;
+  }
+
+  .dashboard-trend-toolbar .ant-picker-range .ant-picker-input input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .dashboard-trend-toolbar .ant-picker-range .ant-picker-range-separator,
+  .dashboard-trend-toolbar .ant-picker-range .ant-picker-suffix {
+    flex: 0 0 auto;
+  }
+
+  .dashboard-trend-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-trend-card-header {
+    flex-direction: column;
+  }
+
+  .dashboard-trend-legend {
+    justify-content: flex-start;
+  }
+}
