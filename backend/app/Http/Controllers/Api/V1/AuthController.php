@@ -101,6 +101,7 @@ class AuthController extends Controller
     private function refreshCookie(Request $request, string $value)
     {
         $secure = $request->isSecure() || (bool) config('session.secure', false);
+        $sameSite = $secure ? 'none' : 'lax';
 
         return cookie(
             'refresh_token',
@@ -111,7 +112,7 @@ class AuthController extends Controller
             $secure,
             true,
             false,
-            'lax',
+            $sameSite,
         );
     }
 

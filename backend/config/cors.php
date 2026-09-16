@@ -25,7 +25,7 @@ $allowedHeaders = $configuredHeaders === null || trim($configuredHeaders) === ''
     ? ['Accept', 'Authorization', 'Content-Type', 'Origin', 'X-Requested-With', 'X-CSRF-TOKEN', 'X-XSRF-TOKEN']
     : array_values(array_filter(array_map('trim', explode(',', $configuredHeaders))));
 
-$supportsCredentials = filter_var(env('CORS_SUPPORTS_CREDENTIALS', false), FILTER_VALIDATE_BOOL);
+$supportsCredentials = filter_var(env('CORS_SUPPORTS_CREDENTIALS', true), FILTER_VALIDATE_BOOL);
 if ($supportsCredentials && in_array('*', $allowedOrigins, true)) {
     // Browsers reject wildcard origins with credentials; fail closed rather
     // than emitting a misleading or deployment-dependent CORS policy.
@@ -55,13 +55,15 @@ return [
     // local .env.example includes the standard Vite development origins.
     'allowed_origins' => $allowedOrigins,
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '#^https://.*\.vercel\.app$#',
+    ],
 
     'allowed_headers' => $allowedHeaders,
 
     'exposed_headers' => [],
 
-    'max_age' => 0,
+    'max_age' => 86400,
 
     'supports_credentials' => $supportsCredentials,
 
