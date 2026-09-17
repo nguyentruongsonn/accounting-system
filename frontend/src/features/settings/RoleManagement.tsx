@@ -22,10 +22,6 @@ const matrix = [
   ['Quản lý người dùng, nhật ký kiểm toán', 'Có', 'Không'],
   ['Đảo / bỏ ghi sổ / hủy, đóng kỳ, xóa tài khoản chưa dùng', 'Có điều kiện', 'Không'],
 ];
-const roleCards = [
-  { role: 'admin', label: 'Quản trị viên', description: 'Quản lý người dùng, cấu hình và phê duyệt theo chính sách máy chủ.' },
-  { role: 'accountant', label: 'Kế toán viên', description: 'Lập chứng từ, danh mục và đối chiếu dữ liệu trong phạm vi được cấp.' },
-];
 
 function errorMessage(error: unknown): string {
   const response = (error as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } })?.response?.data;
@@ -122,16 +118,6 @@ const RoleManagement: React.FC = () => {
         actions={isAdmin ? <MisaButton variant="primary" onClick={() => edit()}>Thêm người dùng</MisaButton> : undefined}
       />}
     >
-      <div className="role-permission-intro">
-        <div>
-          <p className="role-permission-kicker">Mô hình truy cập</p>
-          <h2 className="role-permission-title">Ma trận quyền cố định</h2>
-          <p className="role-permission-description">Hai vai trò chuẩn giúp quyền hạn rõ ràng, dễ kiểm tra và không tạo nhầm quyền ngoài chính sách.</p>
-        </div>
-        <div className="role-permission-cards">
-          {roleCards.map(card => <div className="role-permission-card" key={card.role}><span className={`role-permission-card__badge role-permission-card__badge--${card.role}`}>{card.role}</span><strong>{card.label}</strong><span>{card.description}</span></div>)}
-        </div>
-      </div>
       <DataTableSurface>
         <table className="misa-table misa-w-full role-permission-matrix">
           <thead><tr><th scope="col">Phạm vi</th><th scope="col">admin</th><th scope="col">accountant</th></tr></thead>

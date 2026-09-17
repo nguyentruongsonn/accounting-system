@@ -8,16 +8,21 @@ import {
     RiseOutlined,
     ArrowRightOutlined,
     LineChartOutlined,
-    AppstoreOutlined
+    AppstoreOutlined,
+    ArrowUpOutlined,
+    ArrowDownOutlined,
+    MinusOutlined,
 } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import {
+    absDecimalMoney,
     addDecimalMoney,
     compareDecimalMoney,
     decimalRatio,
     formatDecimalMoney,
+    subtractDecimalMoney,
 } from '../../utils/decimalMoney';
 import PageShell from '../../components/layout/PageShell';
 import PageHeader from '../../components/layout/PageHeader';
@@ -27,6 +32,93 @@ import { parseDashboardTrendResponse } from './dashboardTrend';
 import './dashboard.css';
 
 const { RangePicker } = DatePicker;
+
+type MetricComparison = {
+    diff: string;
+    percent: string | null;
+    direction: 'up' | 'down' | 'flat';
+};
+
+const computeComparison = (
+    current: string | null,
+    previous: string | null,
+): MetricComparison | null => {
+    if (current === null || previous === null) return null;
+    try {
+        const cmp = compareDecimalMoney(current, previous);
+        const diff = subtractDecimalMoney(current, previous);
+        const direction: 'up' | 'down' | 'flat' = cmp > 0 ? 'up' : cmp < 0 ? 'down' : 'flat';
+        const prevAbs = absDecimalMoney(previous);
+        let percent: string | null = null;
+        if (compareDecimalMoney(prevAbs, '0.00') > 0) {
+            const diffAbs = absDecimalMoney(diff);
+            const ratio = (Number(diffAbs) / Number(prevAbs)) * 100;
+            if (Number.isFinite(ratio)) {
+                percent = ratio >= 1000 ? '>999%' : `${ratio.toFixed(1)}%`;
+            }
+        }
+        return {
+            diff,
+            percent,
+            direction,
+        };
+    } catch {
+        return null;
+    }
+};
+
+const ComparisonBadge: React.FC<{
+    comparison: MetricComparison | null;
+    periodLabel?: string;
+    reverseColor?: boolean;
+}> = ({ comparison, periodLabel = '', reverseColor = false }) => {
+    if (!comparison) {
+        return <span style={{ fontSize: 11, color: '#94A3B8' }}>—</span>;
+    }
+
+    const { direction, percent } = comparison;
+    if (direction === 'flat') {
+        return (
+            <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 3,
+                fontSize: 11,
+                fontWeight: 600,
+                color: '#475467',
+                background: '#F2F4F7',
+                padding: '2px 6px',
+                borderRadius: 4,
+            }}>
+                <MinusOutlined style={{ fontSize: 9 }} />
+                0%{periodLabel ? ` vs ${periodLabel}` : ''}
+            </span>
+        );
+    }
+
+    const isGood = reverseColor ? direction === 'down' : direction === 'up';
+    const color = isGood ? '#027A48' : '#B42318';
+    const bg = isGood ? '#ECFDF3' : '#FEF3F2';
+    const sign = direction === 'up' ? '+' : '-';
+
+    return (
+        <span style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 3,
+            fontSize: 11,
+            fontWeight: 600,
+            color,
+            background: bg,
+            padding: '2px 6px',
+            borderRadius: 4,
+        }}>
+            {direction === 'up' ? <ArrowUpOutlined style={{ fontSize: 10 }} /> : <ArrowDownOutlined style={{ fontSize: 10 }} />}
+            {percent ? `${sign}${percent}` : (direction === 'up' ? '+ Mới' : '-')}
+            {periodLabel ? ` vs ${periodLabel}` : ''}
+        </span>
+    );
+};
 
 const Dashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState('tinh-hinh');
@@ -115,7 +207,7 @@ const Dashboard: React.FC = () => {
         return row && typeof row === 'object' ? asAmount((row as Record<string, unknown>)[field]) : null;
     };
 
-    // Extract KPIs
+    // Extract KPIs - Current period
     const cash = findAmount(balanceData?.assets, '111', 'end_balance');
     const bank = findAmount(balanceData?.assets, '112', 'end_balance');
     const receivables = findAmount(balanceData?.assets, '131', 'end_balance');
@@ -137,6 +229,37 @@ const Dashboard: React.FC = () => {
     const operatingExpenses = salesExpense !== null && adminExpense !== null
         ? addDecimalMoney(salesExpense, adminExpense)
         : null;
+    const profitBeforeTax = findAmount(incomeData, '50', 'this_period');
+
+    // Extract KPIs - Comparative period (Start balance for Balance Sheet, Previous period for Income Statement)
+    const cashStart = findAmount(balanceData?.assets, '111', 'start_balance');
+    const bankStart = findAmount(balanceData?.assets, '112', 'start_balance');
+    const cashTotalStart = cashStart !== null && bankStart !== null
+        ? addDecimalMoney(cashStart, bankStart)
+        : null;
+    const receivablesStart = findAmount(balanceData?.assets, '131', 'start_balance');
+    const payablesStart = findAmount(balanceData?.liabilities, '331', 'start_balance');
+
+    const revenuePrev = findAmount(incomeData, '10', 'prev_period');
+    const grossCostPrev = findAmount(incomeData, '11', 'prev_period');
+    const salesExpensePrev = findAmount(incomeData, '25', 'prev_period');
+    const adminExpensePrev = findAmount(incomeData, '26', 'prev_period');
+    const operatingExpensesPrev = salesExpensePrev !== null && adminExpensePrev !== null
+        ? addDecimalMoney(salesExpensePrev, adminExpensePrev)
+        : null;
+    const profitBeforeTaxPrev = findAmount(incomeData, '50', 'prev_period');
+    const profitPrev = findAmount(incomeData, '60', 'prev_period');
+
+    // Comparative metrics
+    const cashComp = computeComparison(cashTotal, cashTotalStart);
+    const receivablesComp = computeComparison(receivables, receivablesStart);
+    const payablesComp = computeComparison(payables, payablesStart);
+    const profitComp = computeComparison(profit, profitPrev);
+
+    const revenueComp = computeComparison(revenue, revenuePrev);
+    const grossCostComp = computeComparison(grossCost, grossCostPrev);
+    const operatingExpensesComp = computeComparison(operatingExpenses, operatingExpensesPrev);
+    const profitBeforeTaxComp = computeComparison(profitBeforeTax, profitBeforeTaxPrev);
 
     const financialTabContent = reportUnavailable ? (
         <div className="misa-p-12 misa-mb-12" style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -185,7 +308,12 @@ const Dashboard: React.FC = () => {
                             prefix={<DollarCircleOutlined style={{ color: '#1F5AA6', marginRight: 6 }} />}
                             formatter={() => <span style={{ color: '#1C1E21', fontWeight: 700, fontSize: 20 }}>{formatCurrency(cashTotal)}</span>}
                         />
-                        <div style={{ marginTop: 6, fontSize: 11, color: '#64748B', fontWeight: 500 }}>Khả dụng tức thì</div>
+                        <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 4 }}>
+                            <ComparisonBadge comparison={cashComp} periodLabel="đầu kỳ" />
+                            <span style={{ fontSize: 11, color: '#64748B', fontWeight: 500 }}>
+                                Đầu kỳ: {formatCurrency(cashTotalStart)}
+                            </span>
+                        </div>
                     </div>
                 </Col>
                 
@@ -206,7 +334,12 @@ const Dashboard: React.FC = () => {
                             prefix={<RiseOutlined style={{ color: '#1F5AA6', marginRight: 6 }} />}
                             formatter={() => <span style={{ color: '#1C1E21', fontWeight: 700, fontSize: 20 }}>{formatCurrency(receivables)}</span>}
                         />
-                        <div style={{ marginTop: 6, fontSize: 11, color: '#64748B', fontWeight: 500 }}>Công nợ đầu ra</div>
+                        <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 4 }}>
+                            <ComparisonBadge comparison={receivablesComp} periodLabel="đầu kỳ" />
+                            <span style={{ fontSize: 11, color: '#64748B', fontWeight: 500 }}>
+                                Đầu kỳ: {formatCurrency(receivablesStart)}
+                            </span>
+                        </div>
                     </div>
                 </Col>
                 
@@ -227,7 +360,12 @@ const Dashboard: React.FC = () => {
                             prefix={<FallOutlined style={{ color: '#1F5AA6', marginRight: 6 }} />}
                             formatter={() => <span style={{ color: '#1C1E21', fontWeight: 700, fontSize: 20 }}>{formatCurrency(payables)}</span>}
                         />
-                        <div style={{ marginTop: 6, fontSize: 11, color: '#64748B', fontWeight: 500 }}>Công nợ phải thanh toán</div>
+                        <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 4 }}>
+                            <ComparisonBadge comparison={payablesComp} periodLabel="đầu kỳ" reverseColor />
+                            <span style={{ fontSize: 11, color: '#64748B', fontWeight: 500 }}>
+                                Đầu kỳ: {formatCurrency(payablesStart)}
+                            </span>
+                        </div>
                     </div>
                 </Col>
 
@@ -248,7 +386,12 @@ const Dashboard: React.FC = () => {
                             prefix={<BankOutlined style={{ color: '#1F5AA6', marginRight: 6 }} />}
                             formatter={() => <span style={{ color: '#1C1E21', fontWeight: 700, fontSize: 20 }}>{formatCurrency(profit)}</span>}
                         />
-                        <div style={{ marginTop: 6, fontSize: 11, color: '#64748B', fontWeight: 500 }}>Kỳ báo cáo hiện tại</div>
+                        <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 4 }}>
+                            <ComparisonBadge comparison={profitComp} periodLabel="kỳ trước" />
+                            <span style={{ fontSize: 11, color: '#64748B', fontWeight: 500 }}>
+                                Kỳ trước: {formatCurrency(profitPrev)}
+                            </span>
+                        </div>
                     </div>
                 </Col>
             </Row>
@@ -268,27 +411,51 @@ const Dashboard: React.FC = () => {
                             Kết quả hoạt động kinh doanh
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#FAFBFC', borderRadius: 8, border: '1px solid #E5E7EB' }}>
-                                <span style={{ fontWeight: 500, color: '#4B5563', fontSize: 13 }}>Doanh thu thuần</span>
-                                <span style={{ fontWeight: 700, color: '#1F5AA6', fontSize: 14 }}>{formatCurrency(revenue)}</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '10px 14px', background: '#FAFBFC', borderRadius: 8, border: '1px solid #E5E7EB' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontWeight: 600, color: '#374151', fontSize: 13 }}>Doanh thu thuần</span>
+                                    <span style={{ fontWeight: 700, color: '#1F5AA6', fontSize: 14 }}>{formatCurrency(revenue)}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, color: '#64748B' }}>
+                                    <span>Kỳ trước: {formatCurrency(revenuePrev)}</span>
+                                    <ComparisonBadge comparison={revenueComp} />
+                                </div>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#FAFBFC', borderRadius: 8, border: '1px solid #E5E7EB' }}>
-                                <span style={{ fontWeight: 500, color: '#4B5563', fontSize: 13 }}>Giá vốn hàng bán</span>
-                                <span style={{ fontWeight: 700, color: '#64748B', fontSize: 14 }}>
-                                    {formatCurrency(grossCost)}
-                                </span>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '10px 14px', background: '#FAFBFC', borderRadius: 8, border: '1px solid #E5E7EB' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontWeight: 600, color: '#374151', fontSize: 13 }}>Giá vốn hàng bán</span>
+                                    <span style={{ fontWeight: 700, color: '#64748B', fontSize: 14 }}>
+                                        {formatCurrency(grossCost)}
+                                    </span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, color: '#64748B' }}>
+                                    <span>Kỳ trước: {formatCurrency(grossCostPrev)}</span>
+                                    <ComparisonBadge comparison={grossCostComp} reverseColor />
+                                </div>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: '#FAFBFC', borderRadius: 8, border: '1px solid #E5E7EB' }}>
-                                <span style={{ fontWeight: 500, color: '#4B5563', fontSize: 13 }}>Chi phí bán hàng & QLDN</span>
-                                <span style={{ fontWeight: 700, color: '#64748B', fontSize: 14 }}>
-                                    {formatCurrency(operatingExpenses)}
-                                </span>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '10px 14px', background: '#FAFBFC', borderRadius: 8, border: '1px solid #E5E7EB' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontWeight: 600, color: '#374151', fontSize: 13 }}>Chi phí bán hàng & QLDN</span>
+                                    <span style={{ fontWeight: 700, color: '#64748B', fontSize: 14 }}>
+                                        {formatCurrency(operatingExpenses)}
+                                    </span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, color: '#64748B' }}>
+                                    <span>Kỳ trước: {formatCurrency(operatingExpensesPrev)}</span>
+                                    <ComparisonBadge comparison={operatingExpensesComp} reverseColor />
+                                </div>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 8 }}>
-                                <span style={{ fontWeight: 700, color: '#1F5AA6', fontSize: 13 }}>LỢI NHUẬN TRƯỚC THUẾ</span>
-                                <span style={{ fontWeight: 800, color: '#1F5AA6', fontSize: 16 }}>
-                                    {formatCurrency(findAmount(incomeData, '50', 'this_period'))}
-                                </span>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '12px 14px', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 8 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontWeight: 700, color: '#1F5AA6', fontSize: 13 }}>LỢI NHUẬN TRƯỚC THUẾ</span>
+                                    <span style={{ fontWeight: 800, color: '#1F5AA6', fontSize: 16 }}>
+                                        {formatCurrency(profitBeforeTax)}
+                                    </span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, color: '#64748B' }}>
+                                    <span>Kỳ trước: {formatCurrency(profitBeforeTaxPrev)}</span>
+                                    <ComparisonBadge comparison={profitBeforeTaxComp} />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -382,9 +549,6 @@ const Dashboard: React.FC = () => {
                 <AppstoreOutlined style={{ color: '#1F5AA6' }} />
                 Bàn làm việc nội bộ
             </div>
-            <p style={{ margin: 0, color: '#666A72', fontSize: 12 }}>
-                Phạm vi đang khóa: chỉ mở các phân hệ có luồng nghiệp vụ nội bộ được công bố.
-            </p>
 
             <Row gutter={[16, 16]}>
                 {workspaceLinks.map((workflow) => (

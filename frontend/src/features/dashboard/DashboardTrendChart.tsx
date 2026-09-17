@@ -41,7 +41,48 @@ const DashboardTrendChart: React.FC<DashboardTrendChartProps> = ({
     return (
         <section className="dashboard-trend-card" aria-label={title}>
             <div className="dashboard-trend-card-header">
-                <h3>{title}</h3>
+                <div>
+                    <h3>{title}</h3>
+                    {data.length >= 2 && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 5, flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: 11, color: '#64748B', fontWeight: 500 }}>
+                                So với tháng trước ({data[data.length - 2].label} → {data[data.length - 1].label}):
+                            </span>
+                            {series.map((item) => {
+                                const latestVal = toNumber(data[data.length - 1][item.key]);
+                                const prevVal = toNumber(data[data.length - 2][item.key]);
+                                if (latestVal === null || prevVal === null) return null;
+                                const diff = latestVal - prevVal;
+                                const isZero = diff === 0;
+                                const isUp = diff > 0;
+                                let pct = '';
+                                if (Math.abs(prevVal) > 0) {
+                                    pct = `${((Math.abs(diff) / Math.abs(prevVal)) * 100).toFixed(1)}%`;
+                                }
+                                return (
+                                    <span
+                                        key={String(item.key)}
+                                        style={{
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            gap: 4,
+                                            fontSize: 11,
+                                            fontWeight: 600,
+                                            padding: '1px 6px',
+                                            borderRadius: 4,
+                                            color: isZero ? '#475467' : isUp ? '#027A48' : '#B42318',
+                                            background: isZero ? '#F2F4F7' : isUp ? '#ECFDF3' : '#FEF3F2',
+                                        }}
+                                        title={`${item.label}: ${valueFormatter(String(latestVal))} (kỳ trước: ${valueFormatter(String(prevVal))})`}
+                                    >
+                                        <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: item.color, display: 'inline-block' }} />
+                                        {item.label}: {isZero ? '0%' : `${isUp ? '+' : '-'}${pct || ''}`}
+                                    </span>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
                 <div className="dashboard-trend-legend" aria-label="Chú giải biểu đồ">
                     {series.map((item) => <span key={String(item.key)}><i style={{ backgroundColor: item.color }} />{item.label}</span>)}
                 </div>

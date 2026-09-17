@@ -28,7 +28,25 @@ export function AuthSessionBootstrap() {
     if (!bootstrapPromise.current) {
       bootstrapPromise.current = (async () => {
         try {
-          if (user) return;
+          if (user && token) {
+            try {
+              const { data } = await withAuthBootstrapTimeout(api.get('/auth/user'));
+              if (data && typeof data.id === 'number') setAuth(data, token);
+            } catch (err: any) {
+              if (err?.response?.status === 401) {
+                try {
+                  const { data } = await withAuthBootstrapTimeout(api.post('/auth/refresh'));
+                  if (typeof data?.token === 'string' && data.token.trim() !== '' && data.user?.id != null) {
+                    setAuth(data.user, data.token);
+                  }
+                } catch {
+                  useAuthStore.getState().logout();
+                }
+              }
+            }
+            return;
+          }
+
           if (token) {
             const { data } = await withAuthBootstrapTimeout(api.get('/auth/user'));
             if (data && typeof data.id === 'number') setAuth(data, token);
