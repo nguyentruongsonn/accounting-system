@@ -2224,6 +2224,18 @@ table.misa-voucher-table {
   font-size: 14px !important;
   font-weight: 600 !important;
   border-radius: 0 !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.misa-toolbar-split-btn .misa-btn-primary:hover:not(:disabled),
+.misa-toolbar-split-btn .misa-btn-primary-add:hover:not(:disabled),
+.misa-toolbar-split-btn > button:first-child:hover:not(:disabled) {
+  background: var(--ui-button-primary-background-hover) !important;
+  background-color: var(--ui-button-primary-background-hover) !important;
 }
 
 .misa-toolbar-split-btn .misa-btn-split-arrow,
@@ -2238,6 +2250,18 @@ table.misa-voucher-table {
   padding: 0 10px !important;
   font-size: 12px !important;
   border-radius: 0 !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.misa-toolbar-split-btn .misa-btn-split-arrow:hover:not(:disabled),
+.misa-toolbar-split-btn .misa-btn-primary-add-menu:hover:not(:disabled),
+.misa-toolbar-split-btn > button:last-child:not(:first-child):hover:not(:disabled) {
+  background: var(--ui-button-primary-background-hover) !important;
+  background-color: var(--ui-button-primary-background-hover) !important;
 }
 
 .misa-btn-secondary {

@@ -57,6 +57,7 @@ export const PurchaseInvoices: React.FC = () => {
     const [isPayByInvoiceModalOpen, setIsPayByInvoiceModalOpen] = useState(false);
     const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
     const [printRecord, setPrintRecord] = useState<any>(null);
+    const [addMenuOpen, setAddMenuOpen] = useState(false);
 
     // Filter & view states
     const [datePreset, setDatePreset] = useState('Tháng này');
@@ -287,19 +288,28 @@ export const PurchaseInvoices: React.FC = () => {
             key: '1',
             icon: <FileTextOutlined className="misa-icon-blue" />,
             label: 'Chứng từ mua hàng',
-            onClick: () => handleOpenCreateVoucher('1. Mua hàng trong nước nhập kho')
+            onClick: () => {
+                setAddMenuOpen(false);
+                handleOpenCreateVoucher('1. Mua hàng trong nước nhập kho');
+            }
         },
         {
             key: '2',
             icon: <AuditOutlined className="misa-icon-cyan" />,
             label: 'Chứng từ mua dịch vụ',
-            onClick: () => setIsServiceModalOpen(true)
+            onClick: () => {
+                setAddMenuOpen(false);
+                setIsServiceModalOpen(true);
+            }
         },
         {
             key: '3',
             icon: <ShoppingCartOutlined className="misa-icon-purple" />,
             label: 'Chứng từ mua hàng nhiều hóa đơn',
-            onClick: () => setIsMultiInvoiceModalOpen(true)
+            onClick: () => {
+                setAddMenuOpen(false);
+                setIsMultiInvoiceModalOpen(true);
+            }
         },
         {
             type: 'divider'
@@ -309,6 +319,7 @@ export const PurchaseInvoices: React.FC = () => {
             icon: <DollarOutlined className="misa-icon-green" />,
             label: 'Trả tiền theo hóa đơn',
             onClick: () => {
+                setAddMenuOpen(false);
                 setEditRecord(null);
                 setIsPayByInvoiceModalOpen(true);
             }
@@ -543,16 +554,38 @@ export const PurchaseInvoices: React.FC = () => {
                                 title="In danh sách"
                                 onClick={() => window.print()}
                             />
-                            <Dropdown menu={{ items: addMenuItems }} placement="bottomRight" trigger={['click']}>
-                                <Button
-                                    type="primary"
-                                    className="misa-btn-primary"
-                                    icon={<PlusOutlined />}
-                                    onClick={() => handleOpenCreateVoucher('1. Mua hàng trong nước nhập kho')}
-                                >
-                                    <span>Thêm</span>
-                                    <DownOutlined className="misa-fs-10" />
-                                </Button>
+                            <Dropdown
+                                menu={{ items: addMenuItems }}
+                                placement="bottomRight"
+                                trigger={['hover', 'click']}
+                                open={addMenuOpen}
+                                onOpenChange={setAddMenuOpen}
+                            >
+                                <div className="misa-toolbar-split-btn">
+                                    <button
+                                        type="button"
+                                        className="misa-btn-primary"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setAddMenuOpen(false);
+                                            handleOpenCreateVoucher('1. Mua hàng trong nước nhập kho');
+                                        }}
+                                    >
+                                        <PlusOutlined style={{ marginRight: 6 }} />
+                                        <span>Thêm</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="misa-btn-split-arrow"
+                                        title="Tùy chọn chứng từ mua hàng"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setAddMenuOpen((prev) => !prev);
+                                        }}
+                                    >
+                                        <DownOutlined className="misa-fs-10" />
+                                    </button>
+                                </div>
                             </Dropdown>
                         </div>
                     )}
