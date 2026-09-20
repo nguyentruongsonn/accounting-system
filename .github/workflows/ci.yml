@@ -40,7 +40,17 @@ jobs:
           CACHE_STORE: array
           QUEUE_CONNECTION: sync
           SESSION_DRIVER: array
-        run: php artisan test --compact
+        shell: bash
+        run: |
+          set +e
+          output=$(php artisan test --compact 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            detail=$(printf '%s' "$output" | tr '\n' ' ' | cut -c 1-4000)
+            echo "::error file=.github/workflows/ci.yml,line=56::${detail}"
+            exit "$status"
+          fi
 
       - name: Check migration state
         run: |
