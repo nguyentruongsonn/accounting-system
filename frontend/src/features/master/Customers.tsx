@@ -10,7 +10,6 @@ import MasterDataNavigation from './MasterDataNavigation';
 import PageHeader from '../../components/layout/PageHeader';
 import PageToolbar from '../../components/layout/PageToolbar';
 import DataTableSurface from '../../components/layout/DataTableSurface';
-import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
 
 interface Customer {
     id: number;
@@ -118,7 +117,7 @@ const Customers: React.FC = () => {
                         <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải danh sách khách hàng</div>
                         <div style={{ color: '#B91C1C', fontSize: 12 }}>Máy chủ trả về catalogue không hợp lệ. Danh sách trống bên dưới không phải dữ liệu thay thế.</div>
                     </div>
-                    <Button size="small" onClick={() => void runManualDataLoad(() => refetchCustomers(), { success: 'Tải lại danh sách khách hàng thành công.', failure: 'Không thể tải lại danh sách khách hàng.' })}>Thử lại danh sách khách hàng</Button>
+                    <Button size="small" onClick={() => void refetchCustomers()}>Thử lại danh sách khách hàng</Button>
                 </div>
             )}
             <DataTableSurface>

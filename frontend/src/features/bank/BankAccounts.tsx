@@ -9,7 +9,6 @@ import PageShell from '../../components/layout/PageShell';
 import PageHeader from '../../components/layout/PageHeader';
 import PageToolbar from '../../components/layout/PageToolbar';
 import DataTableSurface from '../../components/layout/DataTableSurface';
-import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
 
 function parseBankAccountList(value: unknown): any[] {
     if (Array.isArray(value)) return value;
@@ -136,7 +135,7 @@ const BankAccounts: React.FC = () => {
                             <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải danh mục tài khoản ngân hàng</div>
                             <div style={{ color: '#B91C1C', fontSize: 12 }}>Không hiển thị danh sách rỗng thay cho lỗi tải dữ liệu từ máy chủ.</div>
                         </div>
-                         <Button size="small" onClick={() => void runManualDataLoad(() => refetchBankAccounts(), { success: 'Tải lại danh mục tài khoản ngân hàng thành công.', failure: 'Không thể tải lại danh mục tài khoản ngân hàng.' })}>Thử lại danh mục tài khoản ngân hàng</Button>
+                        <Button size="small" onClick={() => void refetchBankAccounts()}>Thử lại danh mục tài khoản ngân hàng</Button>
                     </div>
                 )}
                 <Table 

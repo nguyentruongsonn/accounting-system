@@ -737,7 +737,7 @@ export const PurchaseContracts: React.FC = () => {
                             <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải danh sách hợp đồng mua hàng</div>
                             <div style={{ color: '#B91C1C', fontSize: 12, marginTop: 2 }}>Không hiển thị dữ liệu thay thế; hãy thử tải lại danh sách hợp đồng.</div>
                         </div>
-                        <Button size="small" onClick={() => void runManualDataLoad(() => refetchContracts(), { success: 'Tải lại danh sách hợp đồng mua hàng thành công.', failure: 'Không thể tải lại danh sách hợp đồng mua hàng.' })}>
+                        <Button size="small" onClick={() => void refetchContracts()}>
                             Thử lại danh sách hợp đồng mua hàng
                         </Button>
                     </div>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, Button, Form, Input, InputNumber, DatePicker, Switch, Radio, Checkbox, Space } from 'antd';
 import { toast as message } from '../../components/feedback/toast';
 import Modal from '../../components/layout/AppModal';
@@ -54,14 +54,12 @@ import {
 } from '../../components/misa';
 import { CustomerDebtModal } from './components/CustomerDebtModal';
 import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
-import { isLocalQueryLoading } from '../../components/feedback/localLoading';
 import PageShell from '../../components/layout/PageShell';
 import PageToolbar from '../../components/layout/PageToolbar';
 import DataTableSurface from '../../components/layout/DataTableSurface';
 import { useSourceRecordDeepLink } from '../reports/useSourceRecordDeepLink';
 import PageHeader from '../../components/layout/PageHeader';
 import ModalFrame from '../../components/layout/ModalFrame';
-import { SALES_INVOICES_QUERY_KEY, parseSalesInvoiceCollection, useSalesInvoicesQuery } from './salesInvoiceQuery';
 
 interface SalesInvoiceLine {
     key?: string;
@@ -109,6 +107,14 @@ interface SalesInvoiceRecord {
     lines?: SalesInvoiceLine[];
 }
 
+function parseSalesInvoiceCollection(value: unknown, resource: string): any[] {
+    if (Array.isArray(value)) return value;
+    if (value && typeof value === 'object' && Array.isArray((value as { data?: unknown }).data)) {
+        return (value as { data: any[] }).data;
+    }
+    throw new Error(`Invalid ${resource} response`);
+}
+
 export const SalesInvoices: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -145,7 +151,23 @@ export const SalesInvoices: React.FC = () => {
     const totals = useVoucherTotals(formLines);
     const voucherNumber = Form.useWatch('invoice_number', form) || '—';
 
-    const { invoices, isLoading, isFetching: isInvoicesFetching, isError: isInvoicesError, refetch: refetchInvoices } = useSalesInvoicesQuery();
+    const { data: invoices = [], isLoading, isError: isInvoicesError, refetch: refetchInvoices } = useQuery({
+        queryKey: ['sales-invoices'],
+        queryFn: async () => {
+            const { data } = await api.get('/sales/invoices');
+            return parseSalesInvoiceCollection(data, 'sales invoices');
+        },
+    });
+
+    useEffect(() => {
+        const refresh = () => { void queryClient.invalidateQueries({ queryKey: ['sales-invoices'] }); };
+        window.addEventListener('sales-invoices-invalidated', refresh);
+        window.addEventListener('accounting-data-changed', refresh);
+        return () => {
+            window.removeEventListener('sales-invoices-invalidated', refresh);
+            window.removeEventListener('accounting-data-changed', refresh);
+        };
+    }, [queryClient]);
 
     const { data: customers = [] } = useQuery({
         queryKey: ['customers'],
@@ -317,7 +339,7 @@ export const SalesInvoices: React.FC = () => {
                 return;
             }
             message.success(editingInvoiceId ? 'Cập nhật Chứng từ bán hàng thành công!' : 'Tạo Chứng từ bán hàng thành công!');
-            queryClient.invalidateQueries({ queryKey: SALES_INVOICES_QUERY_KEY });
+            queryClient.invalidateQueries({ queryKey: ['sales-invoices'] });
             if (data?.andNew) {
                 handleOpenCreateModal();
             } else if (data?.andPrint) {
@@ -346,7 +368,7 @@ export const SalesInvoices: React.FC = () => {
             return api.post(`/sales/invoices/${id}/post`);
         },
         onMutate: async (id: number) => {
-            return optimisticTogglePostStatus(queryClient, SALES_INVOICES_QUERY_KEY, id, true);
+            return optimisticTogglePostStatus(queryClient, ['sales-invoices'], id, true);
         },
         onSuccess: (response: any) => {
             const evidence = response?.data?.data ?? response?.data;
@@ -355,10 +377,10 @@ export const SalesInvoices: React.FC = () => {
                 return;
             }
             message.success('Ghi sổ chứng từ bán hàng thành công!');
-            notifyDataChanged('sales');
+            notifyDataChanged();
         },
         onError: (err: any, _id: number, context) => {
-            rollbackVoucherCache(queryClient, SALES_INVOICES_QUERY_KEY, context);
+            rollbackVoucherCache(queryClient, ['sales-invoices'], context);
             message.error(err?.response?.data?.error || err?.response?.data?.message || 'Lỗi khi ghi sổ!');
         }
     });
@@ -368,7 +390,7 @@ export const SalesInvoices: React.FC = () => {
             return api.post(`/sales/invoices/${id}/unpost`);
         },
         onMutate: async (id: number) => {
-            return optimisticTogglePostStatus(queryClient, SALES_INVOICES_QUERY_KEY, id, false);
+            return optimisticTogglePostStatus(queryClient, ['sales-invoices'], id, false);
         },
         onSuccess: (response: any) => {
             const evidence = response?.data?.data ?? response?.data;
@@ -377,10 +399,10 @@ export const SalesInvoices: React.FC = () => {
                 return;
             }
             message.success('Bỏ ghi sổ chứng từ bán hàng thành công!');
-            notifyDataChanged('sales');
+            notifyDataChanged();
         },
         onError: (err: any, _id: number, context) => {
-            rollbackVoucherCache(queryClient, SALES_INVOICES_QUERY_KEY, context);
+            rollbackVoucherCache(queryClient, ['sales-invoices'], context);
             message.error(err?.response?.data?.error || err?.response?.data?.message || 'Lỗi khi bỏ ghi sổ!');
         }
     });
@@ -396,7 +418,7 @@ export const SalesInvoices: React.FC = () => {
                 return;
             }
             message.success('Nhân bản chứng từ bán hàng thành công!');
-            notifyDataChanged('sales');
+            notifyDataChanged();
         },
         onError: (err: any) => {
             message.error(err?.response?.data?.error || err?.response?.data?.message || 'Lỗi khi nhân bản chứng từ!');
@@ -408,7 +430,7 @@ export const SalesInvoices: React.FC = () => {
             return api.delete(`/sales/invoices/${id}`);
         },
         onMutate: async (id: number) => {
-            return instantRemoveVoucher(queryClient, SALES_INVOICES_QUERY_KEY, id);
+            return instantRemoveVoucher(queryClient, ['sales-invoices'], id);
         },
         onSuccess: (response: any) => {
             if (typeof response?.data?.message !== 'string' && response?.data?.success !== true) {
@@ -416,15 +438,15 @@ export const SalesInvoices: React.FC = () => {
                 return;
             }
             message.success('Đã xóa chứng từ bán hàng thành công!');
-            notifyDataChanged('sales');
+            notifyDataChanged();
         },
         onError: (err: any, _id: number, context) => {
-            rollbackVoucherCache(queryClient, SALES_INVOICES_QUERY_KEY, context);
+            rollbackVoucherCache(queryClient, ['sales-invoices'], context);
             message.error(err?.response?.data?.error || err?.response?.data?.message || 'Lỗi khi xóa chứng từ!');
         }
     });
 
-    const handleOpenCreateModal = useCallback(async () => {
+    const handleOpenCreateModal = async () => {
         form.resetFields();
         setEditingInvoiceId(null);
         setIsViewMode(false);
@@ -482,7 +504,7 @@ export const SalesInvoices: React.FC = () => {
         setIsIncludeInvoice(true);
         setActiveGridTab('accounting');
         setIsModalVisible(true);
-    }, [form]);
+    };
 
     useEffect(() => {
         if (searchParams.get('action') === 'create' && !isModalVisible) {
@@ -897,7 +919,7 @@ export const SalesInvoices: React.FC = () => {
                         className="misa-btn-tool"
                         title="Làm mới"
                         onClick={() => void runManualDataLoad(
-                            () => queryClient.invalidateQueries({ queryKey: SALES_INVOICES_QUERY_KEY }),
+                            () => queryClient.invalidateQueries({ queryKey: ['sales-invoices'] }),
                             { success: 'Tải lại danh sách hóa đơn bán hàng thành công.', failure: 'Không thể tải lại danh sách hóa đơn bán hàng.' },
                         )}
                     >
@@ -933,13 +955,13 @@ export const SalesInvoices: React.FC = () => {
                             <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải danh sách chứng từ bán hàng</div>
                             <div style={{ color: '#B91C1C', fontSize: 12, marginTop: 2 }}>Dữ liệu chưa được xác minh từ máy chủ; không hiển thị danh sách rỗng thay thế.</div>
                         </div>
-                        <Button onClick={() => void runManualDataLoad(() => refetchInvoices(), { success: 'Tải lại danh sách chứng từ bán hàng thành công.', failure: 'Không thể tải lại danh sách chứng từ bán hàng.' })}>Thử lại danh sách chứng từ bán hàng</Button>
+                        <Button onClick={() => void refetchInvoices()}>Thử lại danh sách chứng từ bán hàng</Button>
                     </div>
                 ) : <Table
                     columns={columns}
                     dataSource={invoices}
                     rowKey="id"
-                    loading={isLocalQueryLoading(isLoading, isInvoicesFetching)}
+                    loading={isLoading}
                     size="small"
                     bordered
                     className="misa-voucher-table"
@@ -2368,7 +2390,7 @@ export const SalesInvoices: React.FC = () => {
                 open={isCollectByInvoiceOpen}
                 initialInvoice={collectionInvoice}
                 onClose={() => { setIsCollectByInvoiceOpen(false); setCollectionInvoice(null); }}
-                onSuccess={() => { notifyDataChanged('sales'); }}
+                onSuccess={() => { notifyDataChanged(); }}
             />
                         <CustomerDebtModal
                 open={isCustomerDebtModalOpen}

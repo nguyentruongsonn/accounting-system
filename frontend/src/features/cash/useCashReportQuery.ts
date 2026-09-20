@@ -69,12 +69,12 @@ export function useCashReportQuery(
   );
   const code = selection?.code ?? null;
 
-    return useQuery({
-        queryKey: ['cash-reports', code, appliedFilters],
-        enabled: active && code !== null && appliedFilters !== null,
-        staleTime: 30_000,
-        refetchOnMount: true,
-        queryFn: async ({ signal }) => {
+  return useQuery({
+    queryKey: ['cash-reports', code, appliedFilters],
+    enabled: active && code !== null && appliedFilters !== null,
+    staleTime: 0,
+    refetchOnMount: 'always',
+    queryFn: async ({ signal }) => {
       if (code === null || appliedFilters === null) throw new Error('Cash report selection is required');
       const response = await api.get(`/cash/reports/${code}`, { params: appliedFilters, signal });
       const parsed = parseCashReportResponse(response.data?.data);

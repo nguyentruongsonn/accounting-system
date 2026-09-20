@@ -9,7 +9,6 @@ import BalanceSheetReport from './BalanceSheetReport';
 import IncomeStatementReport from './IncomeStatementReport';
 import GeneralLedger from './GeneralLedger';
 import GeneralJournal from './GeneralJournal';
-import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
 import {
   type ReportCapability,
   displayInternalReportLabel,
@@ -90,7 +89,7 @@ const ReportsWorkspace: React.FC<ReportsWorkspaceProps> = ({ requestedReportKey 
       {requestedReportNotice}
       {isError && <div className="apple-report-inline-status">
         <Typography.Text type="secondary">Không xác minh được danh sách báo cáo từ máy chủ. Không hiển thị danh sách thay thế.</Typography.Text>
-        <Button size="small" onClick={() => void runManualDataLoad(() => refetch(), { success: 'Tải lại danh sách báo cáo thành công.', failure: 'Không thể tải lại danh sách báo cáo.' })}>Thử lại danh sách báo cáo</Button>
+        <Button size="small" onClick={() => void refetch()}>Thử lại danh sách báo cáo</Button>
       </div>}
       {!isError && availableItems.length === 0 && <Typography.Text type="secondary">Chưa có báo cáo vận hành khả dụng trong phạm vi hiện tại.</Typography.Text>}
       {canOpenRequestedReport && (

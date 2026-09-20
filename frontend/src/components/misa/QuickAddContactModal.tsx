@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Form, Input, Radio, Checkbox, Button, Select, InputNumber, Tabs, DatePicker, Popconfirm, Row, Col } from 'antd';
 import { toast as message } from '../feedback/toast';
 import Modal from '../layout/AppModal';
@@ -133,6 +133,25 @@ export const QuickAddContactModal: React.FC<QuickAddContactModalProps> = ({
             return { value: code, label: name ? `${code} - ${name}` : code };
         }), [rawAccounts]);
 
+    // Keyboard shortcuts (Ctrl+S, Ctrl+Shift+S, Esc)
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!open) return;
+            if (e.key === 'Escape' && !isEmployeeModalOpen && !isGroupModalOpen && !isPaymentTermModalOpen) {
+                e.preventDefault();
+                onCancel();
+            } else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                handleSave(true);
+            } else if (e.ctrlKey && e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                handleSave(false);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [open, isEmployeeModalOpen, isGroupModalOpen, isPaymentTermModalOpen]);
+
     const mutation = useMutation({
         mutationFn: async (values: any) => {
             const autoCode = values.code?.trim();
@@ -231,7 +250,7 @@ export const QuickAddContactModal: React.FC<QuickAddContactModalProps> = ({
         }
     });
 
-    const initNewForm = useCallback(() => {
+    const initNewForm = () => {
         form.resetFields();
         form.setFieldsValue({
             code: undefined,
@@ -255,9 +274,9 @@ export const QuickAddContactModal: React.FC<QuickAddContactModalProps> = ({
         });
         setBankAccounts([{ id: '1', account_number: '', bank_name: '', branch: '', province: '' }]);
         setDeliveryAddresses([{ id: '1', address: '', receiver_name: '', receiver_phone: '' }]);
-    }, [form]);
+    };
 
-    const handleSave = useCallback((andNew = false) => {
+    const handleSave = (andNew = false) => {
         form.validateFields()
             .then(values => {
                 mutation.mutate({ ...values, _andNew: andNew });
@@ -265,26 +284,7 @@ export const QuickAddContactModal: React.FC<QuickAddContactModalProps> = ({
             .catch(() => {
                 message.error(`Vui lòng kiểm tra lại các trường bắt buộc màu đỏ!`);
             });
-    }, [form, mutation]);
-
-    // Keyboard shortcuts (Ctrl+S, Ctrl+Shift+S, Esc)
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (!open) return;
-            if (e.key === 'Escape' && !isEmployeeModalOpen && !isGroupModalOpen && !isPaymentTermModalOpen) {
-                e.preventDefault();
-                onCancel();
-            } else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 's') {
-                e.preventDefault();
-                handleSave(true);
-            } else if (e.ctrlKey && e.key.toLowerCase() === 's') {
-                e.preventDefault();
-                handleSave(false);
-            }
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [open, isEmployeeModalOpen, isGroupModalOpen, isPaymentTermModalOpen, onCancel, handleSave]);
+    };
 
     useEffect(() => {
         if (open) {
@@ -293,7 +293,7 @@ export const QuickAddContactModal: React.FC<QuickAddContactModalProps> = ({
             setIsSupplierChecked(!isCustomer);
             setIsInternalChecked(false);
         }
-    }, [open, isCustomer, initNewForm]);
+    }, [open, isCustomer]);
 
     return (
         <>

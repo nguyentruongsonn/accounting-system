@@ -7,7 +7,6 @@ import api from '../../api/axios';
 import PageHeader from '../../components/layout/PageHeader';
 import PageShell from '../../components/layout/PageShell';
 import PageToolbar from '../../components/layout/PageToolbar';
-import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
 
 function parseCompanySettings(value: unknown): Record<string, any> {
     if (!value || typeof value !== 'object') {
@@ -85,7 +84,7 @@ const CompanySettings: React.FC = () => {
                             <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải thông tin công ty</div>
                             <div style={{ color: '#B91C1C', fontSize: 12 }}>Không hiển thị dữ liệu thay thế; hãy thử tải lại hồ sơ doanh nghiệp.</div>
                         </div>
-                        <Button size="small" onClick={() => void runManualDataLoad(() => refetchCompany(), { success: 'Tải lại thông tin công ty thành công.', failure: 'Không thể tải lại thông tin công ty.' })}>Thử lại thông tin công ty</Button>
+                        <Button size="small" onClick={() => void refetchCompany()}>Thử lại thông tin công ty</Button>
                     </div>
                 )}
                 {!isLoading && !isCompanyError && !company?.id && (

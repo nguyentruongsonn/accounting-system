@@ -78,7 +78,7 @@ export default function FixedAssets() {
             }
 
             message.success(`Khấu hao tháng ${dayjs().format('MM/YYYY')} đã chạy và tự động hạch toán thành công!`);
-            notifyDataChanged('fixed-assets');
+            notifyDataChanged();
             await loadAssets();
         } catch (error) {
             message.error('Có lỗi xảy ra khi tính khấu hao.');

@@ -251,10 +251,7 @@ export const SalesReports: React.FC<SalesReportsProps> = ({ active = true, embed
   });
 
   const reportReady = !reportQuery.isFetching && !reportQuery.isError && reportQuery.data !== undefined;
-  const rawRows = useMemo(
-    () => (reportReady ? reportQuery.data!.data : []),
-    [reportReady, reportQuery.data]
-  );
+  const rawRows = reportReady ? reportQuery.data!.data : [];
   const totals = reportReady ? reportQuery.data!.totals : undefined;
 
   const filteredRows = useMemo(() => {
@@ -436,7 +433,7 @@ export const SalesReports: React.FC<SalesReportsProps> = ({ active = true, embed
               <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải báo cáo bán hàng</div>
               <div style={{ color: '#B91C1C', fontSize: 12, marginTop: 2 }}>Máy chủ trả về lỗi hoặc cấu trúc dữ liệu không hợp lệ; danh sách không được thay bằng dữ liệu rỗng. Hãy thử tải lại.</div>
             </div>
-            <Button size="small" onClick={() => void runManualDataLoad(() => reportQuery.refetch(), { success: 'Tải lại báo cáo bán hàng thành công.', failure: 'Không thể tải lại báo cáo bán hàng.' })}>Thử lại</Button>
+            <Button size="small" onClick={() => void reportQuery.refetch()}>Thử lại</Button>
           </div>
         )}
         {customersQuery.isError && (
@@ -445,7 +442,7 @@ export const SalesReports: React.FC<SalesReportsProps> = ({ active = true, embed
               <div style={{ fontWeight: 600, color: '#92400E', fontSize: 13 }}>Không thể tải danh mục khách hàng</div>
               <div style={{ color: '#B45309', fontSize: 12, marginTop: 2 }}>Báo cáo vẫn hiển thị theo bộ lọc hiện tại; hãy thử lại để chọn khách hàng.</div>
             </div>
-            <Button size="small" onClick={() => void runManualDataLoad(() => customersQuery.refetch(), { success: 'Tải lại danh mục khách hàng thành công.', failure: 'Không thể tải lại danh mục khách hàng.' })}>Thử lại danh mục khách hàng</Button>
+            <Button size="small" onClick={() => void customersQuery.refetch()}>Thử lại danh mục khách hàng</Button>
           </div>
         )}
 

@@ -94,8 +94,8 @@ export default function GeneralLedger({ embedded = false }: GeneralLedgerProps) 
                 void handleSearch(lastSearch, true);
             }
         };
-        window.addEventListener('refresh-accounting-reports', onDataChanged);
-        return () => window.removeEventListener('refresh-accounting-reports', onDataChanged);
+        window.addEventListener('accounting-data-changed', onDataChanged);
+        return () => window.removeEventListener('accounting-data-changed', onDataChanged);
     }, [handleSearch, lastSearch]);
 
     const columns = [

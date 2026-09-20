@@ -21,7 +21,6 @@ import {
 import { MisaWorkspaceLayout, QuickAddWarehouseModal, QuickAddItemModal, QuickAddUnitModal, QuickAddItemCategoryModal, useFastWorkspaceTabs } from '../../components/misa';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../api/axios';
-import { notifyDataChanged } from '../../lib/queryClient';
 import { ErrorBoundary } from '../../components/common/ErrorBoundary';
 import InventoryReceipts from './InventoryReceipts';
 import InventoryIssues from './InventoryIssues';
@@ -297,9 +296,15 @@ export const InventoryWorkspace: React.FC = () => {
 
   const handleRefresh = () => {
     void runManualDataLoad(
-        async () => {
-        if (['tab-receipts', 'tab-issues', 'tab-transfers', 'tab-audit'].includes(activeTabKey)) {
-          notifyDataChanged('inventory');
+      async () => {
+        if (activeTabKey === 'tab-receipts') {
+          window.dispatchEvent(new Event('refresh-inventory-receipt'));
+        } else if (activeTabKey === 'tab-issues') {
+          window.dispatchEvent(new Event('refresh-inventory-issue'));
+        } else if (activeTabKey === 'tab-transfers') {
+          window.dispatchEvent(new Event('refresh-inventory-transfer'));
+        } else if (activeTabKey === 'tab-audit') {
+          window.dispatchEvent(new Event('refresh-inventory-stock-count'));
         }
       },
       { success: 'Đã làm mới dữ liệu kho thành công.', failure: 'Không thể làm mới dữ liệu kho.' }

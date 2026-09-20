@@ -49,8 +49,8 @@ const TrialBalanceReport: React.FC<TrialBalanceReportProps> = ({ embedded = fals
         const onDataChanged = () => {
             void refetch();
         };
-        window.addEventListener('refresh-accounting-reports', onDataChanged);
-        return () => window.removeEventListener('refresh-accounting-reports', onDataChanged);
+        window.addEventListener('accounting-data-changed', onDataChanged);
+        return () => window.removeEventListener('accounting-data-changed', onDataChanged);
     }, [refetch]);
 
     const buildTree = (accounts: any[]) => {

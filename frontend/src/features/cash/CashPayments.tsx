@@ -50,12 +50,6 @@ import {
     ExcelImportModal
 } from '../../components/misa';
 import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
-import { isLocalQueryLoading } from '../../components/feedback/localLoading';
-import {
-    CASH_PAYMENTS_QUERY_KEY,
-    CASH_RECEIPTS_QUERY_KEY,
-    useCashPaymentsQuery,
-} from './cashVoucherQueries';
 import { readMoneyToVietnameseWords } from '../../utils/numberToWords';
 import { getApiErrorMessage } from '../../utils/apiErrorMessage';
 import PageShell from '../../components/layout/PageShell';
@@ -136,6 +130,14 @@ const isLegacyDepositPaymentRecord = (record: Partial<PaymentRecord> | null | un
     || String(record?.lines?.[0]?.debit_account ?? '').startsWith('112')
 );
 
+function parseCashPaymentCollection(value: unknown): any[] {
+    if (Array.isArray(value)) return value;
+    if (value && typeof value === 'object' && Array.isArray((value as { data?: unknown }).data)) {
+        return (value as { data: any[] }).data;
+    }
+    throw new Error('Invalid cash payments response');
+}
+
 function parseCashPaymentCatalogue(value: unknown, resource: string): any[] {
     if (Array.isArray(value)) return value;
     if (value && typeof value === 'object' && Array.isArray((value as { data?: unknown }).data)) {
@@ -199,13 +201,33 @@ export const CashPayments: React.FC<CashPaymentsProps> = React.memo(({ modalOnly
     const [voucherType, setVoucherType] = useState('8. Chi khác');
     const voucherNumber = Form.useWatch('voucher_number', form);
 
-    const { data: payments = [], isLoading, isFetching: isPaymentsFetching, isError: isPaymentsError, refetch: refetchPayments } = useCashPaymentsQuery(!modalOnly);
+    const { data: payments = [], isLoading, isError: isPaymentsError, refetch: refetchPayments } = useQuery({
+        queryKey: ['cash-payments'],
+        queryFn: async () => {
+            const { data } = await api.get('/cash/payments');
+            return parseCashPaymentCollection(data);
+        },
+        enabled: !modalOnly,
+    });
 
     useEffect(() => {
         if (isPaymentsError) {
             message.error('Không thể tải danh sách phiếu chi. Hãy thử tải lại.');
         }
     }, [isPaymentsError]);
+
+    useEffect(() => {
+        const refresh = () => {
+            void queryClient.invalidateQueries({ queryKey: ['cash-payments'] });
+            void refetchPayments();
+        };
+        window.addEventListener('cash-payments-invalidated', refresh);
+        window.addEventListener('accounting-data-changed', refresh);
+        return () => {
+            window.removeEventListener('cash-payments-invalidated', refresh);
+            window.removeEventListener('accounting-data-changed', refresh);
+        };
+    }, [queryClient, refetchPayments]);
 
     const { data: voucherSettingsData = [] } = useQuery({
         queryKey: ['voucher-type-settings', 'chi_tien_mat'],
@@ -359,7 +381,7 @@ export const CashPayments: React.FC<CashPaymentsProps> = React.memo(({ modalOnly
             setActivePaymentIsPosted(persistedIsPosted);
             setModalMode('view');
             message.success(wasEditing ? 'Cập nhật Phiếu chi thành công. Đã lưu bản nháp.' : 'Tạo Phiếu chi thành công. Đã lưu bản nháp.');
-            notifyDataChanged('cash');
+            notifyDataChanged();
 
             if (data?.andPrint) {
                 setIsPrintModalVisible(true);
@@ -462,7 +484,7 @@ export const CashPayments: React.FC<CashPaymentsProps> = React.memo(({ modalOnly
             message.success('Ghi sổ thành công');
             setActivePaymentIsPosted(true);
             setModalMode('view');
-            notifyDataChanged('cash');
+            notifyDataChanged();
         },
         onError: (err: unknown, _id: number, context) => {
             rollbackVoucherCache(queryClient, ['cash-payments'], context);
@@ -489,7 +511,7 @@ export const CashPayments: React.FC<CashPaymentsProps> = React.memo(({ modalOnly
             message.success('Bỏ ghi sổ thành công!');
             setActivePaymentIsPosted(false);
             setModalMode('view');
-            notifyDataChanged('cash');
+            notifyDataChanged();
         },
         onError: (err: unknown, _id: number, context) => {
             rollbackVoucherCache(queryClient, ['cash-payments'], context);
@@ -509,7 +531,7 @@ export const CashPayments: React.FC<CashPaymentsProps> = React.memo(({ modalOnly
                 return;
             }
             message.success('Nhân bản chứng từ thành công!');
-            notifyDataChanged('cash');
+            notifyDataChanged();
             handleEditPayment(newDoc);
         },
         onError: (err: unknown) => {
@@ -530,7 +552,7 @@ export const CashPayments: React.FC<CashPaymentsProps> = React.memo(({ modalOnly
                 return;
             }
             message.success('Xóa phiếu chi thành công');
-            notifyDataChanged('cash');
+            notifyDataChanged();
         },
         onError: (err: unknown, _id: number, context) => {
             rollbackVoucherCache(queryClient, ['cash-payments'], context);
@@ -2011,8 +2033,8 @@ export const CashPayments: React.FC<CashPaymentsProps> = React.memo(({ modalOnly
                 onClose={() => setIsExcelImportOpen(false)}
                 voucherType={excelImportType}
                 onSuccess={() => {
-                    queryClient.invalidateQueries({ queryKey: CASH_RECEIPTS_QUERY_KEY });
-                    queryClient.invalidateQueries({ queryKey: CASH_PAYMENTS_QUERY_KEY });
+                    queryClient.invalidateQueries({ queryKey: ['cash-receipts'] });
+                    queryClient.invalidateQueries({ queryKey: ['cash-payments'] });
                 }}
             />
         </>
@@ -2100,7 +2122,7 @@ export const CashPayments: React.FC<CashPaymentsProps> = React.memo(({ modalOnly
                     columns={columns} 
                     dataSource={payments || []} 
                     rowKey="id" 
-                    loading={isLocalQueryLoading(isLoading, isPaymentsFetching)}
+                    loading={isLoading} 
                     size="small"
                     bordered
                     rowSelection={{ type: 'checkbox' }}

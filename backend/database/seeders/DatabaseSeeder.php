@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -45,5 +46,38 @@ class DatabaseSeeder extends Seeder
             DefaultAccountingPolicySeeder::class,
             SampleBusinessDataSeeder::class,
         ]);
+
+        $admin = \App\Models\User::updateOrCreate(
+            ['email' => 'admin@accounting.local'],
+            [
+                'name' => 'Quản trị viên',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'company_id' => $company->id,
+                'is_active' => true,
+            ]
+        );
+        $admin->syncRoles(['admin']);
+
+        $adminDefault = \App\Models\User::updateOrCreate(
+            ['email' => 'admin@admin.com'],
+            [
+                'name' => 'Administrator',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'company_id' => $company->id,
+                'is_active' => true,
+            ]
+        );
+        $adminDefault->syncRoles(['admin']);
+
+        $accountant = \App\Models\User::updateOrCreate(
+            ['email' => 'accountant@accounting.local'],
+            [
+                'name' => 'Kế toán viên',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'company_id' => $company->id,
+                'is_active' => true,
+            ]
+        );
+        $accountant->syncRoles(['accountant']);
     }
 }

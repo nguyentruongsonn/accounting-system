@@ -32,8 +32,8 @@ export default function GeneralJournal({ embedded = false }: GeneralJournalProps
                 void handleSearch(lastSearch);
             }
         };
-        window.addEventListener('refresh-accounting-reports', onDataChanged);
-        return () => window.removeEventListener('refresh-accounting-reports', onDataChanged);
+        window.addEventListener('accounting-data-changed', onDataChanged);
+        return () => window.removeEventListener('accounting-data-changed', onDataChanged);
     }, [lastSearch]);
 
     const handleSearch = async (values: any) => {

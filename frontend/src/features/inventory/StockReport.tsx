@@ -104,8 +104,8 @@ const StockReportContent: React.FC<{ embedded?: boolean }> = ({ embedded = false
         const onDataChanged = () => {
             void refetch();
         };
-        window.addEventListener('refresh-accounting-reports', onDataChanged);
-        return () => window.removeEventListener('refresh-accounting-reports', onDataChanged);
+        window.addEventListener('accounting-data-changed', onDataChanged);
+        return () => window.removeEventListener('accounting-data-changed', onDataChanged);
     }, [refetch]);
 
     const hasNotifiedScope = useRef(false);

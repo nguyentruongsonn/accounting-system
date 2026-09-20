@@ -546,7 +546,7 @@ export const SalesQuotes: React.FC = () => {
                             <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải danh sách báo giá</div>
                             <div style={{ color: '#B91C1C', fontSize: 12, marginTop: 2 }}>Dữ liệu chưa được xác minh từ máy chủ; không hiển thị danh sách rỗng thay thế.</div>
                         </div>
-                        <Button onClick={() => void runManualDataLoad(() => refetchQuotes(), { success: 'Tải lại danh sách báo giá thành công.', failure: 'Không thể tải lại danh sách báo giá.' })}>Thử lại danh sách báo giá</Button>
+                        <Button onClick={() => void refetchQuotes()}>Thử lại danh sách báo giá</Button>
                     </div>
                 ) : <Table
                     columns={columns}

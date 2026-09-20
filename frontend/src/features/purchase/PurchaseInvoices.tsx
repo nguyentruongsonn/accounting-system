@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, Button, Dropdown, Input, Select } from 'antd';
 import { toast as message } from '../../components/feedback/toast';
 import Modal from '../../components/layout/AppModal';
@@ -20,7 +20,7 @@ import {
     PlusOutlined,
     EyeOutlined
 } from '@ant-design/icons';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import api from '../../api/axios';
 import dayjs from 'dayjs';
@@ -43,9 +43,6 @@ import PageToolbar from '../../components/layout/PageToolbar';
 import DataTableSurface from '../../components/layout/DataTableSurface';
 import { useSourceRecordDeepLink } from '../reports/useSourceRecordDeepLink';
 import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
-import { isLocalQueryLoading } from '../../components/feedback/localLoading';
-import { filterPurchaseInvoices } from './purchaseInvoiceView';
-import { PURCHASE_INVOICES_QUERY_KEY, usePurchaseInvoicesQuery } from './purchaseInvoiceQuery';
 
 export const PurchaseInvoices: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -68,14 +65,40 @@ export const PurchaseInvoices: React.FC = () => {
 
     const queryClient = useQueryClient();
 
-    const { invoices: invoiceList, isLoading, isFetching: isInvoicesFetching, isError: isInvoicesError } = usePurchaseInvoicesQuery();
+    useEffect(() => {
+        const refreshPurchaseInvoices = () => queryClient.invalidateQueries({ queryKey: ['purchase-invoices'] });
+        window.addEventListener('purchase-invoices-invalidated', refreshPurchaseInvoices);
+        window.addEventListener('accounting-data-changed', refreshPurchaseInvoices);
+        return () => {
+            window.removeEventListener('purchase-invoices-invalidated', refreshPurchaseInvoices);
+            window.removeEventListener('accounting-data-changed', refreshPurchaseInvoices);
+        };
+    }, [queryClient]);
+
+    const { data: invoices = [], isLoading, isError: isInvoicesError } = useQuery({
+        queryKey: ['purchase-invoices'],
+        queryFn: async () => {
+            const { data } = await api.get('/purchase/invoices');
+            const payload: unknown = data;
+            const records = Array.isArray(payload)
+                ? payload
+                : (payload as { data?: unknown } | null)?.data;
+            if (!Array.isArray(records)) {
+                throw new Error('Invalid purchase-invoice list response');
+            }
+            return records;
+        },
+    });
+
+    // queryFn validates the response envelope; do not turn malformed data into a valid empty list.
+    const invoiceList = invoices;
 
     const postMutation = useMutation({
         mutationFn: async (id: number) => {
             return api.post(`/purchase/invoices/${id}/post`);
         },
         onMutate: async (id: number) => {
-            return optimisticTogglePostStatus(queryClient, PURCHASE_INVOICES_QUERY_KEY, id, true);
+            return optimisticTogglePostStatus(queryClient, ['purchase-invoices'], id, true);
         },
         onSuccess: (response: any) => {
             const evidence = response?.data?.data ?? response?.data;
@@ -84,10 +107,10 @@ export const PurchaseInvoices: React.FC = () => {
                 return;
             }
             message.success('Ghi sổ chứng từ mua hàng thành công!');
-            notifyDataChanged('purchase');
+            notifyDataChanged();
         },
         onError: (err: any, _id: number, context) => {
-            rollbackVoucherCache(queryClient, PURCHASE_INVOICES_QUERY_KEY, context);
+            rollbackVoucherCache(queryClient, ['purchase-invoices'], context);
             message.error(err?.response?.data?.error || err?.response?.data?.message || 'Lỗi khi ghi sổ chứng từ mua hàng!');
         }
     });
@@ -97,7 +120,7 @@ export const PurchaseInvoices: React.FC = () => {
             return api.post(`/purchase/invoices/${id}/unpost`);
         },
         onMutate: async (id: number) => {
-            return optimisticTogglePostStatus(queryClient, PURCHASE_INVOICES_QUERY_KEY, id, false);
+            return optimisticTogglePostStatus(queryClient, ['purchase-invoices'], id, false);
         },
         onSuccess: (response: any) => {
             const evidence = response?.data?.data ?? response?.data;
@@ -106,10 +129,10 @@ export const PurchaseInvoices: React.FC = () => {
                 return;
             }
             message.success('Bỏ ghi sổ chứng từ mua hàng thành công!');
-            notifyDataChanged('purchase');
+            notifyDataChanged();
         },
         onError: (err: any, _id: number, context) => {
-            rollbackVoucherCache(queryClient, PURCHASE_INVOICES_QUERY_KEY, context);
+            rollbackVoucherCache(queryClient, ['purchase-invoices'], context);
             message.error(err?.response?.data?.error || err?.response?.data?.message || 'Lỗi khi bỏ ghi sổ!');
         }
     });
@@ -119,7 +142,7 @@ export const PurchaseInvoices: React.FC = () => {
             return api.delete(`/purchase/invoices/${id}`);
         },
         onMutate: async (id: number) => {
-            return instantRemoveVoucher(queryClient, PURCHASE_INVOICES_QUERY_KEY, id);
+            return instantRemoveVoucher(queryClient, ['purchase-invoices'], id);
         },
         onSuccess: (response: any) => {
             if (typeof response?.data?.message !== 'string' && response?.data?.success !== true) {
@@ -127,10 +150,10 @@ export const PurchaseInvoices: React.FC = () => {
                 return;
             }
             message.success('Đã xóa chứng từ mua hàng thành công!');
-            notifyDataChanged('purchase');
+            notifyDataChanged();
         },
         onError: (err: any, _id: number, context) => {
-            rollbackVoucherCache(queryClient, PURCHASE_INVOICES_QUERY_KEY, context);
+            rollbackVoucherCache(queryClient, ['purchase-invoices'], context);
             message.error(err?.response?.data?.error || err?.response?.data?.message || 'Lỗi khi xóa chứng từ!');
         }
     });
@@ -148,19 +171,19 @@ export const PurchaseInvoices: React.FC = () => {
                 return;
             }
             message.success('Nhân bản chứng từ mua hàng thành công!');
-            notifyDataChanged('purchase');
+            notifyDataChanged();
         },
         onError: (err: any) => {
             message.error(err?.response?.data?.error || err?.response?.data?.message || 'Lỗi khi nhân bản chứng từ!');
         }
     });
 
-    const handleOpenCreateVoucher = useCallback((type = '1. Mua hàng trong nước nhập kho') => {
+    const handleOpenCreateVoucher = (type = '1. Mua hàng trong nước nhập kho') => {
         setSelectedVoucherType(type);
         setEditRecord(null);
         setIsReadOnly(false);
         setIsVoucherModalOpen(true);
-    }, []);
+    };
 
     useEffect(() => {
         if (searchParams.get('action') === 'create' && !isVoucherModalOpen) {
@@ -251,10 +274,13 @@ export const PurchaseInvoices: React.FC = () => {
         });
     };
 
-    const filteredInvoices = useMemo(
-        () => filterPurchaseInvoices(invoiceList, searchText),
-        [invoiceList, searchText],
-    );
+    const filteredInvoices = invoiceList.filter((inv: any) => {
+        if (!searchText) return true;
+        const matchNo = inv.invoice_number?.toLowerCase().includes(searchText.toLowerCase());
+        const matchSupp = inv.supplier_name?.toLowerCase().includes(searchText.toLowerCase());
+        const matchDesc = inv.description?.toLowerCase().includes(searchText.toLowerCase());
+        return matchNo || matchSupp || matchDesc;
+    });
 
     // 6 Add Menu Items matching MISA AMIS
     const addMenuItems: MenuProps['items'] = [
@@ -518,7 +544,7 @@ export const PurchaseInvoices: React.FC = () => {
                                 className="misa-btn-tool"
                                 title="Làm mới (F5)"
                                 onClick={() => void runManualDataLoad(
-                                    () => queryClient.invalidateQueries({ queryKey: PURCHASE_INVOICES_QUERY_KEY }),
+                                    () => queryClient.invalidateQueries({ queryKey: ['purchase-invoices'] }),
                                     { success: 'Tải lại danh sách chứng từ mua hàng thành công.', failure: 'Không thể tải lại danh sách chứng từ mua hàng.' },
                                 )}
                             />
@@ -587,10 +613,7 @@ export const PurchaseInvoices: React.FC = () => {
                             <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không tải được danh sách chứng từ mua hàng</div>
                             <div style={{ color: '#B91C1C', fontSize: 12, marginTop: 2 }}>Giao diện không thay thế dữ liệu máy chủ bằng chứng từ mẫu. Hãy thử tải lại; nếu lỗi tiếp diễn, liên hệ quản trị hệ thống.</div>
                         </div>
-                        <Button size="small" onClick={() => void runManualDataLoad(
-                            () => queryClient.invalidateQueries({ queryKey: PURCHASE_INVOICES_QUERY_KEY }),
-                            { success: 'Tải lại danh sách mua hàng thành công', failure: 'Không thể tải lại danh sách mua hàng' },
-                        )}>Tải lại</Button>
+                        <Button size="small" onClick={() => queryClient.invalidateQueries({ queryKey: ['purchase-invoices'] })}>Tải lại</Button>
                     </div>
                 )}
                 <Table
@@ -598,7 +621,7 @@ export const PurchaseInvoices: React.FC = () => {
                     columns={columns}
                     dataSource={filteredInvoices}
                     rowKey="id"
-                    loading={isLocalQueryLoading(isLoading, isInvoicesFetching)}
+                    loading={isLoading}
                     size="small"
                     pagination={{ pageSize: 15 }}
                     locale={{ emptyText: isInvoicesError ? 'Không có dữ liệu để hiển thị do yêu cầu tải thất bại.' : 'Chưa có chứng từ mua hàng.' }}
@@ -613,21 +636,21 @@ export const PurchaseInvoices: React.FC = () => {
                 initialVoucherType={selectedVoucherType}
                 editRecord={editRecord}
                 readOnly={isReadOnly}
-                onSuccess={() => notifyDataChanged('purchase')}
+                onSuccess={() => notifyDataChanged()}
             />
 
             {/* Service Purchase Modal */}
             <PurchaseServiceModal
                 open={isServiceModalOpen}
                 onCancel={() => setIsServiceModalOpen(false)}
-                onSuccess={() => notifyDataChanged('purchase')}
+                onSuccess={() => notifyDataChanged()}
             />
 
             {/* Multiple Invoices Purchase Modal */}
             <PurchaseMultipleInvoicesModal
                 open={isMultiInvoiceModalOpen}
                 onCancel={() => setIsMultiInvoiceModalOpen(false)}
-                onSuccess={() => notifyDataChanged('purchase')}
+                onSuccess={() => notifyDataChanged()}
             />
 
             {/* Pay Vendor By Invoice Modal */}
@@ -635,7 +658,7 @@ export const PurchaseInvoices: React.FC = () => {
                 open={isPayByInvoiceModalOpen}
                 onCancel={() => setIsPayByInvoiceModalOpen(false)}
                 initialInvoice={editRecord}
-                onSuccess={() => notifyDataChanged('purchase')}
+                onSuccess={() => notifyDataChanged()}
             />
 
             {/* Mẫu 01-VT: Phiếu nhập kho print modal */}

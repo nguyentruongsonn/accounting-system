@@ -2,7 +2,11 @@
 
 namespace App\Services;
 
+use App\Enums\SystemVoucherType;
+use App\Models\InventoryMovementEvent;
 use App\Models\PurchaseInvoice;
+use App\Models\Warehouse;
+use App\Services\Concerns\GuardsPostedSettlementAllocations;
 use App\Support\CommercialSourceAuditContext;
 use App\Support\CommercialTenantReferenceGuard;
 use App\Support\DecimalMoney;
@@ -12,22 +16,73 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class PurchaseInvoiceService
 {
+    use GuardsPostedSettlementAllocations;
+
+    protected JournalEntryService $journalEntryService;
+
     public function __construct(
+        JournalEntryService $journalEntryService,
+        private readonly AuditService $auditService,
+        private readonly AccountingPolicyResolver $accountingPolicyResolver,
+        private readonly CoreDocumentPostingAuthorizer $postingAuthorizer,
+        private readonly PurchaseInvoiceDimensionPostingGate $dimensionGate,
+        private readonly PurchaseInvoiceAccountMappingPostingGate $accountMappingGate,
+        private readonly AccountingPostingMode $postingMode,
         private readonly AccountingPeriodGuard $periodGuard,
+        private readonly PostedDependentDocumentGuard $dependentDocumentGuard,
+        private readonly InventoryValuationRunInvalidator $valuationRunInvalidator,
         private readonly PurchaseExpenseAllocationService $purchaseExpenseAllocationService,
-        private readonly PurchaseInvoiceQueryService $purchaseInvoiceQueryService,
-        private readonly PurchaseInvoiceAmountCalculator $purchaseInvoiceAmountCalculator,
-        private readonly PurchaseInvoicePostingService $purchaseInvoicePostingService,
-    ) {}
+    ) {
+        $this->journalEntryService = $journalEntryService;
+    }
 
     public function getAll(?int $companyId = null)
     {
-        return $this->purchaseInvoiceQueryService->getAll($companyId);
+        $actorCompanyId = auth()->user()?->company_id;
+        if ($actorCompanyId !== null) {
+            if ($companyId !== null && (int) $companyId !== (int) $actorCompanyId) {
+                throw ValidationException::withMessages([
+                    'company_id' => 'The requested company does not belong to the authenticated user.',
+                ]);
+            }
+
+            $companyId = (int) $actorCompanyId;
+        }
+
+        if ($companyId === null) {
+            throw ValidationException::withMessages([
+                'company_id' => 'A company context is required to list purchase invoices.',
+            ]);
+        }
+
+        $query = PurchaseInvoice::query()->with([
+            'supplier',
+            'lines',
+            'employee',
+            'receivedExpenseAllocations.sourceInvoice.supplier',
+        ]);
+        $query->where('company_id', $companyId);
+
+        return $query
+            ->orderBy('invoice_date', 'desc')
+            ->get();
     }
 
     public function getById($id): PurchaseInvoice
     {
-        return $this->purchaseInvoiceQueryService->getById($id);
+        $query = $this->scopeToActorCompany(
+            PurchaseInvoice::with([
+                'lines',
+                'supplier',
+                'employee',
+                'references',
+                'referencedBy',
+                'expenseAllocations',
+                'receivedExpenseAllocations.sourceInvoice.supplier',
+            ])
+        );
+
+        return $query->findOrFail($id);
     }
 
     public function create(array $data): PurchaseInvoice
@@ -393,17 +448,234 @@ class PurchaseInvoiceService
 
     public function post($id): PurchaseInvoice
     {
-        return $this->purchaseInvoicePostingService->post($id);
+        return DB::transaction(function () use ($id) {
+            // Lock the source before authorization and journal creation so a
+            // concurrent material edit cannot race with the posting write.
+            $invoice = $this->scopeToActorCompany(PurchaseInvoice::with('lines'))
+                ->lockForUpdate()
+                ->findOrFail($id);
+            $authorization = $this->postingAuthorizer->authorize('purchase.invoices.post', (int) $invoice->company_id);
+            $this->periodGuard->assertOpen($invoice->company_id, $invoice->accounting_date ?? $invoice->invoice_date, 'ghi sổ hóa đơn mua hàng');
+            if ($invoice->is_posted) {
+                throw new \Exception('Invoice is already posted');
+            }
+            $this->assertPostableSource($invoice);
+            $this->assertPostedForeignCurrencyEvidence($invoice);
+            $directPosting = $this->postingMode->isDirectPostingEnabled();
+
+            // The policy contract is a mandatory precondition for this
+            // canonical high-risk posting path when its controlled rollout is
+            // enabled. It intentionally does not derive account codes: those
+            // mappings still require an approved posting-rule implementation.
+            $policy = ($this->requiresAccountingPolicy() || $this->requiresDimensionPosting() || $this->requiresAccountMappingPosting())
+                ? $this->accountingPolicyResolver->requireForVoucher(
+                    (int) $invoice->company_id,
+                    ($invoice->accounting_date ?? $invoice->invoice_date ?? now())->toDateString(),
+                    SystemVoucherType::PURCHASE_INVOICE,
+                )
+                : null;
+            $dimensions = $this->requiresDimensionPosting()
+                ? $this->dimensionGate->requireSatisfied($invoice, $policy)
+                : null;
+            $accountMappings = $this->requiresAccountMappingPosting()
+                ? $this->accountMappingGate->requireSatisfied($invoice, $policy)
+                : null;
+            $glLines = [];
+
+            // Payable account based on payment method / status
+            if ($invoice->payment_method === 'cash' || $invoice->status === 'Paid') {
+                $payableAccount = '1111';
+            } elseif ($invoice->payment_method === 'bank') {
+                $payableAccount = '1121';
+            } else {
+                $lineCredit = (string) ($invoice->lines->first()?->credit_account ?? '');
+                $payableAccount = ($lineCredit !== '' && $lineCredit !== '331')
+                    ? $lineCredit
+                    : $this->resolveDefaultPayableAccount((int) $invoice->company_id);
+            }
+            if ($accountMappings !== null) {
+                $payableAccount = PurchaseInvoiceAccountMappingPostingGate::accountFor($accountMappings, 'settlement_credit', [
+                    'entry' => 'settlement_credit', 'payment_method' => (string) $invoice->payment_method,
+                    'payment_status' => (string) $invoice->status, 'source_account_code' => $payableAccount,
+                ]);
+            }
+
+            // Credit Total Amount to Payable / Payment account
+            $glLines[] = [
+                'account_code' => $payableAccount,
+                'description' => $invoice->description ?? 'Thanh toán tiền mua hàng',
+                'debit_amount' => 0,
+                'credit_amount' => $this->persistedMoney($invoice, 'total_amount'),
+            ];
+
+            // Debit Goods / Expense and Tax
+            foreach ($invoice->lines as $line) {
+                $debitAcc = $line->debit_account ?: (in_array($invoice->voucher_type, ['domestic_direct', 'import_direct']) ? '642' : '1561');
+                if ($accountMappings !== null) {
+                    $debitAcc = PurchaseInvoiceAccountMappingPostingGate::accountFor($accountMappings, 'purchase_debit', [
+                        'entry' => 'purchase_debit', 'voucher_type' => (string) $invoice->voucher_type,
+                        'source_account_code' => (string) $debitAcc,
+                    ]);
+                }
+                $netDebitAmount = DecimalMoney::subtract(
+                    $this->persistedMoney($line, 'amount'),
+                    $this->persistedMoney($line, 'discount_amount')
+                );
+
+                $glLines[] = [
+                    'account_code' => $debitAcc,
+                    'description' => $line->description ?? 'Mua hàng',
+                    'debit_amount' => $netDebitAmount,
+                    'credit_amount' => 0,
+                ];
+
+                // Debit VAT Tax
+                if (DecimalMoney::compare($this->persistedMoney($line, 'tax_amount'), DecimalMoney::ZERO) > 0) {
+                    $glLines[] = [
+                    'account_code' => $accountMappings === null ? ($line->tax_account ?: '1331') : PurchaseInvoiceAccountMappingPostingGate::accountFor($accountMappings, 'input_vat', [
+                        'entry' => 'input_vat', 'source_account_code' => (string) ($line->tax_account ?: '1331'),
+                    ]),
+                        'description' => 'Thuế GTGT đầu vào',
+                        'debit_amount' => $this->persistedMoney($line, 'tax_amount'),
+                        'credit_amount' => 0,
+                    ];
+                }
+
+                // Import Tax (if any)
+                if (DecimalMoney::compare($this->persistedMoney($line, 'import_tax_amount'), DecimalMoney::ZERO) > 0) {
+                    $glLines[] = [
+                        'account_code' => $debitAcc,
+                        'description' => 'Thuế nhập khẩu',
+                        'debit_amount' => $this->persistedMoney($line, 'import_tax_amount'),
+                        'credit_amount' => 0,
+                    ];
+                    $glLines[] = [
+                        'account_code' => $accountMappings === null ? '3333' : PurchaseInvoiceAccountMappingPostingGate::accountFor($accountMappings, 'import_tax_payable', [
+                            'entry' => 'import_tax_payable', 'source_account_code' => '3333',
+                        ]),
+                        'description' => 'Thuế nhập khẩu phải nộp',
+                        'debit_amount' => 0,
+                        'credit_amount' => $this->persistedMoney($line, 'import_tax_amount'),
+                    ];
+                }
+            }
+
+            $nonZeroGlLines = array_values(array_filter($glLines, static function (array $line): bool {
+                return DecimalMoney::compare($line['debit_amount'] ?? DecimalMoney::ZERO, DecimalMoney::ZERO) !== 0
+                    || DecimalMoney::compare($line['credit_amount'] ?? DecimalMoney::ZERO, DecimalMoney::ZERO) !== 0;
+            }));
+
+            // A fully discounted/free-sample purchase can be a legitimate source
+            // document with no monetary GL impact. Do not manufacture a zero JE.
+            if ($nonZeroGlLines === []) {
+                $before = $invoice->toArray();
+                $invoice->journal_entry_id = null;
+                $invoice->is_posted = true;
+                $invoice->status = 'posted';
+                $invoice->save();
+                $this->recordInventoryMovements($invoice);
+
+                $this->auditService->record(
+                    $invoice,
+                    'purchase_invoice.posted_without_journal',
+                    $before,
+                    $invoice->fresh()->toArray(),
+                    null,
+                    [
+                        'reason' => 'zero_net_monetary_posting',
+                        'journal_entry_created' => false,
+                        'posting_mode' => $directPosting ? 'direct' : 'strict',
+                    ] + $this->policyAuditMetadata($policy)
+                );
+
+                $this->recordPostingAuthorizationLineage($invoice, $authorization, null);
+                $this->recordDimensionLineage($invoice, $dimensions, null);
+                $this->recordAccountMappingLineage($invoice, $accountMappings, null);
+
+                return $invoice;
+            }
+
+            // Create Journal Entry
+            $je = $this->journalEntryService->createPosted([
+                'company_id' => $invoice->company_id,
+                'voucher_type' => 'purchase_invoice',
+                'voucher_number' => 'GL-PU-'.$invoice->invoice_number,
+                'voucher_date' => $invoice->invoice_date,
+                'posting_date' => $invoice->accounting_date ?? now()->toDateString(),
+                'description' => $invoice->description,
+                'total_amount' => 0,
+                'status' => 'posted',
+                'source_document_type' => PurchaseInvoice::class,
+                'source_document_id' => $invoice->id,
+                'lines' => $nonZeroGlLines,
+            ]);
+
+            $invoice->journal_entry_id = $je->id;
+            $invoice->is_posted = true;
+            $invoice->status = 'posted';
+            $invoice->save();
+            $this->recordInventoryMovements($invoice);
+
+            // The observer already records the source's lifecycle transition.
+            // Store policy lineage as its own immutable audit event instead of
+            // duplicating that event or overloading attached-document fields.
+            if ($policy !== null && $this->requiresAccountingPolicy()) {
+                $this->auditService->record(
+                    $invoice,
+                    'purchase_invoice.policy_applied',
+                    [],
+                    [],
+                    null,
+                    ['journal_entry_id' => $je->id] + $this->policyAuditMetadata($policy),
+                );
+            }
+            $this->recordPostingAuthorizationLineage($invoice, $authorization, $je->id);
+            $this->recordDimensionLineage($invoice, $dimensions, $je->id);
+            $this->recordAccountMappingLineage($invoice, $accountMappings, $je->id);
+            if ($directPosting) {
+                $this->auditService->record(
+                    $invoice,
+                    'purchase_invoice.direct_posting_mode_applied',
+                    [],
+                    [],
+                    null,
+                    ['journal_entry_id' => $je->id, 'posting_mode' => 'direct'],
+                );
+            }
+
+            return $invoice;
+        });
     }
 
     public function void($id, string $auditEvent = 'voided'): PurchaseInvoice
     {
-        return $this->purchaseInvoicePostingService->void($id, $auditEvent);
+        return DB::transaction(function () use ($id, $auditEvent) {
+            $invoice = $this->scopeToActorCompany(PurchaseInvoice::with('lines.item'))->findOrFail($id);
+            $this->periodGuard->assertOpen($invoice->company_id, $invoice->accounting_date ?? $invoice->invoice_date, 'bỏ ghi sổ/hủy hóa đơn mua hàng');
+            if (! $invoice->is_posted) {
+                throw new \Exception('Invoice is not posted yet');
+            }
+            $this->assertHasNoPostedSettlementAllocationsForTarget((int) $invoice->company_id, 'purchase_invoice', (int) $invoice->id);
+            $this->dependentDocumentGuard->assertNone((int) $invoice->company_id, PurchaseInvoice::class, (int) $invoice->id);
+
+            if ($invoice->journal_entry_id) {
+                $this->journalEntryService->void($invoice->journal_entry_id, (int) $invoice->company_id);
+            }
+            $this->purchaseExpenseAllocationService->removeForSource($invoice, $auditEvent);
+            $this->reverseInventoryMovements($invoice);
+
+            $invoice->is_posted = false;
+            $invoice->status = 'draft';
+            CommercialSourceAuditContext::mark($invoice, $auditEvent);
+            $invoice->save();
+
+            return $invoice;
+        });
     }
 
     public function unpost($id): PurchaseInvoice
     {
-        return $this->purchaseInvoicePostingService->unpost($id);
+        return $this->void($id, 'unposted');
     }
 
     public function duplicate($id): PurchaseInvoice
@@ -457,6 +729,139 @@ class PurchaseInvoiceService
         });
     }
 
+    /**
+     * A posted goods invoice is the canonical inbound stock source for the
+     * purchase workflow. Services remain GL/AP-only and do not create stock.
+     */
+    private function recordInventoryMovements(PurchaseInvoice $invoice): void
+    {
+        foreach ($invoice->lines as $index => $line) {
+            $item = $line->item;
+            $itemType = strtolower(trim((string) ($item?->type ?? '')));
+            if ($line->item_id === null || in_array($itemType, ['service', 'dịch vụ'], true)) {
+                continue;
+            }
+
+            $warehouseId = (int) ($line->warehouse_id ?: $item?->warehouse_id ?: 0);
+            if ($warehouseId < 1) {
+                $companyWarehouses = Warehouse::query()
+                    ->where('company_id', $invoice->company_id)
+                    ->orderBy('id')
+                    ->pluck('id');
+                $warehouseId = ($companyWarehouses->count() === 1 || $this->postingMode->isDirectPostingEnabled())
+                    ? (int) $companyWarehouses->first()
+                    : 0;
+                if ($warehouseId >= 1 && empty($line->warehouse_id)) {
+                    $line->warehouse_id = $warehouseId;
+                    $line->save();
+                }
+            }
+            if ($warehouseId < 1) {
+                throw ValidationException::withMessages([
+                    "lines.{$index}.warehouse_id" => 'Hóa đơn mua hàng phải xác định kho nhập cho từng dòng hàng.',
+                ]);
+            }
+            if (! Warehouse::query()->where('company_id', $invoice->company_id)->whereKey($warehouseId)->exists()) {
+                throw ValidationException::withMessages([
+                    "lines.{$index}.warehouse_id" => 'Kho nhập không thuộc doanh nghiệp của hóa đơn.',
+                ]);
+            }
+
+            $quantity = $this->persistedMoney($line, 'quantity');
+            if (DecimalMoney::compare($quantity, DecimalMoney::ZERO) <= 0) {
+                throw ValidationException::withMessages([
+                    "lines.{$index}.quantity" => 'Số lượng nhập kho phải lớn hơn 0.',
+                ]);
+            }
+
+            $stockValue = $this->persistedMoney($line, 'stock_value');
+            if (DecimalMoney::compare($stockValue, DecimalMoney::ZERO) === 0) {
+                $stockValue = DecimalMoney::add(
+                    DecimalMoney::subtract($this->persistedMoney($line, 'amount'), $this->persistedMoney($line, 'discount_amount')),
+                    $this->persistedMoney($line, 'purchase_expense'),
+                );
+            }
+
+            $postingCycle = ((int) InventoryMovementEvent::query()
+                ->where('company_id', $invoice->company_id)
+                ->where('source_type', PurchaseInvoice::class)
+                ->where('source_id', $invoice->id)
+                ->where('source_line_id', $line->id)
+                ->where('warehouse_id', $warehouseId)
+                ->where('movement_type', 'purchase_invoice_in')
+                ->max('posting_cycle')) + 1;
+
+            InventoryMovementEvent::create([
+                'company_id' => $invoice->company_id,
+                'movement_date' => ($invoice->accounting_date ?? $invoice->invoice_date)->toDateString(),
+                'warehouse_id' => $warehouseId,
+                'item_id' => $line->item_id,
+                'movement_type' => 'purchase_invoice_in',
+                'posting_cycle' => $postingCycle,
+                'quantity_delta' => $quantity,
+                'amount_delta' => $stockValue,
+                'source_type' => PurchaseInvoice::class,
+                'source_id' => $invoice->id,
+                'source_line_id' => $line->id,
+            ]);
+            $this->valuationRunInvalidator->invalidateForInventoryMovement(
+                (int) $invoice->company_id,
+                ($invoice->accounting_date ?? $invoice->invoice_date)->toDateString(),
+                'purchase_invoice_posted',
+                $warehouseId,
+                (int) $line->item_id,
+            );
+        }
+    }
+
+    /** Reverse the exact inbound event cycle when a purchase invoice is voided. */
+    private function reverseInventoryMovements(PurchaseInvoice $invoice): void
+    {
+        $events = InventoryMovementEvent::query()
+            ->where('company_id', $invoice->company_id)
+            ->where('source_type', PurchaseInvoice::class)
+            ->where('source_id', $invoice->id)
+            ->where('movement_type', 'purchase_invoice_in')
+            ->orderBy('id')
+            ->get();
+
+        foreach ($events as $event) {
+            $alreadyReversed = InventoryMovementEvent::query()
+                ->where('company_id', $invoice->company_id)
+                ->where('source_type', PurchaseInvoice::class)
+                ->where('source_id', $invoice->id)
+                ->where('source_line_id', $event->source_line_id)
+                ->where('warehouse_id', $event->warehouse_id)
+                ->where('movement_type', 'purchase_invoice_in_reversal')
+                ->where('posting_cycle', $event->posting_cycle)
+                ->exists();
+            if ($alreadyReversed) {
+                continue;
+            }
+
+            InventoryMovementEvent::create([
+                'company_id' => $invoice->company_id,
+                'movement_date' => ($invoice->accounting_date ?? $invoice->invoice_date)->toDateString(),
+                'warehouse_id' => $event->warehouse_id,
+                'item_id' => $event->item_id,
+                'movement_type' => 'purchase_invoice_in_reversal',
+                'posting_cycle' => $event->posting_cycle,
+                'quantity_delta' => DecimalMoney::negate((string) $event->quantity_delta),
+                'amount_delta' => DecimalMoney::negate((string) $event->amount_delta),
+                'source_type' => PurchaseInvoice::class,
+                'source_id' => $invoice->id,
+                'source_line_id' => $event->source_line_id,
+            ]);
+            $this->valuationRunInvalidator->invalidateForInventoryMovement(
+                (int) $invoice->company_id,
+                ($invoice->accounting_date ?? $invoice->invoice_date)->toDateString(),
+                'purchase_invoice_reversed',
+                (int) $event->warehouse_id,
+                (int) $event->item_id,
+            );
+        }
+    }
+
     private function assertMutableSource(PurchaseInvoice $invoice, string $operation): void
     {
         $status = strtolower(trim((string) $invoice->status));
@@ -469,9 +874,36 @@ class PurchaseInvoiceService
         }
     }
 
+    private function assertPostableSource(PurchaseInvoice $invoice): void
+    {
+        $status = strtolower(trim((string) $invoice->status));
+        if (in_array($status, ['voided', 'cancelled', 'canceled'], true)) {
+            throw new ConflictHttpException('Không thể ghi sổ hóa đơn đã hủy. Hãy nhân bản chứng từ để ghi sổ lại.');
+        }
+
+        if ($status === 'posted') {
+            throw new ConflictHttpException('Hóa đơn đã ở trạng thái ghi sổ nhưng thiếu cờ ghi sổ hợp lệ.');
+        }
+    }
+
     public function generateNextCode(int $companyId): string
     {
-        return $this->purchaseInvoiceQueryService->generateNextCode($companyId);
+        $companyId = $this->requireCompanyId(['company_id' => $companyId]);
+        $year = now()->format('Y');
+        $prefix = 'HDMH-'.$year.'-';
+        $latest = PurchaseInvoice::where('company_id', $companyId)
+            ->where('invoice_number', 'like', $prefix.'%')
+            ->orderBy('id', 'desc')
+            ->value('invoice_number');
+
+        if ($latest && preg_match('/'.preg_quote($prefix, '/').'(\d+)/', $latest, $m)) {
+            $nextSeq = str_pad((int) $m[1] + 1, 4, '0', STR_PAD_LEFT);
+        } else {
+            $count = PurchaseInvoice::where('company_id', $companyId)->count() + 1;
+            $nextSeq = str_pad($count, 4, '0', STR_PAD_LEFT);
+        }
+
+        return $prefix.$nextSeq;
     }
 
     private function scopeToActorCompany($query)
@@ -531,7 +963,220 @@ class PurchaseInvoiceService
     /** @return array{quantity: string, unit_price: string, amount: string, discount: string, tax: string, expense: string, stock_value: string} */
     private function lineAmounts(array $line): array
     {
-        return $this->purchaseInvoiceAmountCalculator->calculate($line);
+        $quantity = $this->money($line['quantity'] ?? 1);
+        $unitPrice = $this->money($line['unit_price'] ?? 0);
+        $amount = array_key_exists('amount', $line)
+            ? $this->money($line['amount'])
+            : $this->multiplyMoney($quantity, $unitPrice);
+        $discount = array_key_exists('discount_amount', $line)
+            ? $this->money($line['discount_amount'])
+            : $this->percentageOf($amount, $line['discount_rate'] ?? 0);
+        $net = DecimalMoney::subtract($amount, $discount);
+        $tax = array_key_exists('tax_amount', $line)
+            ? $this->money($line['tax_amount'])
+            : $this->percentageOf($net, $line['tax_rate'] ?? 0);
+        $expense = $this->money($line['purchase_expense'] ?? 0);
+        $stockValue = array_key_exists('stock_value', $line)
+            ? $this->money($line['stock_value'])
+            : DecimalMoney::add($net, $expense);
+
+        return compact('quantity', 'unitPrice', 'amount', 'discount', 'tax', 'expense', 'stockValue') + [
+            'unit_price' => $unitPrice,
+            'stock_value' => $stockValue,
+        ];
     }
 
+    private function persistedMoney(object $model, string $attribute): string
+    {
+        return $this->money($model->getRawOriginal($attribute) ?? DecimalMoney::ZERO);
+    }
+
+    private function maxMoney(string $left, string $right): string
+    {
+        return DecimalMoney::compare($left, $right) >= 0 ? $left : $right;
+    }
+
+    private function multiplyMoney(string $left, string $right): string
+    {
+        return $this->multiplyMinorWithRounding($left, $right, 2);
+    }
+
+    private function percentageOf(string $amount, mixed $rate): string
+    {
+        return $this->multiplyMinorWithRounding($amount, $this->money($rate), 4);
+    }
+
+    private function multiplyMinorWithRounding(string $left, string $right, int $divisorDigits): string
+    {
+        $left = $this->money($left);
+        $right = $this->money($right);
+        $negative = str_starts_with($left, '-') !== str_starts_with($right, '-');
+        $leftDigits = ltrim(str_replace(['-', '.'], '', $left), '0') ?: '0';
+        $rightDigits = ltrim(str_replace(['-', '.'], '', $right), '0') ?: '0';
+        $product = $this->multiplyUnsigned($leftDigits, $rightDigits);
+        $product = str_pad($product, $divisorDigits + 1, '0', STR_PAD_LEFT);
+        $quotient = substr($product, 0, -$divisorDigits);
+        $remainder = substr($product, -$divisorDigits);
+        if ($remainder >= '5'.str_repeat('0', $divisorDigits - 1)) {
+            $quotient = $this->incrementUnsigned($quotient);
+        }
+
+        $quotient = ltrim($quotient, '0') ?: '0';
+        $minor = str_pad($quotient, 3, '0', STR_PAD_LEFT);
+        $result = substr($minor, 0, -2).'.'.substr($minor, -2);
+
+        return $negative && $result !== DecimalMoney::ZERO ? '-'.$result : $result;
+    }
+
+    private function multiplyUnsigned(string $left, string $right): string
+    {
+        $result = '0';
+        for ($index = strlen($right) - 1, $zeros = ''; $index >= 0; $index--, $zeros .= '0') {
+            $carry = 0;
+            $partial = '';
+            $digit = ord($right[$index]) - 48;
+            for ($inner = strlen($left) - 1; $inner >= 0; $inner--) {
+                $value = (ord($left[$inner]) - 48) * $digit + $carry;
+                $partial = (string) ($value % 10).$partial;
+                $carry = intdiv($value, 10);
+            }
+            $partial = ($carry > 0 ? (string) $carry : '').$partial.$zeros;
+            $result = $this->addUnsigned($result, $partial);
+        }
+
+        return ltrim($result, '0') ?: '0';
+    }
+
+    private function addUnsigned(string $left, string $right): string
+    {
+        $carry = 0;
+        $result = '';
+        for ($leftIndex = strlen($left) - 1, $rightIndex = strlen($right) - 1; $leftIndex >= 0 || $rightIndex >= 0 || $carry > 0;) {
+            $sum = ($leftIndex >= 0 ? ord($left[$leftIndex--]) - 48 : 0)
+                + ($rightIndex >= 0 ? ord($right[$rightIndex--]) - 48 : 0) + $carry;
+            $result = (string) ($sum % 10).$result;
+            $carry = intdiv($sum, 10);
+        }
+
+        return $result;
+    }
+
+    private function incrementUnsigned(string $value): string
+    {
+        return $this->addUnsigned($value, '1');
+    }
+
+    private function assertPostedForeignCurrencyEvidence(PurchaseInvoice $invoice): void
+    {
+        if (strtoupper((string) $invoice->currency) === 'VND') return;
+        foreach (['functional_currency_code', 'functional_total_amount_raw', 'functional_total_amount_scale', 'original_total_amount_raw', 'original_total_amount_scale'] as $field) {
+            if ($invoice->getAttribute($field) === null) throw new \LogicException('Foreign-currency invoices require complete dual-currency evidence before posting.');
+        }
+        if (strtoupper((string) $invoice->functional_currency_code) !== 'VND') throw new \LogicException('Foreign-currency invoice functional currency must be VND.');
+        $functional = $this->exactEvidenceAmount((string) $invoice->functional_total_amount_raw, (int) $invoice->functional_total_amount_scale);
+        $this->exactEvidenceAmount((string) $invoice->original_total_amount_raw, (int) $invoice->original_total_amount_scale);
+        if (DecimalMoney::compare($functional, $this->persistedMoney($invoice, 'total_amount')) !== 0) throw new \LogicException('Foreign-currency invoice functional evidence must equal the posted functional total.');
+    }
+
+    private function requiresAccountingPolicy(): bool
+    {
+        return ! $this->postingMode->isDirectPostingEnabled()
+            && (bool) config('accounting.enforce_purchase_invoice_posting_policy', true);
+    }
+
+    private function requiresDimensionPosting(): bool
+    {
+        return ! $this->postingMode->isDirectPostingEnabled()
+            && (bool) config('accounting.enforce_purchase_invoice_posting_dimensions', true);
+    }
+
+    private function requiresAccountMappingPosting(): bool
+    {
+        return ! $this->postingMode->isDirectPostingEnabled()
+            && (bool) config('accounting.enforce_purchase_invoice_posting_account_mappings', true);
+    }
+
+    /** @param array<string,mixed>|null $accountMappings */
+    private function recordAccountMappingLineage(PurchaseInvoice $invoice, ?array $accountMappings, ?int $journalEntryId): void
+    {
+        if ($accountMappings === null) return;
+
+        $this->auditService->record(
+            $invoice,
+            'purchase_invoice.account_mappings_applied',
+            [],
+            [],
+            null,
+            ['journal_entry_id' => $journalEntryId, 'account_mapping_gate' => 'enforced', 'account_mappings' => $accountMappings],
+        );
+    }
+
+    /** @param array<string,mixed>|null $dimensions */
+    private function recordDimensionLineage(PurchaseInvoice $invoice, ?array $dimensions, ?int $journalEntryId): void
+    {
+        if ($dimensions === null) {
+            return;
+        }
+
+        $this->auditService->record(
+            $invoice,
+            'purchase_invoice.dimensions_applied',
+            [],
+            [],
+            null,
+            ['journal_entry_id' => $journalEntryId, 'dimension_gate' => 'enforced', 'dimensions' => $dimensions],
+        );
+    }
+
+    /** @param array<string,mixed> $authorization */
+    private function recordPostingAuthorizationLineage(PurchaseInvoice $invoice, array $authorization, ?int $journalEntryId): void
+    {
+        $this->auditService->record(
+            $invoice,
+            'purchase_invoice.posting_authorization_applied',
+            [],
+            [],
+            null,
+            ['journal_entry_id' => $journalEntryId] + $authorization,
+        );
+    }
+
+    /** @param array<string, mixed>|null $policy @return array<string, mixed> */
+    private function policyAuditMetadata(?array $policy): array
+    {
+        if ($policy === null) {
+            return ['accounting_policy_gate' => 'not_enforced'];
+        }
+
+        return [
+            'accounting_policy_gate' => 'enforced',
+            'accounting_policy' => [
+                'policy_id' => $policy['policy_id'],
+                'policy_key' => $policy['policy_key'],
+                'policy_version' => $policy['policy_version'],
+                'accounting_regime' => $policy['accounting_regime'],
+                'effective_from' => $policy['effective_from'],
+                'effective_to' => $policy['effective_to'],
+                'contract_hash' => $policy['contract_hash'],
+            ],
+        ];
+    }
+
+    private function resolveDefaultPayableAccount(int $companyId): string
+    {
+        $has3311 = \App\Models\ChartOfAccount::withoutGlobalScope('company')
+            ->where('company_id', $companyId)
+            ->where('code', '3311')
+            ->where('is_active', true)
+            ->where('is_parent', false)
+            ->exists();
+
+        return $has3311 ? '3311' : '331';
+    }
+
+    private function exactEvidenceAmount(string $raw, int $scale): string
+    {
+        if ($scale < 0 || $scale > 2 || ! preg_match('/^(?:0|[1-9]\d*)(?:\.\d+)?$/', $raw) || strlen(explode('.', $raw)[1] ?? '') > $scale) throw new \LogicException('Foreign-currency invoice evidence must use an exact supported amount and scale.');
+        return DecimalMoney::normalize($scale === 0 ? $raw.'.00' : $raw);
+    }
 }

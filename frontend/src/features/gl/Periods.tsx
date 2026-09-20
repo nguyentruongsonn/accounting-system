@@ -286,7 +286,7 @@ const Periods: React.FC<PeriodsProps> = ({ embedded = false, onSelectPeriod }) =
                         <div className="font-semibold text-rose-800">Không thể tải trạng thái kỳ kế toán</div>
                         <div className="text-rose-600 text-[11px] mt-0.5">Danh sách hiện tại không được thay bằng dữ liệu rỗng. Kiểm tra kết nối hoặc quyền truy cập rồi thử lại.</div>
                     </div>
-                    <Button size="small" onClick={() => void runManualDataLoad(() => refetch(), { success: 'Tải lại kỳ kế toán thành công.', failure: 'Không thể tải lại kỳ kế toán.' })}>Thử lại kỳ kế toán</Button>
+                    <Button size="small" onClick={() => void refetch()}>Thử lại kỳ kế toán</Button>
                 </div>
             )}
 

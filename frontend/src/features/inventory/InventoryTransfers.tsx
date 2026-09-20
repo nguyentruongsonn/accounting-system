@@ -285,7 +285,7 @@ const InventoryTransfers: React.FC<InventoryTransfersProps> = ({ embedded = fals
           <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không tải được phiếu điều chuyển</div>
           <div style={{ color: '#B91C1C', fontSize: 12 }}>Không dùng dữ liệu mẫu thay thế.</div>
         </div>
-        <Button size="small" onClick={() => void runManualDataLoad(() => transfers.refetch(), { success: 'Tải lại phiếu điều chuyển thành công.', failure: 'Không thể tải lại phiếu điều chuyển.' })}>Thử lại phiếu điều chuyển</Button>
+        <Button size="small" onClick={() => void transfers.refetch()}>Thử lại phiếu điều chuyển</Button>
       </div>}
       {catalogueError && <div role="alert" className="misa-p-12 misa-mb-16" style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>

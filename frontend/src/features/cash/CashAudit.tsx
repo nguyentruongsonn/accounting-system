@@ -222,7 +222,7 @@ export const CashAudit: React.FC<CashAuditProps> = React.memo(({ active = true }
             {bookBalanceQuery.isError && (
                 <div className="misa-inline-status misa-inline-status-error" role="status">
                     <span>Đối chiếu sổ sách tiền mặt chưa khả dụng</span>
-                    <Button size="small" onClick={() => void runManualDataLoad(() => bookBalanceQuery.refetch(), { success: 'Tải lại số dư sổ thành công.', failure: 'Không thể tải lại số dư sổ.' })}>Thử lại số dư sổ</Button>
+                    <Button size="small" onClick={() => void bookBalanceQuery.refetch()}>Thử lại số dư sổ</Button>
                 </div>
             )}
 
@@ -235,7 +235,7 @@ export const CashAudit: React.FC<CashAuditProps> = React.memo(({ active = true }
             ) : auditListQuery.isError ? (
                 <div className="misa-empty-state misa-cash-audit-empty">
                     <Empty description="Không thể tải danh sách kiểm kê quỹ" />
-                    <Button onClick={() => void runManualDataLoad(() => auditListQuery.refetch(), { success: 'Tải lại danh sách kiểm kê quỹ thành công.', failure: 'Không thể tải lại danh sách kiểm kê quỹ.' })}>Thử lại</Button>
+                    <Button onClick={() => void auditListQuery.refetch()}>Thử lại</Button>
                 </div>
             ) : filteredAuditList.length === 0 && !auditSearch ? (
                 <div className="misa-empty-state misa-cash-audit-empty">
@@ -315,7 +315,7 @@ export const CashAudit: React.FC<CashAuditProps> = React.memo(({ active = true }
                     <div className="misa-field-label misa-mb-6">Tài khoản tiền mặt:</div>
                     {cashAccountsQuery.isError ? <div className="misa-inline-status misa-inline-status-error" role="status">
                         <span>Không thể tải danh mục tài khoản tiền mặt</span>
-                        <Button size="small" onClick={() => void runManualDataLoad(() => cashAccountsQuery.refetch(), { success: 'Tải lại danh mục tài khoản thành công.', failure: 'Không thể tải lại danh mục tài khoản.' })}>Thử lại danh mục tài khoản</Button>
+                        <Button size="small" onClick={() => void cashAccountsQuery.refetch()}>Thử lại danh mục tài khoản</Button>
                     </div> : <AccountSelect
                             accounts={cashAccountsQuery.data ?? []}
                             value={cashAccountCode}

@@ -304,13 +304,13 @@ const {
                     {isWarehousesError && (
                         <div role="alert" className="misa-p-8" style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 12 }}>Không thể tải danh mục kho</div>
-                            <Button size="small" onClick={() => void runManualDataLoad(() => refetchWarehouses(), { success: 'Tải lại danh mục kho thành công.', failure: 'Không thể tải lại danh mục kho.' })}>Thử lại danh mục kho</Button>
+                            <Button size="small" onClick={() => void refetchWarehouses()}>Thử lại danh mục kho</Button>
                         </div>
                     )}
                     {valuationRunQuery.isError && (
                         <div role="alert" className="misa-p-8" style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 12 }}>Không thể tải trạng thái tính giá</div>
-                            <Button size="small" onClick={() => void runManualDataLoad(() => valuationRunQuery.refetch(), { success: 'Tải lại trạng thái tính giá thành công.', failure: 'Không thể tải lại trạng thái tính giá.' })}>Thử lại trạng thái tính giá</Button>
+                            <Button size="small" onClick={() => void valuationRunQuery.refetch()}>Thử lại trạng thái tính giá</Button>
                         </div>
                     )}
                 </div>

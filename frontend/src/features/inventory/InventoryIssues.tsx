@@ -54,6 +54,7 @@ import ModalFrame from '../../components/layout/ModalFrame';
 import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
 import {
     INVENTORY_DOCUMENT_ITEMS_QUERY_KEY,
+    parseInventoryDocumentList,
     parseInventoryItemCatalogue,
     parseInventoryAccountCatalogue,
     parseInventoryWarehouseCatalogue,
@@ -63,10 +64,6 @@ import {
     canPostPersistedInventoryDocument,
     getInventoryMutationError,
 } from './inventoryDocumentIntegrity';
-import {
-    INVENTORY_ISSUES_QUERY_KEY,
-    useInventoryIssuesQuery,
-} from './inventoryDocumentQueries';
 
 interface InventoryIssueLine {
     key?: string;
@@ -146,7 +143,13 @@ export const InventoryIssues: React.FC<{ embedded?: boolean; openDraftId?: numbe
         },
     });
 
-    const { data: issues = [], isLoading, isError: isIssuesError, refetch: refetchIssues } = useInventoryIssuesQuery();
+    const { data: issues = [], isLoading, isError: isIssuesError, refetch: refetchIssues } = useQuery({
+        queryKey: ['inventory-issues'],
+        queryFn: async () => {
+            const { data } = await api.get('/inventory/issues');
+            return parseInventoryDocumentList(data, 'issue') as InventoryIssueRecord[];
+        },
+    });
 
     const { data: chartOfAccounts = [], isError: isAccountsError, refetch: refetchAccounts } = useQuery({
         queryKey: ['chart-of-accounts'],
@@ -207,7 +210,7 @@ export const InventoryIssues: React.FC<{ embedded?: boolean; openDraftId?: numbe
         ));
 
     const invalidateInventoryCaches = () => {
-        notifyDataChanged('inventory');
+        notifyDataChanged();
     };
 
     const mutation = useMutation({
@@ -441,6 +444,16 @@ export const InventoryIssues: React.FC<{ embedded?: boolean; openDraftId?: numbe
             window.removeEventListener('open-inventory-receipt', handleCreate);
         };
     }, [handleOpenModal]);
+    useEffect(() => {
+        const handleRefresh = () => { queryClient.invalidateQueries({ queryKey: ['inventory-issues'] }); };
+        window.addEventListener('refresh-inventory-issue', handleRefresh);
+        window.addEventListener('accounting-data-changed', handleRefresh);
+        return () => {
+            window.removeEventListener('refresh-inventory-issue', handleRefresh);
+            window.removeEventListener('accounting-data-changed', handleRefresh);
+        };
+    }, [queryClient]);
+
     useEffect(() => {
         const handleSearch = (e: Event) => {
             const customEvent = e as CustomEvent<string>;
@@ -755,7 +768,7 @@ export const InventoryIssues: React.FC<{ embedded?: boolean; openDraftId?: numbe
                             title="Làm mới (F5)"
                             icon={<ReloadOutlined />}
                             onClick={() => void runManualDataLoad(
-                                () => queryClient.invalidateQueries({ queryKey: INVENTORY_ISSUES_QUERY_KEY }),
+                                () => queryClient.invalidateQueries({ queryKey: ['inventory-issues'] }),
                                 { success: 'Tải lại danh sách phiếu xuất kho thành công.', failure: 'Không thể tải lại danh sách phiếu xuất kho.' },
                             )}
                         />
@@ -784,7 +797,7 @@ export const InventoryIssues: React.FC<{ embedded?: boolean; openDraftId?: numbe
                         <div>
                             <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải danh sách phiếu xuất kho</div>
                         </div>
-                        <Button size="small" onClick={() => void runManualDataLoad(() => refetchIssues(), { success: 'Tải lại danh sách phiếu xuất kho thành công.', failure: 'Không thể tải lại danh sách phiếu xuất kho.' })}>Thử lại danh sách phiếu xuất kho</Button>
+                        <Button size="small" onClick={() => void refetchIssues()}>Thử lại danh sách phiếu xuất kho</Button>
                     </div>
                 ) : null}
                 <Table
