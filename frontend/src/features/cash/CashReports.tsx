@@ -16,6 +16,7 @@ import { useCashReportQuery } from './useCashReportQuery';
 import { CashReportPrint } from './CashReportPrint';
 import { exportCashReport } from './exportCashReport';
 import { printCashReport } from './printCashReport';
+import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
 import AccountSelect from '../../components/misa/AccountSelect';
 import type { AccountItem } from '../../components/misa/AccountSelect';
 import { getApiErrorMessage } from '../../utils/apiErrorMessage';
@@ -155,7 +156,7 @@ export function CashReports({ active = true }: CashReportsProps) {
                 <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải danh mục tài khoản tiền</div>
                 <div style={{ color: '#B91C1C', fontSize: 12 }}>{getApiErrorMessage(cashAccountsQuery.error, 'Không hiển thị danh sách tài khoản thay thế.')}</div>
               </div>
-              <Button size="small" onClick={() => void cashAccountsQuery.refetch()}>Thử lại danh mục tài khoản tiền</Button>
+              <Button size="small" onClick={() => void runManualDataLoad(() => cashAccountsQuery.refetch(), { success: 'Tải lại danh mục tài khoản tiền thành công.', failure: 'Không thể tải lại danh mục tài khoản tiền.' })}>Thử lại danh mục tài khoản tiền</Button>
             </div>
           )}
           {pendingCode && isJournal(pendingCode) && <Form.Item name="status" label="Trạng thái"><AdaptiveSelect options={[{ value: 'posted', label: 'Đã ghi sổ' }, { value: 'draft', label: 'Bản nháp' }, { value: 'voided', label: 'Đã hủy' }, { value: 'all', label: 'Tất cả' }]} getPopupContainer={() => document.body} /></Form.Item>}

@@ -354,7 +354,7 @@ const ChartOfAccounts: React.FC = () => {
                         <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải hệ thống tài khoản</div>
                         <div style={{ color: '#B91C1C', fontSize: 12 }}>Không nhận được danh mục hợp lệ từ máy chủ. Hãy kiểm tra kết nối rồi bấm Làm mới.</div>
                     </div>
-                    <Button size="small" onClick={() => void refetch()}>Làm mới</Button>
+                    <Button size="small" onClick={() => void runManualDataLoad(() => refetch(), { success: 'Tải lại hệ thống tài khoản thành công.', failure: 'Không thể tải lại hệ thống tài khoản.' })}>Làm mới</Button>
                 </div>
             )}
             <DataTableSurface className="coa-workbench__table-surface">

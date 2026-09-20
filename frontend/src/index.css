@@ -5,6 +5,7 @@
 @import "./components/layout/SidebarFlyout.css";
 @import "./styles/ui-compact.css";
 @import "./styles/app-modal.css";
+@import "./styles/motion.css";
 
 /* One global host keeps Ant messages in the toast contract regardless of the
  * screen that triggered the feedback. Tokens keep the spacing in step with

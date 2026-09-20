@@ -10,7 +10,7 @@ type ModalFrameProps = {
 };
 
 const ModalFrame: React.FC<ModalFrameProps> = ({ children, footer, className, bodyStyle, footerStyle }) => (
-  <div className={['ui-modal-frame', className].filter(Boolean).join(' ')} data-ui="modal-frame" data-surface="modal" data-testid="ui-modal-frame">
+  <div className={['ui-modal-frame', 'ui-motion-modal-enter', className].filter(Boolean).join(' ')} data-ui="modal-frame" data-surface="modal" data-testid="ui-modal-frame">
     <div className="ui-modal-frame__body" style={bodyStyle} data-ui="modal-body" data-region="body" data-testid="ui-modal-body">
       {children}
     </div>

@@ -13,8 +13,8 @@ import ToastProvider from './components/feedback/ToastProvider';
 import { TOAST_CONFIG } from './components/feedback/toast';
 
 /**
- * Access tokens stay in memory. On a hard refresh, use the HttpOnly refresh
- * cookie to rehydrate the user before permission-gated routes render.
+  * Access tokens stay in memory. On a hard refresh or a new tab, use the
+  * HttpOnly refresh cookie to rehydrate the user before protected routes render.
  */
 export function AuthSessionBootstrap() {
   const token = useAuthStore((state) => state.token);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Form, Input, Select, Radio, Checkbox, Button, DatePicker, InputNumber, Tabs, Popconfirm } from 'antd';
 import { toast as message } from '../feedback/toast';
 import Modal from '../layout/AppModal';
@@ -88,25 +88,6 @@ export const QuickAddEmployeeModal: React.FC<QuickAddEmployeeModalProps> = ({
     const [form] = Form.useForm();
     const queryClient = useQueryClient();
 
-    // Keyboard shortcuts
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (!open) return;
-            if (e.key === 'Escape' && !isDeptModalOpen && !isPositionModalOpen) {
-                e.preventDefault();
-                onCancel();
-            } else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 's') {
-                e.preventDefault();
-                handleSave(true);
-            } else if (e.ctrlKey && e.key.toLowerCase() === 's') {
-                e.preventDefault();
-                handleSave(false);
-            }
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [open, isDeptModalOpen, isPositionModalOpen]);
-
     const mutation = useMutation({
         mutationFn: async (values: any) => {
             const payload: any = {
@@ -169,7 +150,7 @@ export const QuickAddEmployeeModal: React.FC<QuickAddEmployeeModalProps> = ({
         }
     });
 
-    const initNewForm = () => {
+    const initNewForm = useCallback(() => {
         form.resetFields();
         form.setFieldsValue({
             code: '',
@@ -192,9 +173,9 @@ export const QuickAddEmployeeModal: React.FC<QuickAddEmployeeModalProps> = ({
         setGender('Nam');
         setBankAccounts([{ id: '1', account_number: '', bank_name: '', branch: '', province: '' }]);
         setDependents([]);
-    };
+    }, [form]);
 
-    const handleSave = (andNew = false) => {
+    const handleSave = useCallback((andNew = false) => {
         form.validateFields()
             .then(values => {
                 mutation.mutate({ ...values, _andNew: andNew });
@@ -202,7 +183,26 @@ export const QuickAddEmployeeModal: React.FC<QuickAddEmployeeModalProps> = ({
             .catch(() => {
                 message.error('Vui lòng kiểm tra lại các trường bắt buộc màu đỏ!');
             });
-    };
+    }, [form, mutation]);
+
+    // Keyboard shortcuts
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!open) return;
+            if (e.key === 'Escape' && !isDeptModalOpen && !isPositionModalOpen) {
+                e.preventDefault();
+                onCancel();
+            } else if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                handleSave(true);
+            } else if (e.ctrlKey && e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                handleSave(false);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [open, isDeptModalOpen, isPositionModalOpen, onCancel, handleSave]);
 
     useEffect(() => {
         if (open) {
@@ -210,7 +210,7 @@ export const QuickAddEmployeeModal: React.FC<QuickAddEmployeeModalProps> = ({
             setIsCustomerChecked(false);
             setIsSupplierChecked(false);
         }
-    }, [open]);
+    }, [open, initNewForm]);
 
     return (
         <>

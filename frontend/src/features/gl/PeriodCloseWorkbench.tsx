@@ -22,6 +22,7 @@ import DataTableSurface from '../../components/layout/DataTableSurface';
 import { AdaptiveSelect } from '../../components/layout/AdaptiveSelect';
 import { useAuthStore } from '../../store/useAuthStore';
 import { formatDate, formatDateTime } from '../../utils/dateUtils';
+import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
 
 type PeriodOption = { id: number; name?: string; start_date?: string; end_date?: string; is_closed?: boolean };
 type ReviewDecision = 'approved' | 'rejected';
@@ -306,7 +307,7 @@ export default function PeriodCloseWorkbench({ embedded = false, selectedPeriodI
   if (periodsQuery.isError || !periodsQuery.data) return shell(
     <div className="misa-text-center misa-py-12">
       <div className="misa-text-secondary misa-mb-8">Không hiển thị trạng thái đóng kỳ khi danh sách kỳ từ máy chủ không khả dụng.</div>
-      <Button size="small" onClick={() => void periodsQuery.refetch()}>Thử lại kỳ kế toán</Button>
+       <Button size="small" onClick={() => void runManualDataLoad(() => periodsQuery.refetch(), { success: 'Tải lại kỳ kế toán thành công.', failure: 'Không thể tải lại kỳ kế toán.' })}>Thử lại kỳ kế toán</Button>
     </div>
   );
 
@@ -382,7 +383,7 @@ export default function PeriodCloseWorkbench({ embedded = false, selectedPeriodI
         {readinessQuery.isError && (
           <div className="p-3 my-3 bg-rose-50/80 border border-rose-200 rounded-lg flex items-center justify-between text-xs">
             <div className="text-rose-700">Không tạo kết luận hoặc cho phép thao tác đóng kỳ khi máy chủ không trả bằng chứng.</div>
-            <Button size="small" onClick={() => void readinessQuery.refetch()}>Thử lại readiness</Button>
+             <Button size="small" onClick={() => void runManualDataLoad(() => readinessQuery.refetch(), { success: 'Tải lại trạng thái readiness thành công.', failure: 'Không thể tải lại trạng thái readiness.' })}>Thử lại readiness</Button>
           </div>
         )}
 
@@ -491,7 +492,7 @@ export default function PeriodCloseWorkbench({ embedded = false, selectedPeriodI
           {runUuid && resultsQuery.isError && (
             <div className="text-center py-4">
               <div className="text-xs text-slate-500 mb-2">Không tải được chi tiết đối chiếu. Không coi reconciliation run là đạt khi không đọc được kết quả domain.</div>
-              <Button size="small" onClick={() => void resultsQuery.refetch()}>Thử lại kết quả đối chiếu</Button>
+               <Button size="small" onClick={() => void runManualDataLoad(() => resultsQuery.refetch(), { success: 'Tải lại kết quả đối chiếu thành công.', failure: 'Không thể tải lại kết quả đối chiếu.' })}>Thử lại kết quả đối chiếu</Button>
             </div>
           )}
           {blockers.length > 0 && (
@@ -535,7 +536,7 @@ export default function PeriodCloseWorkbench({ embedded = false, selectedPeriodI
           {packagesQuery.isError && (
             <div className="text-center py-4">
               <div className="text-xs text-slate-500 mb-2">Không tải được hồ sơ sign-off. Không suy ra trạng thái phê duyệt khi bằng chứng không khả dụng.</div>
-              <Button size="small" onClick={() => void packagesQuery.refetch()}>Thử lại hồ sơ sign-off</Button>
+               <Button size="small" onClick={() => void runManualDataLoad(() => packagesQuery.refetch(), { success: 'Tải lại hồ sơ sign-off thành công.', failure: 'Không thể tải lại hồ sơ sign-off.' })}>Thử lại hồ sơ sign-off</Button>
             </div>
           )}
           {!packagesQuery.isLoading && !packagesQuery.isError && (packagesQuery.data?.length ?? 0) === 0 && (

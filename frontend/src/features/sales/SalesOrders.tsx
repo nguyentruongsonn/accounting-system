@@ -577,7 +577,7 @@ export const SalesOrders: React.FC = () => {
                             <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải danh sách đơn đặt hàng</div>
                             <div style={{ color: '#B91C1C', fontSize: 12, marginTop: 2 }}>Dữ liệu chưa được xác minh từ máy chủ; không hiển thị danh sách rỗng thay thế.</div>
                         </div>
-                        <Button onClick={() => void refetch()}>Thử lại danh sách đơn đặt hàng</Button>
+                        <Button onClick={() => void runManualDataLoad(() => refetch(), { success: 'Tải lại danh sách đơn đặt hàng thành công.', failure: 'Không thể tải lại danh sách đơn đặt hàng.' })}>Thử lại danh sách đơn đặt hàng</Button>
                     </div>
                 ) : <Table
                     columns={columns}

@@ -116,7 +116,6 @@ export default function Tools({ embedded = false }: ToolsProps = {}) {
         window.addEventListener('open-tool-preview', handlePreviewEvent);
         window.addEventListener('run-tool-allocation', handleAllocationEvent);
         window.addEventListener('refresh-tools', handleRefreshEvent);
-        window.addEventListener('accounting-data-changed', handleRefreshEvent);
         window.addEventListener('fixed-asset-filter-change', handleFilterEvent);
 
         return () => {
@@ -124,7 +123,6 @@ export default function Tools({ embedded = false }: ToolsProps = {}) {
             window.removeEventListener('open-tool-preview', handlePreviewEvent);
             window.removeEventListener('run-tool-allocation', handleAllocationEvent);
             window.removeEventListener('refresh-tools', handleRefreshEvent);
-            window.removeEventListener('accounting-data-changed', handleRefreshEvent);
             window.removeEventListener('fixed-asset-filter-change', handleFilterEvent);
         };
     }, [form]);
@@ -170,7 +168,7 @@ export default function Tools({ embedded = false }: ToolsProps = {}) {
             }
 
             message.success(editingId === null ? `Đã thêm CCDC ${values.tool_code}.` : `Đã cập nhật CCDC ${values.tool_code}.`);
-            notifyDataChanged();
+            notifyDataChanged('tools');
             setCreateOpen(false);
             setEditingId(null);
             form.resetFields();
@@ -211,7 +209,7 @@ export default function Tools({ embedded = false }: ToolsProps = {}) {
         try {
             await api.delete(`/tools/${tool.id}`, { data: { reason: 'Ngừng sử dụng từ danh mục CCDC' } });
             message.success(`Đã ngừng sử dụng CCDC ${tool.tool_code}.`);
-            notifyDataChanged();
+            notifyDataChanged('tools');
             await loadTools();
         } catch (error: any) {
             message.error(error?.response?.data?.message ?? 'Không thể ngừng sử dụng CCDC.');
@@ -233,7 +231,7 @@ export default function Tools({ embedded = false }: ToolsProps = {}) {
                 return;
             }
             message.success(`Đã ghi giảm CCDC ${tool.tool_code} và ngừng phân bổ.`);
-            notifyDataChanged();
+            notifyDataChanged('tools');
             await loadTools();
         } catch (error: any) {
             message.error(error?.response?.data?.message ?? 'Không thể ghi giảm CCDC.');
@@ -266,7 +264,7 @@ export default function Tools({ embedded = false }: ToolsProps = {}) {
             }
 
             message.success(`Phân bổ CCDC tháng ${dayjs().format('MM/YYYY')} đã chạy và tự động hạch toán thành công!`);
-            notifyDataChanged();
+            notifyDataChanged('tools');
             await loadTools();
         } catch (error) {
             message.error('Có lỗi xảy ra khi tính phân bổ.');

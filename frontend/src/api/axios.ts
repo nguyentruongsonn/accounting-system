@@ -2,7 +2,7 @@ import axios from 'axios';
 import type { InternalAxiosRequestConfig } from 'axios';
 import { handleSessionExpired } from '../auth/session';
 import { useAuthStore } from '../store/useAuthStore';
-import { notifyDataChanged } from '../lib/queryClient';
+import { getAccountingDataScope, notifyDataChanged } from '../lib/queryClient';
 
 const configuredApiUrl = String(import.meta.env.VITE_API_URL || '').trim();
 // Never ship the developer's localhost API fallback in a production bundle.
@@ -61,7 +61,7 @@ api.interceptors.response.use(
                 || url.includes('/export')
                 || url.includes('/print');
             if (!isAuthOrExport) {
-                notifyDataChanged();
+                notifyDataChanged(getAccountingDataScope(url));
             }
         }
         return response;

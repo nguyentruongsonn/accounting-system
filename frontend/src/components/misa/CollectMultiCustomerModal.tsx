@@ -6,9 +6,11 @@ import { DollarOutlined, FilterOutlined, SearchOutlined } from '@ant-design/icon
 import dayjs from 'dayjs';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../api/axios';
+import { notifyDataChanged } from '../../lib/queryClient';
 import Modal from '../layout/AppModal';
 import ModalFrame from '../layout/ModalFrame';
 import { runManualDataLoad } from '../feedback/runManualDataLoad';
+import { createMultiCustomerOutstandingInvoicesQuery } from './cashCollectionQueries';
 
 export interface MultiCustomerInvoiceItem {
     id: number | string;
@@ -85,8 +87,7 @@ export const CollectMultiCustomerModal: React.FC<CollectMultiCustomerModalProps>
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const invoicesQuery = useQuery({
-        queryKey: ['sales-invoice-outstanding-all', paymentDate.format('YYYY-MM-DD')],
-        queryFn: async () => asArray<any>((await api.get('/sales/invoices/outstanding', { params: { as_of_date: paymentDate.format('YYYY-MM-DD') } })).data, 'hóa đơn chưa thu'),
+        ...createMultiCustomerOutstandingInvoicesQuery(paymentDate.format('YYYY-MM-DD')),
         enabled: open,
     });
     const accountsQuery = useQuery({
@@ -200,8 +201,8 @@ export const CollectMultiCustomerModal: React.FC<CollectMultiCustomerModalProps>
                 completed.push(invoice);
             }
             onSuccess?.(completed, false);
-            window.dispatchEvent(new Event('cash-receipts-invalidated'));
-            window.dispatchEvent(new Event('sales-invoices-invalidated'));
+            notifyDataChanged('cash');
+            notifyDataChanged('sales');
             message.success(`Đã thu tiền ${completed.length} hóa đơn và cập nhật công nợ.`);
             onClose();
         } catch (error: any) {
@@ -209,8 +210,8 @@ export const CollectMultiCustomerModal: React.FC<CollectMultiCustomerModalProps>
                 const completedIds = new Set(completed.map((invoice) => String(invoice.id)));
                 setTableData((current) => current.map((invoice) => completedIds.has(String(invoice.id)) ? { ...invoice, collect_amount: 0 } : invoice));
                 setSelectedRowKeys((keys) => keys.filter((key) => !completedIds.has(String(key))));
-                window.dispatchEvent(new Event('cash-receipts-invalidated'));
-                window.dispatchEvent(new Event('sales-invoices-invalidated'));
+                notifyDataChanged('cash');
+                notifyDataChanged('sales');
             }
             message.error(error?.response?.data?.error || error?.response?.data?.message || `Không hoàn tất thu tiền${completed.length ? `; đã lưu ${completed.length} hóa đơn trước đó` : ''}.`);
         } finally {

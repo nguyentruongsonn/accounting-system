@@ -28,7 +28,7 @@ Hệ thống phần mềm kế toán doanh nghiệp được xây dựng trên n
 
 ### Frontend
 - **Framework**: React 19 + TypeScript + Vite
-- **UI Component Library**: Ant Design 5, TailwindCSS v4
+- **UI Component Library**: Ant Design 6, TailwindCSS v4
 - **State & Data Fetching**: TanStack React Query v5, Zustand, Axios
 - **Icons & Tooling**: Ant Design Icons, Lucide React
 
@@ -46,9 +46,16 @@ composer install
 cp .env.example .env
 php artisan key:generate
 # Cấu hình thông tin kết nối DB trong backend/.env
-php artisan migrate --seed
+php artisan migrate
 php artisan serve
 ```
+
+`DatabaseSeeder` chỉ tạo catalogue nền tảng và role/permission; không tạo mật
+khẩu demo. Với môi trường local riêng, đặt `DEMO_ADMIN_PASSWORD` và
+`DEMO_ACCOUNTANT_PASSWORD` rồi chạy `php artisan db:seed --class=DemoUsersSeeder`.
+Seeder mô phỏng học thuật cũng chỉ chạy ở local/testing và yêu cầu
+`SIMULATION_ADMIN_PASSWORD` cùng `SIMULATION_ACCOUNTANT_PASSWORD`. Không chạy
+`migrate --seed` trên database thật nếu chưa review toàn bộ seeders.
 
 ### 2. Cài đặt Frontend
 ```bash
@@ -57,3 +64,26 @@ npm install
 npm run dev
 ```
 Truy cập ứng dụng tại: `http://localhost:8080` (hoặc cổng hiển thị trên terminal Vite).
+
+### 3. Kiểm tra trước khi đưa code lên remote
+
+Backend:
+
+```bash
+cd backend
+php artisan test --compact
+php artisan migrate:status --no-ansi
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm test
+npm run lint
+npm run build
+```
+
+CI trên GitHub chạy cùng các bước kiểm tra này. Khi triển khai SPA khác origin,
+đặt `VITE_API_URL`, `CORS_ALLOWED_ORIGINS` và cấu hình cookie refresh phù hợp;
+không đưa access token vào localStorage.

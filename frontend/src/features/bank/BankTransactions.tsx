@@ -102,10 +102,8 @@ export const BankTransactions: React.FC<BankTransactionsProps> = React.memo(() =
             void queryClient.invalidateQueries({ queryKey: ['bank-receipts'] });
             void queryClient.invalidateQueries({ queryKey: ['bank-payments'] });
         };
-        window.addEventListener('accounting-data-changed', refresh);
         window.addEventListener('refresh-bank-transactions', refresh);
         return () => {
-            window.removeEventListener('accounting-data-changed', refresh);
             window.removeEventListener('refresh-bank-transactions', refresh);
         };
     }, [queryClient]);
@@ -190,7 +188,7 @@ export const BankTransactions: React.FC<BankTransactionsProps> = React.memo(() =
                 return;
             }
             message.success(variables.isPosted ? 'Đã bỏ ghi sổ chứng từ tiền gửi!' : 'Đã ghi sổ chứng từ tiền gửi thành công!');
-            notifyDataChanged();
+            notifyDataChanged('bank');
         },
     });
 
@@ -229,7 +227,7 @@ export const BankTransactions: React.FC<BankTransactionsProps> = React.memo(() =
             message.success('Đã xóa chứng từ tiền gửi thành công!');
             setIsDeleteModalOpen(false);
             setDeleteVoucher(null);
-            notifyDataChanged();
+            notifyDataChanged('bank');
         },
     });
 
@@ -248,7 +246,7 @@ export const BankTransactions: React.FC<BankTransactionsProps> = React.memo(() =
                 return;
             }
             message.success('Đã nhân bản chứng từ thành công.');
-            notifyDataChanged();
+            notifyDataChanged('bank');
             window.dispatchEvent(new CustomEvent(type === 'receipt' ? 'open-bank-receipt' : 'open-bank-payment', { detail: { record, mode: 'edit' } }));
         },
         onError: (err: any) => {
@@ -280,7 +278,7 @@ export const BankTransactions: React.FC<BankTransactionsProps> = React.memo(() =
             message.success('Cập nhật chứng từ tiền gửi thành công!');
             setIsEditModalOpen(false);
             setEditVoucher(null);
-            notifyDataChanged();
+            notifyDataChanged('bank');
         },
         onError: (err: any) => {
             message.error(err.response?.data?.message || 'Cập nhật thất bại!');
@@ -593,7 +591,7 @@ export const BankTransactions: React.FC<BankTransactionsProps> = React.memo(() =
                 );
             }
         }
-    ], [handleViewVoucherDetails, handleEditVoucher, togglePostMutation, handleDeleteClick]);
+    ], [handleViewVoucherDetails, handleEditVoucher, togglePostMutation, duplicateMutation, handleDeleteClick]);
 
     return (
         <PageShell title={<PageHeader eyebrow="Ngân hàng" title="Giao dịch tiền gửi ngân hàng" description="Theo dõi báo Có, báo Nợ và số dư theo dữ liệu máy chủ." />}>
@@ -691,7 +689,7 @@ export const BankTransactions: React.FC<BankTransactionsProps> = React.memo(() =
                         icon={<ReloadOutlined />}
                         onClick={() => void runManualDataLoad(
                             async () => {
-                                notifyDataChanged();
+                                notifyDataChanged('bank');
                                 await Promise.all([refetchReceipts(), refetchPayments()]);
                             },
                             { success: 'Đã làm mới danh sách dữ liệu tiền gửi!', failure: 'Không thể làm mới danh sách dữ liệu tiền gửi.' }

@@ -151,7 +151,10 @@ return [
     // compatibility/evidence API, but are not a required close prerequisite.
     // Production always fails closed and must explicitly carry the reviewed
     // signoff workflow.
-    'enforce_period_close_signoff' => env('ACCOUNTING_ENFORCE_PERIOD_CLOSE_SIGNOFF', false),
+    'enforce_period_close_signoff' => $isProduction ? true : env(
+        'ACCOUNTING_ENFORCE_PERIOD_CLOSE_SIGNOFF',
+        false,
+    ),
 
     // PeriodClosingService still contains a diagnostic legacy calculator whose
     // account classification uses historical prefixes and fixed closing
@@ -159,7 +162,10 @@ return [
     // wired yet. The internal profile therefore uses the server-generated
     // legacy close calculator; production remains fail-closed until an
     // owner-approved effective-dated resolver is supplied.
-    'enforce_period_close_account_mappings' => env('ACCOUNTING_ENFORCE_PERIOD_CLOSE_ACCOUNT_MAPPINGS', false),
+    'enforce_period_close_account_mappings' => $isProduction ? true : env(
+        'ACCOUNTING_ENFORCE_PERIOD_CLOSE_ACCOUNT_MAPPINGS',
+        false,
+    ),
 
     // This repository intentionally ships no provider driver, signing code,
     // or secret resolver. Keep the adapter transport closed until a separately

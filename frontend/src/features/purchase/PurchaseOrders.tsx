@@ -640,7 +640,7 @@ export const PurchaseOrders: React.FC = () => {
                     type="error"
                     message="Không thể tải danh sách đơn mua hàng"
                     description="Không hiển thị dữ liệu thay thế; hãy thử tải lại danh sách đơn mua hàng."
-                    action={<Button size="small" onClick={() => void refetchOrders()}>Thử lại danh sách đơn mua hàng</Button>}
+                    action={<Button size="small" onClick={() => void runManualDataLoad(() => refetchOrders(), { success: 'Tải lại danh sách đơn mua hàng thành công.', failure: 'Không thể tải lại danh sách đơn mua hàng.' })}>Thử lại danh sách đơn mua hàng</Button>}
                 />
             )}
 

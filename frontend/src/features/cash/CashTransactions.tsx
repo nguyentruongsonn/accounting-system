@@ -189,7 +189,7 @@ export const CashTransactions: React.FC<CashTransactionsProps> = React.memo(() =
                 return;
             }
             message.success(variables.isPosted ? 'Đã bỏ ghi sổ chứng từ!' : 'Đã ghi sổ chứng từ thành công!');
-            notifyDataChanged();
+            notifyDataChanged('cash');
         },
         onError: (err: any, variables, context) => {
             const queryKey = variables.type === 'receipt' ? ['cash-receipts'] : ['cash-payments'];
@@ -234,7 +234,7 @@ export const CashTransactions: React.FC<CashTransactionsProps> = React.memo(() =
             message.success('Đã xóa chứng từ thành công!');
             setIsDeleteModalOpen(false);
             setDeleteVoucher(null);
-            notifyDataChanged();
+            notifyDataChanged('cash');
         },
         onError: (err: any, variables, context) => {
             const queryKey = variables.type === 'receipt' ? ['cash-receipts'] : ['cash-payments'];
@@ -604,7 +604,7 @@ export const CashTransactions: React.FC<CashTransactionsProps> = React.memo(() =
                 );
             }
         }
-    ], [togglePostMutation]);
+    ], [togglePostMutation, duplicateMutation]);
 
     return (
         <PageShell
