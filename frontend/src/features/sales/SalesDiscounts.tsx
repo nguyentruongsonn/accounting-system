@@ -77,7 +77,7 @@ export const SalesDiscounts: React.FC = () => {
                 return;
             }
             message.success('Ghi sổ chứng từ giảm giá hàng bán thành công!');
-            notifyDataChanged();
+            notifyDataChanged('sales');
         },
         onError: (err: unknown, _id: number, context) => {
             rollbackVoucherCache(queryClient, ['sales-discounts'], context);
@@ -99,7 +99,7 @@ export const SalesDiscounts: React.FC = () => {
                 return;
             }
             message.success('Bỏ ghi sổ chứng từ giảm giá hàng bán thành công!');
-            notifyDataChanged();
+            notifyDataChanged('sales');
         },
         onError: (err: unknown, _id: number, context) => {
             rollbackVoucherCache(queryClient, ['sales-discounts'], context);
@@ -449,7 +449,7 @@ export const SalesDiscounts: React.FC = () => {
                         <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải danh sách chứng từ</div>
                         <div style={{ color: '#B91C1C', fontSize: 12, marginTop: 2 }}>Dữ liệu hiển thị không được thay bằng danh sách rỗng. Kiểm tra kết nối hoặc quyền truy cập rồi thử lại.</div>
                     </div>
-                    <Button size="small" onClick={() => void refetchList()}>Thử lại</Button>
+                    <Button size="small" onClick={() => void runManualDataLoad(() => refetchList(), { success: 'Tải lại danh sách giảm giá hàng bán thành công.', failure: 'Không thể tải lại danh sách giảm giá hàng bán.' })}>Thử lại</Button>
                 </div>
             )}
 

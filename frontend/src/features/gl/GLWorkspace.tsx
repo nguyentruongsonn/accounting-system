@@ -18,6 +18,7 @@ import PageShell from '../../components/layout/PageShell';
 import PageHeader from '../../components/layout/PageHeader';
 import PageToolbar from '../../components/layout/PageToolbar';
 import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
+import { notifyDataChanged } from '../../lib/queryClient';
 
 const TABS = [
   { key: 'tab-process', label: 'Quy trình' },
@@ -150,7 +151,7 @@ export const GLWorkspace: React.FC = () => {
             {isReportCapabilitiesError && (
               <li className="misa-ca-report-item misa-color-muted">
                 <span>Không tải được danh sách báo cáo.</span>
-                <Button type="link" size="small" onClick={() => void refetchReportCapabilities()}>
+                <Button type="link" size="small" onClick={() => void runManualDataLoad(() => refetchReportCapabilities(), { success: 'Tải lại phạm vi báo cáo thành công.', failure: 'Không thể tải lại phạm vi báo cáo.' })}>
                   Thử lại báo cáo
                 </Button>
               </li>
@@ -230,7 +231,7 @@ export const GLWorkspace: React.FC = () => {
             <Button
               icon={<ReloadOutlined />}
               onClick={() => void runManualDataLoad(
-                () => window.dispatchEvent(new Event('refresh-general-journals')),
+                () => { notifyDataChanged('gl'); },
                 { success: 'Tải lại sổ nhật ký chung thành công.', failure: 'Không thể tải lại sổ nhật ký chung.' },
               )}
               title="Nạp lại dữ liệu"

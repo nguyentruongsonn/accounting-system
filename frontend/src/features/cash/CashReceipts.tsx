@@ -53,6 +53,14 @@ import {
     ExcelImportModal
 } from '../../components/misa';
 import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
+import { isLocalQueryLoading } from '../../components/feedback/localLoading';
+import {
+    CASH_PAYMENTS_QUERY_KEY,
+    CASH_RECEIPTS_QUERY_KEY,
+    parseCashReceiptCollection,
+    useCashPaymentsQuery,
+    useCashReceiptsQuery,
+} from './cashVoucherQueries';
 import PageShell from '../../components/layout/PageShell';
 import PageHeader from '../../components/layout/PageHeader';
 import PageToolbar from '../../components/layout/PageToolbar';
@@ -96,14 +104,6 @@ interface ReceiptRecord {
     status?: string;
     voucher_type?: string;
     lines?: ReceiptLine[];
-}
-
-function parseCashReceiptCollection(value: unknown, resource: string): any[] {
-    if (Array.isArray(value)) return value;
-    if (value && typeof value === 'object' && Array.isArray((value as { data?: unknown }).data)) {
-        return (value as { data: any[] }).data;
-    }
-    throw new Error(`Invalid ${resource} response`);
 }
 
 function readCashVoucherAmount(value: unknown): number | null {
@@ -198,23 +198,8 @@ export const CashReceipts: React.FC<CashReceiptsProps> = React.memo(({ modalOnly
     const voucherNumber = Form.useWatch('voucher_number', form);
     const [voucherType, setVoucherType] = useState('1. Thu tiền khách hàng (không theo hóa đơn)');
 
-    const { data: receipts = [], isLoading, isError: isReceiptsError, refetch: refetchReceipts } = useQuery({
-        queryKey: ['cash-receipts'],
-        queryFn: async () => {
-            const { data } = await api.get('/cash/receipts');
-            return parseCashReceiptCollection(data, 'cash receipts');
-        },
-        enabled: !modalOnly,
-    });
-
-    const { data: payments = [], isLoading: isPaymentsLoading, isError: isPaymentsError, refetch: refetchPayments } = useQuery({
-        queryKey: ['cash-payments'],
-        queryFn: async () => {
-            const { data } = await api.get('/cash/payments');
-            return parseCashReceiptCollection(data, 'cash payments');
-        },
-        enabled: !modalOnly,
-    });
+    const { data: receipts = [], isLoading, isFetching: isReceiptsFetching, isError: isReceiptsError, refetch: refetchReceipts } = useCashReceiptsQuery(!modalOnly);
+    const { data: payments = [], isLoading: isPaymentsLoading, isError: isPaymentsError, refetch: refetchPayments } = useCashPaymentsQuery(!modalOnly);
 
     useEffect(() => {
         if (isReceiptsError) {
@@ -227,19 +212,6 @@ export const CashReceipts: React.FC<CashReceiptsProps> = React.memo(({ modalOnly
             message.error('Không thể tải danh sách phiếu chi. Hãy thử tải lại.');
         }
     }, [isPaymentsError]);
-
-    useEffect(() => {
-        const refresh = () => {
-            void queryClient.invalidateQueries({ queryKey: ['cash-receipts'] });
-            void queryClient.invalidateQueries({ queryKey: ['cash-payments'] });
-        };
-        window.addEventListener('cash-receipts-invalidated', refresh);
-        window.addEventListener('accounting-data-changed', refresh);
-        return () => {
-            window.removeEventListener('cash-receipts-invalidated', refresh);
-            window.removeEventListener('accounting-data-changed', refresh);
-        };
-    }, [queryClient]);
 
     const listedReceiptTotal = useMemo(() => sumCashVoucherAmounts(Array.isArray(receipts) ? receipts : [], isLoading, isReceiptsError), [receipts, isLoading, isReceiptsError]);
     const totalReceipts = useMemo(() => sumPostedCashVoucherAmounts(Array.isArray(receipts) ? receipts : [], isLoading, isReceiptsError), [receipts, isLoading, isReceiptsError]);
@@ -428,7 +400,7 @@ export const CashReceipts: React.FC<CashReceiptsProps> = React.memo(({ modalOnly
             setActiveReceiptIsPosted(persistedIsPosted);
             setModalMode('view');
             message.success(wasEditing ? 'Cập nhật Phiếu thu thành công. Đã lưu bản nháp.' : 'Tạo Phiếu thu thành công. Đã lưu bản nháp.');
-            notifyDataChanged();
+            notifyDataChanged('cash');
 
             if (data?.andPrint) {
                 setIsPrintModalVisible(true);
@@ -577,7 +549,7 @@ export const CashReceipts: React.FC<CashReceiptsProps> = React.memo(({ modalOnly
             message.success('Ghi sổ thành công');
             setActiveReceiptIsPosted(true);
             setModalMode('view');
-            notifyDataChanged();
+            notifyDataChanged('cash');
         },
         onError: (err: unknown, _id: number, context) => {
             rollbackVoucherCache(queryClient, ['cash-receipts'], context);
@@ -675,7 +647,7 @@ export const CashReceipts: React.FC<CashReceiptsProps> = React.memo(({ modalOnly
             message.success('Bỏ ghi sổ thành công!');
             setActiveReceiptIsPosted(false);
             setModalMode('view');
-            notifyDataChanged();
+            notifyDataChanged('cash');
         },
         onError: (err: unknown, _id: number, context) => {
             rollbackVoucherCache(queryClient, ['cash-receipts'], context);
@@ -695,7 +667,7 @@ export const CashReceipts: React.FC<CashReceiptsProps> = React.memo(({ modalOnly
                 return;
             }
             message.success('Nhân bản chứng từ thành công!');
-            notifyDataChanged();
+            notifyDataChanged('cash');
             handleEditReceipt(newDoc);
         },
         onError: (err: unknown) => {
@@ -716,7 +688,7 @@ export const CashReceipts: React.FC<CashReceiptsProps> = React.memo(({ modalOnly
                 return;
             }
             message.success('Xóa phiếu thu thành công');
-            notifyDataChanged();
+            notifyDataChanged('cash');
         },
         onError: (err: unknown, _id: number, context) => {
             rollbackVoucherCache(queryClient, ['cash-receipts'], context);
@@ -2113,8 +2085,8 @@ export const CashReceipts: React.FC<CashReceiptsProps> = React.memo(({ modalOnly
                 onClose={() => setIsExcelImportOpen(false)}
                 voucherType={excelImportType}
                 onSuccess={() => {
-                    queryClient.invalidateQueries({ queryKey: ['cash-receipts'] });
-                    queryClient.invalidateQueries({ queryKey: ['cash-payments'] });
+                    queryClient.invalidateQueries({ queryKey: CASH_RECEIPTS_QUERY_KEY });
+                    queryClient.invalidateQueries({ queryKey: CASH_PAYMENTS_QUERY_KEY });
                 }}
             />
         </>
@@ -2267,7 +2239,7 @@ export const CashReceipts: React.FC<CashReceiptsProps> = React.memo(({ modalOnly
                     columns={columns}
                     dataSource={filteredReceipts}
                     rowKey="id"
-                    loading={isLoading}
+                    loading={isLocalQueryLoading(isLoading, isReceiptsFetching)}
                     size="small"
                     bordered
                     rowSelection={{ type: 'checkbox' }}

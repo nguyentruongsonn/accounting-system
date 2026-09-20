@@ -218,7 +218,7 @@ const GeneralJournals: React.FC<{ embedded?: boolean }> = ({ embedded = false })
             instantUpsertVoucher(queryClient, ['journal-entries'], persistedEntry);
             message.success(selectedVoucherId ? 'Cập nhật Chứng từ thành công!' : 'Lưu Chứng từ nghiệp vụ khác thành công!');
             setIsModalVisible(false);
-            notifyDataChanged();
+            notifyDataChanged('gl');
         },
         onError: (err: any) => {
             message.error(err.response?.data?.message || 'Có lỗi xảy ra khi lưu chứng từ!');
@@ -241,7 +241,7 @@ const GeneralJournals: React.FC<{ embedded?: boolean }> = ({ embedded = false })
                 return;
             }
             message.success('Ghi sổ chứng từ thành công!');
-            notifyDataChanged();
+            notifyDataChanged('gl');
         },
     });
 
@@ -261,7 +261,7 @@ const GeneralJournals: React.FC<{ embedded?: boolean }> = ({ embedded = false })
                 return;
             }
             message.success('Bỏ ghi sổ chứng từ thành công!');
-            notifyDataChanged();
+            notifyDataChanged('gl');
         },
     });
 
@@ -274,7 +274,7 @@ const GeneralJournals: React.FC<{ embedded?: boolean }> = ({ embedded = false })
                 return;
             }
             message.success('Nhân bản chứng từ thành công!');
-            notifyDataChanged();
+            notifyDataChanged('gl');
         },
         onError: (err: any) => message.error(err.response?.data?.message || 'Lỗi khi nhân bản!')
     });
@@ -294,7 +294,7 @@ const GeneralJournals: React.FC<{ embedded?: boolean }> = ({ embedded = false })
                 return;
             }
             message.success('Xóa chứng từ thành công!');
-            notifyDataChanged();
+            notifyDataChanged('gl');
         },
     });
 
@@ -464,12 +464,10 @@ const GeneralJournals: React.FC<{ embedded?: boolean }> = ({ embedded = false })
         };
         window.addEventListener('open-general-journal', openCreateJournal);
         window.addEventListener('refresh-general-journals', refreshJournals);
-        window.addEventListener('accounting-data-changed', refreshJournals);
         window.addEventListener('gl-filter-change', handleFilterEvent);
         return () => {
             window.removeEventListener('open-general-journal', openCreateJournal);
             window.removeEventListener('refresh-general-journals', refreshJournals);
-            window.removeEventListener('accounting-data-changed', refreshJournals);
             window.removeEventListener('gl-filter-change', handleFilterEvent);
         };
     }, [refetchJournals]);
@@ -632,7 +630,7 @@ const GeneralJournals: React.FC<{ embedded?: boolean }> = ({ embedded = false })
                                 <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải nhật ký chung</div>
                                 <div style={{ color: '#B91C1C', fontSize: 12 }}>Dữ liệu chưa được xác minh từ máy chủ; không hiển thị danh sách rỗng thay thế.</div>
                             </div>
-                            <Button onClick={() => void refetchJournals()}>Thử lại nhật ký chung</Button>
+                            <Button onClick={() => void runManualDataLoad(() => refetchJournals(), { success: 'Tải lại nhật ký chung thành công.', failure: 'Không thể tải lại nhật ký chung.' })}>Thử lại nhật ký chung</Button>
                         </div>
                     ) : (
                         <div className="flex-1 bg-white rounded-md border border-slate-200 overflow-hidden flex flex-col">

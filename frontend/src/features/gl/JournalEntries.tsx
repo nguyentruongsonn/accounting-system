@@ -32,6 +32,7 @@ import PageToolbar from '../../components/layout/PageToolbar';
 import DataTableSurface from '../../components/layout/DataTableSurface';
 import ModalFrame from '../../components/layout/ModalFrame';
 import { toJournalEntryFormLines } from './journalEntryFormMapper';
+import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
 import dayjs from 'dayjs';
 import {
     addDecimalMoney,
@@ -167,7 +168,7 @@ const JournalEntries: React.FC = () => {
             instantUpsertVoucher(queryClient, ['journal-entries', page], persistedEntry);
             message.success('Lưu chứng từ kế toán thành công!');
             setIsModalOpen(false);
-            notifyDataChanged();
+            notifyDataChanged('gl');
         },
         onError: () => {
             message.error('Lỗi khi lưu chứng từ, vui lòng kiểm tra lại!');
@@ -182,7 +183,7 @@ const JournalEntries: React.FC = () => {
                 throw new Error('Máy chủ không xác nhận đã xóa chứng từ kế toán.');
             }
             message.success('Xóa chứng từ kế toán thành công!');
-            notifyDataChanged();
+            notifyDataChanged('gl');
         } catch (error: any) {
             rollbackVoucherCache(queryClient, ['journal-entries', page], context);
             message.error(error?.response?.data?.message || 'Không thể xóa chứng từ này!');
@@ -198,7 +199,7 @@ const JournalEntries: React.FC = () => {
                 throw new Error('Máy chủ không trả về chứng từ kế toán đã ghi sổ.');
             }
             message.success('Ghi sổ thành công!');
-            notifyDataChanged();
+            notifyDataChanged('gl');
         } catch (error: any) {
             rollbackVoucherCache(queryClient, ['journal-entries', page], context);
             message.error(error?.response?.data?.message || 'Ghi sổ thất bại!');
@@ -214,7 +215,7 @@ const JournalEntries: React.FC = () => {
                 throw new Error('Máy chủ không trả về chứng từ kế toán đã bỏ ghi.');
             }
             message.success('Bỏ ghi thành công!');
-            notifyDataChanged();
+            notifyDataChanged('gl');
         } catch (error: any) {
             rollbackVoucherCache(queryClient, ['journal-entries', page], context);
             message.error(error?.response?.data?.message || 'Bỏ ghi thất bại!');
@@ -375,7 +376,7 @@ const JournalEntries: React.FC = () => {
                                 <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải danh sách chứng từ kế toán</div>
                                 <div style={{ color: '#B91C1C', fontSize: 12 }}>Dữ liệu chưa được xác minh từ máy chủ; không hiển thị danh sách rỗng thay thế.</div>
                             </div>
-                            <Button onClick={() => void refetchJournalEntries()}>Thử lại danh sách chứng từ kế toán</Button>
+                             <Button onClick={() => void runManualDataLoad(() => refetchJournalEntries(), { success: 'Tải lại danh sách chứng từ kế toán thành công.', failure: 'Không thể tải lại danh sách chứng từ kế toán.' })}>Thử lại danh sách chứng từ kế toán</Button>
                         </div>
                     ) : (
                         <div className="flex-1 bg-white rounded-md border border-slate-200 overflow-hidden flex flex-col">

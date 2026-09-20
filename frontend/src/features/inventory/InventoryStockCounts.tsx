@@ -290,7 +290,7 @@ const InventoryStockCounts: React.FC<InventoryStockCountsProps> = ({ embedded = 
           <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không tải được biên bản kiểm kê</div>
           <div style={{ color: '#B91C1C', fontSize: 12 }}>Không dùng dữ liệu mẫu thay thế.</div>
         </div>
-        <Button size="small" onClick={() => void counts.refetch()}>Thử lại biên bản kiểm kê</Button>
+        <Button size="small" onClick={() => void runManualDataLoad(() => counts.refetch(), { success: 'Tải lại biên bản kiểm kê thành công.', failure: 'Không thể tải lại biên bản kiểm kê.' })}>Thử lại biên bản kiểm kê</Button>
       </div>}
       {catalogueError && <div role="alert" className="misa-p-12 misa-mb-16" style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>

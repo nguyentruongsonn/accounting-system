@@ -54,7 +54,6 @@ import ModalFrame from '../../components/layout/ModalFrame';
 import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
 import {
     INVENTORY_DOCUMENT_ITEMS_QUERY_KEY,
-    parseInventoryDocumentList,
     parseInventoryItemCatalogue,
     parseInventoryAccountCatalogue,
     parseInventoryWarehouseCatalogue,
@@ -64,6 +63,10 @@ import {
     canPostPersistedInventoryDocument,
     getInventoryMutationError,
 } from './inventoryDocumentIntegrity';
+import {
+    INVENTORY_RECEIPTS_QUERY_KEY,
+    useInventoryReceiptsQuery,
+} from './inventoryDocumentQueries';
 
 interface InventoryReceiptLine {
     key?: string;
@@ -143,13 +146,7 @@ export const InventoryReceipts: React.FC<{ embedded?: boolean; openDraftId?: num
         },
     });
 
-    const { data: receipts = [], isLoading, isError: isReceiptsError, refetch: refetchReceipts } = useQuery({
-        queryKey: ['inventory-receipts'],
-        queryFn: async () => {
-            const { data } = await api.get('/inventory/receipts');
-            return parseInventoryDocumentList(data, 'receipt') as InventoryReceiptRecord[];
-        },
-    });
+    const { data: receipts = [], isLoading, isError: isReceiptsError, refetch: refetchReceipts } = useInventoryReceiptsQuery();
 
     const { data: chartOfAccounts = [], isError: isAccountsError, refetch: refetchAccounts } = useQuery({
         queryKey: ['chart-of-accounts'],
@@ -210,7 +207,7 @@ export const InventoryReceipts: React.FC<{ embedded?: boolean; openDraftId?: num
         ));
 
     const invalidateInventoryCaches = () => {
-        notifyDataChanged();
+        notifyDataChanged('inventory');
     };
 
     const mutation = useMutation({
@@ -441,16 +438,6 @@ export const InventoryReceipts: React.FC<{ embedded?: boolean; openDraftId?: num
         window.addEventListener('open-inventory-receipt', handleCreate);
         return () => window.removeEventListener('open-inventory-receipt', handleCreate);
     }, [handleOpenModal]);
-    useEffect(() => {
-        const handleRefresh = () => { queryClient.invalidateQueries({ queryKey: ['inventory-receipts'] }); };
-        window.addEventListener('refresh-inventory-receipt', handleRefresh);
-        window.addEventListener('accounting-data-changed', handleRefresh);
-        return () => {
-            window.removeEventListener('refresh-inventory-receipt', handleRefresh);
-            window.removeEventListener('accounting-data-changed', handleRefresh);
-        };
-    }, [queryClient]);
-
     useEffect(() => {
         const handleSearch = (e: Event) => {
             const customEvent = e as CustomEvent<string>;
@@ -765,7 +752,7 @@ export const InventoryReceipts: React.FC<{ embedded?: boolean; openDraftId?: num
                             title="Làm mới (F5)"
                             icon={<ReloadOutlined />}
                             onClick={() => void runManualDataLoad(
-                                () => queryClient.invalidateQueries({ queryKey: ['inventory-receipts'] }),
+                                () => queryClient.invalidateQueries({ queryKey: INVENTORY_RECEIPTS_QUERY_KEY }),
                                 { success: 'Tải lại danh sách phiếu nhập kho thành công.', failure: 'Không thể tải lại danh sách phiếu nhập kho.' },
                             )}
                         />
@@ -794,7 +781,7 @@ export const InventoryReceipts: React.FC<{ embedded?: boolean; openDraftId?: num
                         <div>
                             <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải danh sách phiếu nhập kho</div>
                         </div>
-                        <Button size="small" onClick={() => void refetchReceipts()}>Thử lại danh sách phiếu nhập kho</Button>
+                        <Button size="small" onClick={() => void runManualDataLoad(() => refetchReceipts(), { success: 'Tải lại danh sách phiếu nhập kho thành công.', failure: 'Không thể tải lại danh sách phiếu nhập kho.' })}>Thử lại danh sách phiếu nhập kho</Button>
                     </div>
                 ) : null}
                 <Table

@@ -989,7 +989,14 @@ class InventoryValuationService
     {
         $params['company_id'] = InventoryTenantGuard::companyId($params);
 
-        if (config('accounting.enforce_inventory_posting_account_mappings', true)) {
+        // Direct-posting mode is the explicit internal two-role workflow: the
+        // voucher already carries its debit/credit accounts and the posting
+        // services use those persisted accounts without the approved-mapping
+        // resolver. Cost calculation only rewrites amounts on that existing
+        // evidence, so it must follow the same gate as inventory receipt/issue
+        // posting instead of being blocked unconditionally.
+        if (! config('accounting.direct_posting_mode', false)
+            && config('accounting.enforce_inventory_posting_account_mappings', true)) {
             throw ValidationException::withMessages([
                 'account_mappings' => 'Không thể tính lại giá vốn trong production khi chưa có mapping tài khoản được phê duyệt cho phân hệ kho.',
             ]);

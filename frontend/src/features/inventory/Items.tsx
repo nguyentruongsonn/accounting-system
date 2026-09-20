@@ -9,6 +9,7 @@ import PageHeader from '../../components/layout/PageHeader';
 import PageShell from '../../components/layout/PageShell';
 import PageToolbar from '../../components/layout/PageToolbar';
 import DataTableSurface from '../../components/layout/DataTableSurface';
+import { runManualDataLoad } from '../../components/feedback/runManualDataLoad';
 import ModalFrame from '../../components/layout/ModalFrame';
 
 function parseItemsResponse(value: unknown): any[] {
@@ -79,7 +80,7 @@ const Items: React.FC = () => {
                         <div style={{ fontWeight: 600, color: '#991B1B', fontSize: 13 }}>Không thể tải danh sách vật tư hàng hóa</div>
                         <div style={{ color: '#B91C1C', fontSize: 12 }}>Không hiển thị dữ liệu thay thế; hãy thử tải lại danh mục từ máy chủ.</div>
                     </div>
-                    <Button size="small" onClick={() => void refetchItems()}>Thử lại danh sách vật tư hàng hóa</Button>
+                    <Button size="small" onClick={() => void runManualDataLoad(() => refetchItems(), { success: 'Tải lại danh sách vật tư hàng hóa thành công.', failure: 'Không thể tải lại danh sách vật tư hàng hóa.' })}>Thử lại danh sách vật tư hàng hóa</Button>
                 </div>
             )}
             <DataTableSurface>

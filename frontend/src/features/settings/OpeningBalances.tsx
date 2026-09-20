@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Input, InputNumber, Select, Space, Spin, Table, Tabs, Tag, Typography } from 'antd';
 import { CheckOutlined, DeleteOutlined, DownloadOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SaveOutlined, UploadOutlined } from '@ant-design/icons';
 import api from '../../api/axios';
@@ -114,14 +114,21 @@ const OpeningBalances: React.FC = () => {
   const [periodLocked, setPeriodLocked] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
+  const editModeRef = useRef(false);
+  const loadRequestRef = useRef(0);
   const disabled = periodLocked || busy || !editMode;
+
+  const setEditing = (value: boolean) => {
+    editModeRef.current = value;
+    setEditMode(value);
+  };
 
   const applyPackage = (value: OpeningPackage, notifyReconciliation = false) => {
     setPackageId(value.id);
     setStatus(value.status);
     setEffectiveDate(String(value.effective_date ?? '').slice(0, 10));
     setPeriodLocked(Boolean(value.period_locked));
-    setEditMode(false);
+    setEditing(false);
     setAccountLines(prev => mergeWithExistingKeys((value.account_lines ?? (value as { accountLines?: Omit<AccountLine, '_key'>[] }).accountLines ?? []), prev));
     setPartyLines(prev => mergeWithExistingKeys((value.party_lines ?? (value as { partyLines?: Omit<PartyLine, '_key'>[] }).partyLines ?? []), prev));
     setInventoryLines(prev => mergeWithExistingKeys((value.inventory_lines ?? (value as { inventoryLines?: Omit<InventoryLine, '_key'>[] }).inventoryLines ?? []), prev));
@@ -137,9 +144,10 @@ const OpeningBalances: React.FC = () => {
   const clearPackage = () => {
     setPackageId(undefined); setStatus('draft'); setAccountLines([]); setPartyLines([]); setInventoryLines([]);
     setToolLines([]); setFixedAssetLines([]); setPrepaidLines([]); setWipLines([]);
-    setPeriodLocked(false); setEditMode(true);
+    setPeriodLocked(false); setEditing(true);
   };
    const load = async (requestedDate = '', isManual = false) => {
+    const requestId = ++loadRequestRef.current;
     setLoading(true);
     try {
       const [packages, coa, customerData, supplierData, itemData, warehouseData, catalogueData] = await Promise.all([
@@ -155,14 +163,20 @@ const OpeningBalances: React.FC = () => {
         setTools(rows((catalogues as { tools?: unknown }).tools ?? [], 'danh mục CCDC'));
         setFixedAssets(rows((catalogues as { fixed_assets?: unknown }).fixed_assets ?? [], 'danh mục tài sản cố định'));
       }
-      if (packageRows[0]) applyPackage(packageRows[0]);
-      else clearPackage();
+      if (requestId !== loadRequestRef.current) return false;
+      if (!editModeRef.current) {
+        if (packageRows[0]) applyPackage(packageRows[0]);
+        else clearPackage();
+      }
        return true;
      } catch (reason) {
+       if (requestId !== loadRequestRef.current) return false;
        if (!isManual) toast.error(messageOf(reason));
        return isManual ? { isError: true, error: reason } : false;
      }
-     finally { setLoading(false); }
+     finally {
+       if (requestId === loadRequestRef.current) setLoading(false);
+     }
   };
   useEffect(() => { void load(); }, []);
 
@@ -202,7 +216,7 @@ const OpeningBalances: React.FC = () => {
       const response = packageId ? await api.put(`/opening-balances/${packageId}`, payload()) : await api.post('/opening-balances', payload());
       const savedPackage = response.data.data as OpeningPackage;
       applyPackage(savedPackage, false);
-      setEditMode(false);
+      setEditing(false);
       toast.success('Đã lưu số dư đầu kỳ.');
     } catch (reason) {
       toast.error(messageOf(reason));
@@ -389,9 +403,9 @@ const OpeningBalances: React.FC = () => {
   return <PageShell
     title={<PageHeader eyebrow="Thiết lập ban đầu" title="Số dư đầu kỳ" description="Nhập một lần, đối chiếu chi tiết với tổng hợp rồi xác nhận." />}
     toolbar={<PageToolbar
-      filters={<label htmlFor="opening-effective-date"><Typography.Text strong>Ngày bắt đầu dữ liệu</Typography.Text><Input id="opening-effective-date" aria-label="Ngày bắt đầu dữ liệu" type="date" value={effectiveDate} disabled={periodLocked || busy} onChange={event => { const date = event.target.value; setEffectiveDate(date); if (date) void load(date); }} style={{ width: 180, marginLeft: 12 }} /></label>}
+      filters={<label htmlFor="opening-effective-date"><Typography.Text strong>Ngày bắt đầu dữ liệu</Typography.Text><Input id="opening-effective-date" aria-label="Ngày bắt đầu dữ liệu" type="date" value={effectiveDate} disabled={periodLocked || busy || loading || editMode} onChange={event => { const date = event.target.value; setEffectiveDate(date); if (date) void load(date); }} style={{ width: 180, marginLeft: 12 }} /></label>}
       actions={<Space>
-          <Button icon={<ReloadOutlined />} loading={loading} disabled={!effectiveDate || busy || loading} onClick={() => void runManualDataLoad(() => load(effectiveDate, true), { success: 'Tải dữ liệu số dư đầu kỳ thành công.', failure: 'Không thể tải dữ liệu số dư đầu kỳ.' })}>Tải dữ liệu</Button>
+          <Button icon={<ReloadOutlined />} loading={loading} disabled={!effectiveDate || busy || loading || editMode} onClick={() => void runManualDataLoad(() => load(effectiveDate, true), { success: 'Tải dữ liệu số dư đầu kỳ thành công.', failure: 'Không thể tải dữ liệu số dư đầu kỳ.' })}>Tải dữ liệu</Button>
         <Tag color={status === 'confirmed' ? 'green' : 'blue'}>{status === 'confirmed' ? 'Đã xác nhận' : 'Bản nháp'}</Tag>
         <Button icon={<UploadOutlined />} disabled={disabled} onClick={() => setImportOpen(true)}>Nhập Excel</Button>
         <Button icon={<DownloadOutlined />} disabled={busy} onClick={exportCurrentRows}>Xuất Excel</Button>
@@ -399,14 +413,14 @@ const OpeningBalances: React.FC = () => {
           <>
             <Button type="primary" icon={<SaveOutlined />} loading={busy} disabled={periodLocked || busy} onClick={() => void save()}>Lưu thay đổi</Button>
             {packageId ? (
-              <Button disabled={busy} onClick={() => { setEditMode(false); if (effectiveDate) void load(effectiveDate); }}>Hủy</Button>
+              <Button disabled={busy} onClick={() => { setEditing(false); if (effectiveDate) void load(effectiveDate); }}>Hủy</Button>
             ) : null}
           </>
         ) : (
           <>
-            <Button icon={<EditOutlined />} disabled={!packageId || periodLocked || busy} onClick={() => setEditMode(true)}>Chỉnh sửa</Button>
+            <Button icon={<EditOutlined />} disabled={!packageId || periodLocked || busy || loading} onClick={() => setEditing(true)}>Chỉnh sửa</Button>
             {status === 'draft' ? (
-              <Button type="primary" icon={<CheckOutlined />} loading={busy} disabled={!packageId || periodLocked} onClick={() => void confirm()}>Đối chiếu & xác nhận</Button>
+              <Button type="primary" icon={<CheckOutlined />} loading={busy} disabled={!packageId || periodLocked || loading} onClick={() => void confirm()}>Đối chiếu & xác nhận</Button>
             ) : null}
           </>
         )}

@@ -36,8 +36,8 @@ const IncomeStatementReport: React.FC<IncomeStatementReportProps> = ({ embedded 
         const onDataChanged = () => {
             void refetch();
         };
-        window.addEventListener('accounting-data-changed', onDataChanged);
-        return () => window.removeEventListener('accounting-data-changed', onDataChanged);
+        window.addEventListener('refresh-accounting-reports', onDataChanged);
+        return () => window.removeEventListener('refresh-accounting-reports', onDataChanged);
     }, [refetch]);
 
     const columns = [

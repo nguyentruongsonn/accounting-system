@@ -32,6 +32,7 @@ import { QuickAddContactModal, QuickAddPaymentTermModal, QuickAddItemModal, useF
 import PageHeader from '../../components/layout/PageHeader';
 import PageShell from '../../components/layout/PageShell';
 import PageToolbar from '../../components/layout/PageToolbar';
+import { notifyDataChanged } from '../../lib/queryClient';
 
 const TABS = [
   { key: 'tab-process', label: 'Quy trình' },
@@ -316,7 +317,7 @@ export const PurchaseWorkspace: React.FC = () => {
       <PayVendorByInvoiceModal
         open={isPayVendorModalOpen}
         onCancel={() => setIsPayVendorModalOpen(false)}
-        onSuccess={() => window.dispatchEvent(new CustomEvent('purchase-invoices-invalidated'))}
+        onSuccess={() => notifyDataChanged('purchase')}
       />
 
       <QuickAddContactModal 

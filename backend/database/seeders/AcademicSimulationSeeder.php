@@ -32,7 +32,13 @@ class AcademicSimulationSeeder extends Seeder
             throw new RuntimeException('AcademicSimulationSeeder is restricted to local/testing environments.');
         }
 
-        DB::transaction(function (): void {
+        $adminPassword = trim((string) env('SIMULATION_ADMIN_PASSWORD', ''));
+        $accountantPassword = trim((string) env('SIMULATION_ACCOUNTANT_PASSWORD', ''));
+        if ($adminPassword === '' || $accountantPassword === '') {
+            throw new RuntimeException('Set SIMULATION_ADMIN_PASSWORD and SIMULATION_ACCOUNTANT_PASSWORD before running AcademicSimulationSeeder.');
+        }
+
+        DB::transaction(function () use ($adminPassword, $accountantPassword): void {
             $existingCompany = Company::query()
                 ->where('name', 'SIM-ENTITY-001 — Doanh nghiệp mô phỏng')
                 ->first();
@@ -55,14 +61,14 @@ class AcademicSimulationSeeder extends Seeder
                 companyId: $company->id,
                 email: 'sim.admin@accounting.local',
                 name: 'SIM-ADMIN',
-                password: 'Simulate-admin-2026!',
+                password: $adminPassword,
                 role: 'admin',
             );
             $this->ensureSimulationUser(
                 companyId: $company->id,
                 email: 'sim.operator@accounting.local',
                 name: 'SIM-OPERATOR',
-                password: 'Simulate-2026!',
+                password: $accountantPassword,
                 role: 'accountant',
             );
 

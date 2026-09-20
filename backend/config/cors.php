@@ -25,6 +25,11 @@ $allowedHeaders = $configuredHeaders === null || trim($configuredHeaders) === ''
     ? ['Accept', 'Authorization', 'Content-Type', 'Origin', 'X-Requested-With', 'X-CSRF-TOKEN', 'X-XSRF-TOKEN']
     : array_values(array_filter(array_map('trim', explode(',', $configuredHeaders))));
 
+$configuredOriginPatterns = env('CORS_ALLOWED_ORIGIN_PATTERNS');
+$allowedOriginPatterns = $configuredOriginPatterns === null || trim($configuredOriginPatterns) === ''
+    ? []
+    : array_values(array_filter(array_map('trim', explode(',', $configuredOriginPatterns))));
+
 $supportsCredentials = filter_var(env('CORS_SUPPORTS_CREDENTIALS', true), FILTER_VALIDATE_BOOL);
 if ($supportsCredentials && in_array('*', $allowedOrigins, true)) {
     // Browsers reject wildcard origins with credentials; fail closed rather
@@ -54,10 +59,9 @@ return [
     // Credentialed refresh cookies require an explicit origin allowlist. The
     // local .env.example includes the standard Vite development origins.
     'allowed_origins' => $allowedOrigins,
-
-    'allowed_origins_patterns' => [
-        '#^https://.*\.vercel\.app$#',
-    ],
+    // Deployment-specific regex patterns must be explicitly supplied. Never
+    // trust every preview deployment on a shared hosting provider.
+    'allowed_origins_patterns' => $allowedOriginPatterns,
 
     'allowed_headers' => $allowedHeaders,
 
